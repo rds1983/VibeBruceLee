@@ -42,4 +42,4 @@ Unit tests target pure logic and type-level smoke checks. Anything requiring a w
 
 ## Decisions
 
-Architecture decision records live in `Design/decisions/`. ADR-0001 (engine and logical resolution) is added in T-003; ADR-0002 (asset pipeline) in T-004.
+Architecture decision records live in `Design/decisions/`. ADR-0001 records the engine, logical resolution and timestep; ADR-0002 (asset pipeline) is added in T-004.

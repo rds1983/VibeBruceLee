@@ -26,7 +26,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Add `Directory.Build.props` (nullable, implicit usings, analyzers), `.editorconfig`, and a GitHub Actions workflow that builds and tests on Windows and Linux. Verify the README commands.
   *Done when:* the Release build and tests pass locally and in a clean copy with warnings as errors, and the two-OS CI workflow is green on push.
 
-- [ ] **T-003 Reference and design docs**
+- [x] **T-003 Reference and design docs**
   Research the ZX Spectrum release: controls, scoring, lantern counts, enemy behavior, hazards, and chamber layouts. Record findings in `Design/reference.md`, `Design/overview.md`, and `Design/gameplay.md`. Add ADR-0001 covering engine choice and the 256x192 logical canvas.
   *Done when:* docs are enough to implement without re-researching the original.
 
@@ -47,7 +47,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* resize and fullscreen keep the image undistorted; screen transitions are tested.
 
 - [ ] **T-011 Input system**
-  Map keyboard and gamepad to abstract actions (left, right, up, down, jump, punch, kick, pause). Add short input buffering for jump and attacks. Handle focus loss and gamepad hotplug.
+  Map keyboard and gamepad to abstract actions (left, right, up, down, contextual attack, jump, pause, sound toggle). Add short input buffering for jump and attacks. Handle focus loss and gamepad hotplug.
   *Done when:* buffer behavior is unit-tested and remapping lives in one place.
 
 - [ ] **T-012 Rendering and animation**
@@ -55,11 +55,11 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* animation state transitions are unit-tested and sprites render pixel-perfect at every integer scale.
 
 - [ ] **T-013 Chamber data model**
-  Define a chamber format (platforms, ladders, ropes, lanterns, spawn points, hazards, exit, decor) in JSON under `VibeBruceLee/Assets/Levels`. Add schema validation with actionable errors and a sample chamber.
+  Define a chamber format (platforms, vines, required and optional lanterns, spawn points, hazards, exit connections, decor) in JSON under `VibeBruceLee/Assets/Levels`. Add schema validation with actionable errors and a sample chamber.
   *Done when:* loader and validator are tested, including malformed input.
 
 - [ ] **T-014 Physics and collision**
-  Implement AABB collision, gravity, one-way platforms, landing, ceilings, screen bounds, and ladder/rope climbing in a fixed-step, deterministic world.
+  Implement AABB collision, gravity, one-way platforms, landing, ceilings, screen bounds, and vine climbing (up, down and sideways) in a fixed-step, deterministic world.
   *Done when:* edge cases such as tunneling at max speed and landing on thin platforms are tested.
 
 - [ ] **T-015 Debug tooling**
@@ -67,7 +67,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* the overlay is usable during normal play and cheats are disabled outside debug builds.
 
 - [ ] **T-016 Initial asset set**
-  Produce a coherent first-pass asset set: Bruce (idle, run, jump, crouch, punch, kick, climb, hit, death), Ninja, Yamo, tiles, lantern, HUD elements, and a readable pixel font. Include source files and generation notes.
+  Produce a coherent first-pass asset set: Bruce (idle, run, jump, duck, chop, kick, flying kick, climb, hit, death), Ninja, Yamo, tiles, lantern, HUD elements, and a readable pixel font. Include source files and generation notes.
   *Done when:* all entities and the HUD render from the asset pipeline with no placeholders.
 
 ---
@@ -75,15 +75,15 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 ## M2 - Player character
 
 - [ ] **T-020 Locomotion**
-  Implement run acceleration, variable-height jump, crouch, climbing ladders and ropes, and drop-through where appropriate, with matching animations.
+  Implement run acceleration, variable-height jump, ducking, climbing vines up, down and sideways, and safe drops, with matching animations.
   *Done when:* all movement states are unit-tested and a manual feel check passes.
 
 - [ ] **T-021 Combat moves**
-  Implement punch, kick, and jump kick with wind-up, active frames, recovery, hitboxes, hitstun, knockdown, and animation cancels. Cover both hitting and being hit.
+  Implement the context-sensitive attack: chop while standing, kick while running, and flying kick while airborne, with wind-up, active frames, recovery, hitboxes, hitstun, knockdown, and animation cancels. Cover both hitting and being hit.
   *Done when:* frame data is centralized, tested, and documented in `Design/gameplay.md`.
 
 - [ ] **T-022 Health, lives, and respawn**
-  Handle enemy contact, hazards, death animation, three lives, respawn with brief invulnerability, and game over.
+  Handle enemy blows (three per fall), deadly hazards, death animation, five starting falls, an extra fall every 30,000 points, respawn with brief invulnerability, and game over.
   *Done when:* life-loss transitions and invulnerability windows are tested.
 
 - [ ] **T-023 Player animation and feel pass**
@@ -96,7 +96,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 - [ ] **T-030 Enemy framework**
   Build a shared enemy state machine (idle, patrol, chase, attack, stunned, knocked down, respawn), platform-aware pathing, and a seeded random source for determinism.
-  *Done when:* the state machine is tested with a fake world and enemies navigate ladders correctly.
+  *Done when:* the state machine is tested with a fake world and enemies navigate vines correctly.
 
 - [ ] **T-031 The Ninja**
   Implement the fast pursuer: chase behavior, bokken strike, jump attacks, and return after being defeated. Keep him threatening but dodgeable.
@@ -115,15 +115,15 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 ## M4 - Chambers
 
 - [ ] **T-040 Chamber 1 vertical slice**
-  Recreate the first chamber from reference. Implement lantern collection, the exit opening only after all lanterns are taken, scoring, death and restart, and a complete playable loop.
-  *Done when:* the chamber is beatable and losing all lives returns to game over.
+  Recreate the first entrance chamber from reference. Implement lantern collection, the exit opening only after the required lanterns are taken, scoring, death and restart, and a complete playable loop.
+  *Done when:* the chamber is beatable and losing all falls returns to game over.
 
-- [ ] **T-041 Chambers 2-5**
-  Add four chambers that extend platforming and ladder movement, with data-driven layouts and per-chamber spawns.
-  *Done when:* each chamber validates, loads, and can be completed.
+- [ ] **T-041 Chambers 2-5 and the entrance hub**
+  Add four chambers that extend platforming and vine movement, plus the three-room entrance hub rule: clearing chambers 1-3 opens the floor hatch in the middle chamber.
+  *Done when:* each chamber validates, loads, and can be completed, and the hatch gating is tested.
 
 - [ ] **T-042 Hazards framework**
-  Implement mines, moving walls, the electric comb, and projectiles as reusable, testable hazards. Enemies must be vulnerable to them too.
+  Implement electric charges, exploding T'Sung-Lin bushes, PAN floor lights, mines, moving walls, and projectile hazards (daggers, swords, bugs, fireballs) as reusable, testable hazards. Enemies must be vulnerable to them too.
   *Done when:* each hazard has tests for activation, damage, and despawn.
 
 - [ ] **T-043 Chambers 6-12**
@@ -135,7 +135,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* all seven chambers are beatable and no layout requires frame-perfect input.
 
 - [ ] **T-045 Chamber 20 - the Fire Wizard**
-  Implement the final chamber and boss: fireball patterns, phases, defeat sequence, and ending screen.
+  Implement the final chamber: fireballs from the wizard's eyes, the destruction button, defeat sequence, and ending screen.
   *Done when:* the boss is beatable, testable, and the ending returns to the title cleanly.
 
 - [ ] **T-046 Loop and difficulty scaling**
@@ -151,11 +151,11 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* a new player can start a game without reading the docs.
 
 - [ ] **T-051 HUD, pause, game over, and high scores**
-  Show score, lives, and lanterns. Add pause, game over, initials entry, and a persisted high-score table.
+  Show score, falls, and lantern progress. Add pause, game over, initials entry, and a persisted high-score table.
   *Done when:* scores survive restarts and malformed save files fail safely.
 
 - [ ] **T-052 Audio**
-  Create original chiptune-style sound effects for punches, kicks, jumps, hits, knockdowns, lantern pickups, death, exits, and the wizard. Add optional title music, volume control, and mute.
+  Create original chiptune-style sound effects for chops, kicks, jumps, hits, knockdowns, lantern pickups, death, exits, and the wizard. Add optional title music, volume control, sound toggle, and mute.
   *Done when:* every gameplay event is wired, audio failures never crash the game, and generated audio sources are committed.
 
 - [ ] **T-053 Art polish**
@@ -163,7 +163,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* visuals are consistent across all chambers and every asset has a source file.
 
 - [ ] **T-054 Local two-player mode**
-  Let a second player control Yamo, or alternate control of Bruce after death, with AI takeover after inactivity.
+  Let a second player control Yamo, or alternate control of Bruce after a lost fall, with AI takeover after inactivity. Track scores for both players and implement the larger two-player fall reserve.
   *Done when:* control handover is tested and documented.
 
 - [ ] **T-055 Tuning and game feel**
@@ -216,3 +216,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | Docs bootstrap | 2026-11-19 | Added README.md, this roadmap, and AGENTS.md workflow. |
 | T-001 | 2026-11-19 | Solution skeleton: MonoGame host, xUnit project, asset copy rule, architecture doc and .gitignore. |
 | T-002 | 2026-11-19 | Engineering baseline: shared build props, SDK pin, editorconfig with tab indentation, and Windows/Linux CI. |
+| T-003 | 2026-11-20 | Reference research, overview, gameplay rules, design index and ADR-0001; roadmap corrected for vines, falls, scoring and chamber graph. |

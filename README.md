@@ -1,8 +1,8 @@
 # VibeBruceLee
 
-A from-scratch remake of the 1984 ZX Spectrum classic **Bruce Lee**: one martial artist, twenty trap-filled chambers, two relentless enemies, and a wizard waiting at the top of the tower. Built with modern C# tooling and original, hand-made assets.
+A from-scratch remake of the 1984 classic **Bruce Lee**, as released for the ZX Spectrum: one martial artist, twenty trap-filled chambers, two relentless enemies, and a wizard waiting at the top of the tower. Built with modern C# tooling and original, hand-made assets.
 
-> Status: early development. The repository currently contains design and process documentation only.
+> Status: early development. The solution skeleton, build tooling, and core design documentation are in place.
 
 ## Tech stack
 
