@@ -54,8 +54,8 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Implement sprite sheets, animation clips, frame timing, horizontal flipping, layer ordering, and deterministic animation updates on top of XNAssets.
   *Done when:* animation state transitions are unit-tested and sprites render pixel-perfect at every integer scale.
 
-- [ ] **T-013 Chamber data model**
-  Define a chamber format (platforms, vines, required and optional lanterns, spawn points, hazards, exit connections, decor) in JSON under `VibeBruceLee/Assets/Levels`. Add schema validation with actionable errors and a sample chamber.
+- [x] **T-013 Chamber data model**
+  Define a chamber format (platforms, vines, required and optional lanterns, spawn points, hazards, exit connections, decor) in JSON under `VibeBruceLee/Assets/levels`. Add schema validation with actionable errors and a sample chamber.
   *Done when:* loader and validator are tested, including malformed input.
 
 - [ ] **T-014 Physics and collision**
@@ -222,3 +222,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-010 | 2026-11-20 | 256x192 virtual canvas with integer letterboxing, resizable/fullscreen window, tested screen stack and placeholder screens. |
 | T-011 | 2026-11-20 | Action-based input system with central bindings, 120 ms jump/attack buffers, focus-loss reset and gamepad reconnection handling. |
 | T-012 | 2026-11-20 | Sprite sheets, deterministic animation player, four-frame lantern sheet, layer ordering and overlay-aware screen drawing. |
+| T-013 | 2026-11-20 | Strict JSON chamber model, loader/validator with field-path errors, two sample chambers and format documentation. |

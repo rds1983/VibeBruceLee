@@ -8,7 +8,7 @@ All runtime assets live under `VibeBruceLee/Assets` and are copied to `Assets` n
 art/       Sprites, tiles and backgrounds
 audio/     Sound effects and music
 fonts/     TTF/OTF fonts for FontStashSharp
-levels/    Chamber definitions (JSON, from T-013)
+levels/    Chamber definitions (JSON; see `chambers.md`)
 licenses/  License texts for third-party assets
 ```
 

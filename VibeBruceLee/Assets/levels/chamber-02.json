@@ -1,0 +1,28 @@
+{
+  "id": "chamber-02",
+  "name": "Vine Shaft",
+  "width": 256,
+  "height": 192,
+  "playerSpawn": {
+    "x": 128,
+    "y": 24
+  },
+  "platforms": [
+    { "x": 0, "y": 176, "width": 256, "height": 16 },
+    { "x": 96, "y": 96, "width": 64, "height": 8 }
+  ],
+  "vines": [
+    { "x": 124, "y": 24, "width": 8, "height": 152, "orientation": "vertical" }
+  ],
+  "lanterns": [
+    { "id": "lantern-1", "x": 56, "y": 48, "required": true }
+  ],
+  "enemySpawns": [
+    { "type": "ninja", "x": 220, "y": 144 }
+  ],
+  "hazards": [],
+  "exits": [
+    { "x": 0, "y": 80, "width": 8, "height": 24, "target": "chamber-01" }
+  ],
+  "decor": []
+}

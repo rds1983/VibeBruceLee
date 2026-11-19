@@ -17,4 +17,8 @@
     <ProjectReference Include="..\VibeBruceLee\VibeBruceLee.csproj" />
     <ProjectReference Include="..\Tools\VibeBruceLee.AssetGen\VibeBruceLee.AssetGen.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\VibeBruceLee\Assets\levels\*.json" Link="Assets\levels\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

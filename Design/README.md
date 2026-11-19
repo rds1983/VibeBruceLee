@@ -8,6 +8,7 @@ Project documentation for VibeBruceLee. Setup and build instructions live in the
 | `reference.md` | Verified facts about the 1984 game and how we interpret them |
 | `gameplay.md` | Remake rules: controls, combat, scoring, progression, modes |
 | `assets.md` | Asset folders, key rules, loading API, diagnostics, provenance |
+| `chambers.md` | Chamber JSON format, coordinates, validation rules, samples |
 | `architecture.md` | Solution layout, host, toolchain, assets, testing |
 | `decisions/` | Architecture decision records |
 
@@ -16,7 +17,6 @@ Planned, in roadmap order:
 | Document | Owner task |
 | -------- | ---------- |
 | `debug.md` | T-015 |
-| `chambers.md` | T-040 onward |
 | `tuning.md` | T-055 |
 | `testing.md` | T-060 |
 

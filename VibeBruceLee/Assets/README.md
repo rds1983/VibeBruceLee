@@ -22,6 +22,7 @@ Current bootstrap assets:
 - `art/lantern.png` - 16x16 lantern sample sprite.
 - `art/lantern-sheet.png` - 64x16 four-frame lantern animation.
 - `audio/pickup.wav` - 0.12 s pickup beep.
+- `levels/chamber-01.json`, `levels/chamber-02.json` - sample chamber data.
 - `fonts/press-start-2p-regular.ttf` - Press Start 2P by CodeMan38, SIL Open Font License 1.1.
 - `licenses/press-start-2p-OFL.txt` - the font license.
 
