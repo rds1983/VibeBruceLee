@@ -46,7 +46,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Implement the MonoGame host, fixed 60 Hz timestep, 256x192 virtual canvas with integer scaling and letterboxing, and a screen stack (title, chamber, pause, game over).
   *Done when:* resize and fullscreen keep the image undistorted; screen transitions are tested.
 
-- [ ] **T-011 Input system**
+- [x] **T-011 Input system**
   Map keyboard and gamepad to abstract actions (left, right, up, down, contextual attack, jump, pause, sound toggle). Add short input buffering for jump and attacks. Handle focus loss and gamepad hotplug.
   *Done when:* buffer behavior is unit-tested and remapping lives in one place.
 
@@ -220,3 +220,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-004 | 2026-11-20 | XNAssets + FontStashSharp asset pipeline: relative keys, test scene, test card and OFL font, asset docs and ADR-0002. |
 | T-005 | 2026-11-20 | Code-driven asset generator using StbImageNext and PCM WAV output; sample lantern and pickup sound; CI reproducibility check; ADR-0003. |
 | T-010 | 2026-11-20 | 256x192 virtual canvas with integer letterboxing, resizable/fullscreen window, tested screen stack and placeholder screens. |
+| T-011 | 2026-11-20 | Action-based input system with central bindings, 120 ms jump/attack buffers, focus-loss reset and gamepad reconnection handling. |

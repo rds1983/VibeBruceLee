@@ -11,7 +11,7 @@ public interface IGameScreen
 
 	void Deactivate();
 
-	void Update(GameTime gameTime, FrameInput input);
+	void Update(GameTime gameTime, InputSystem input);
 
 	void Draw(SpriteBatch spriteBatch);
 }
@@ -62,7 +62,7 @@ public sealed class ScreenStack
 		Push(screen);
 	}
 
-	public void Update(GameTime gameTime, FrameInput input)
+	public void Update(GameTime gameTime, InputSystem input)
 	{
 		Current?.Update(gameTime, input);
 	}

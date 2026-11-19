@@ -1,7 +1,6 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using VibeBruceLee.Core.Input;
 using VibeBruceLee.Core.Screens;
 
@@ -33,9 +32,9 @@ public sealed class GameOverScreen : IGameScreen
 	{
 	}
 
-	public void Update(GameTime gameTime, FrameInput input)
+	public void Update(GameTime gameTime, InputSystem input)
 	{
-		if (input.WasKeyPressed(Keys.Enter) || input.WasButtonPressed(Buttons.A))
+		if (input.WasPressed(InputAction.Confirm))
 		{
 			_screens.Replace(new TitleScreen(_screens, _context));
 		}

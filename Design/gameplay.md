@@ -13,15 +13,20 @@ Default bindings. Remapping and the final table land in T-011.
 | Action | Keyboard | Gamepad |
 | ------ | -------- | ------- |
 | Move | Arrow keys or `O`/`P`/`Q`/`A` | Left stick / D-pad |
-| Jump | `X` or `Up` | A |
-| Duck | `Down` | Down |
-| Attack | `Z`, `M` or `Space` | X |
+| Jump | `X` or `Space` | A |
+| Climb up | `Q` or `Up` | Stick up / D-pad up |
+| Duck | `A` or `Down` | Stick down / D-pad down |
+| Attack | `Z` or `M` | X |
 | Pause | `Enter` | Start |
-| Sound toggle | `F2` | Back |
+| Confirm | `Enter` | A |
+| Cancel / quit | `Esc` | Back |
+| Sound toggle | `F2` | Y |
+| Fullscreen | `F11` | — |
 
 - Movement keys mirror the Spectrum original; modern keys are aliases.
 - Attack is contextual, as in the original: standing = chop, running = kick, airborne = flying kick.
-- Up under a vine climbs instead of jumping.
+- Up climbs vines; jumping is `X`/`Space`.
+- Jump and attack presses are buffered for 120 ms so a slightly early input still lands.
 - Fullscreen and integer scaling are presentation settings, not gameplay actions.
 
 ## Movement

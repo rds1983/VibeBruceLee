@@ -26,8 +26,7 @@ public sealed class BruceLeeGame : Game
 	private Texture2D? _lantern;
 	private Texture2D? _pixel;
 	private ScreenStack? _screens;
-	private KeyboardState _previousKeyboard;
-	private GamePadState _previousGamePad;
+	private InputSystem? _input;
 	private bool _loaded;
 
 	public BruceLeeGame(bool startFullscreen = false)
@@ -74,6 +73,7 @@ public sealed class BruceLeeGame : Game
 		var context = new ScreenContext(_fontSystem, _testCard, _lantern, _pixel);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
+		_input = new InputSystem(InputBindings.CreateDefault());
 
 		_loaded = true;
 	}
@@ -96,25 +96,30 @@ public sealed class BruceLeeGame : Game
 
 	protected override void Update(GameTime gameTime)
 	{
-		var keyboard = Keyboard.GetState();
-		var gamepad = GamePad.GetState(PlayerIndex.One);
-		var input = new FrameInput(keyboard, _previousKeyboard, gamepad, _previousGamePad);
+		if (_input is null)
+		{
+			base.Update(gameTime);
+			return;
+		}
 
-		if (input.WasKeyPressed(Keys.F11))
+		_input.Update(
+			Keyboard.GetState(),
+			GamePad.GetState(PlayerIndex.One),
+			gameTime.ElapsedGameTime.TotalSeconds,
+			IsActive);
+
+		if (_input.WasPressed(InputAction.ToggleFullscreen))
 		{
 			_graphics.HardwareModeSwitch = false;
 			_graphics.ToggleFullScreen();
 		}
 
-		if (keyboard.IsKeyDown(Keys.Escape) || gamepad.Buttons.Back == ButtonState.Pressed)
+		if (_input.WasPressed(InputAction.Cancel))
 		{
 			Exit();
 		}
 
-		_screens?.Update(gameTime, input);
-
-		_previousKeyboard = keyboard;
-		_previousGamePad = gamepad;
+		_screens?.Update(gameTime, _input);
 
 		base.Update(gameTime);
 	}

@@ -1,7 +1,6 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using VibeBruceLee.Core.Input;
 using VibeBruceLee.Core.Screens;
 
@@ -33,13 +32,13 @@ public sealed class ChamberScreen : IGameScreen
 	{
 	}
 
-	public void Update(GameTime gameTime, FrameInput input)
+	public void Update(GameTime gameTime, InputSystem input)
 	{
-		if (input.WasKeyPressed(Keys.P) || input.WasButtonPressed(Buttons.Start))
+		if (input.WasPressed(InputAction.Pause))
 		{
 			_screens.Push(new PauseScreen(_screens, _context));
 		}
-		else if (input.WasKeyPressed(Keys.G) || input.WasButtonPressed(Buttons.Y))
+		else if (input.WasPressed(InputAction.DebugGameOver))
 		{
 			_screens.Push(new GameOverScreen(_screens, _context));
 		}

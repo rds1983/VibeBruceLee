@@ -8,6 +8,8 @@ namespace VibeBruceLee.Tests;
 
 public class ScreenStackTests
 {
+	private readonly InputSystem _input = new(InputBindings.CreateDefault());
+
 	[Fact]
 	public void PushSetsCurrentAndEnters()
 	{
@@ -63,7 +65,7 @@ public class ScreenStackTests
 		stack.Push(title);
 		stack.Push(chamber);
 
-		stack.Update(new GameTime(), default);
+		stack.Update(new GameTime(), _input);
 
 		Assert.Equal(0, title.UpdateCount);
 		Assert.Equal(1, chamber.UpdateCount);
@@ -89,7 +91,7 @@ public class ScreenStackTests
 
 		public void Deactivate() => ExitCount++;
 
-		public void Update(GameTime gameTime, FrameInput input) => UpdateCount++;
+		public void Update(GameTime gameTime, InputSystem input) => UpdateCount++;
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
