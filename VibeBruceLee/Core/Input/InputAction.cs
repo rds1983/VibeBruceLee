@@ -13,5 +13,11 @@ public enum InputAction
 	Cancel,
 	ToggleFullscreen,
 	ToggleSound,
-	DebugGameOver
+	DebugGameOver,
+	ToggleDebugOverlay,
+	DebugSlowMotion,
+	DebugPause,
+	DebugFrameStep,
+	DebugInvincible,
+	DebugSkipChamber
 }

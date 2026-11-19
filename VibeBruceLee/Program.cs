@@ -1,4 +1,7 @@
 using VibeBruceLee;
 
-using var game = new BruceLeeGame(args.Contains("--fullscreen", StringComparer.Ordinal));
+var fullscreen = args.Contains("--fullscreen", StringComparer.Ordinal);
+var debugOverlay = args.Contains("--debug-overlay", StringComparer.Ordinal);
+
+using var game = new BruceLeeGame(fullscreen, debugOverlay);
 game.Run();

@@ -39,7 +39,13 @@ public sealed class InputBindings
 				[InputAction.Cancel] = [Keys.Escape],
 				[InputAction.ToggleFullscreen] = [Keys.F11],
 				[InputAction.ToggleSound] = [Keys.F2],
-				[InputAction.DebugGameOver] = [Keys.G]
+				[InputAction.DebugGameOver] = [Keys.G],
+				[InputAction.ToggleDebugOverlay] = [Keys.F1],
+				[InputAction.DebugSlowMotion] = [Keys.F3],
+				[InputAction.DebugPause] = [Keys.F4],
+				[InputAction.DebugFrameStep] = [Keys.F5],
+				[InputAction.DebugInvincible] = [Keys.F6],
+				[InputAction.DebugSkipChamber] = [Keys.F7]
 			},
 			new Dictionary<InputAction, Buttons[]>
 			{

@@ -79,6 +79,12 @@ public sealed class TitleScreen : IGameScreen
 			SpriteEffects.None,
 			SpriteLayers.World);
 
+		if (_context.Debug.OverlayVisible)
+		{
+			_context.Debug.AddSolid(new Rectangle(16, 56, 128, 96));
+			_context.Debug.AddHitbox(new Rectangle(168, 72, 64, 64));
+		}
+
 		spriteBatch.DrawString(_font16, "VibeBruceLee", new Vector2(16, 12), Palette.Yellow, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, "screen stack online", new Vector2(16, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, "Enter: start", new Vector2(16, 160), Palette.White, layerDepth: SpriteLayers.Hud);

@@ -3,6 +3,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using VibeBruceLee.Core.Debugging;
 using VibeBruceLee.Core.Graphics;
 using VibeBruceLee.Core.Input;
 using VibeBruceLee.Core.Screens;
@@ -28,10 +29,17 @@ public sealed class BruceLeeGame : Game
 	private Texture2D? _pixel;
 	private ScreenStack? _screens;
 	private InputSystem? _input;
+	private readonly DebugState _debugState = new();
+	private readonly bool _startDebugOverlay;
 	private bool _loaded;
+#if DEBUG
+	private DebugController? _debugController;
+	private DebugOverlay? _debugOverlay;
+#endif
 
-	public BruceLeeGame(bool startFullscreen = false)
+	public BruceLeeGame(bool startFullscreen = false, bool startDebugOverlay = false)
 	{
+		_startDebugOverlay = startDebugOverlay;
 		_graphics = new GraphicsDeviceManager(this)
 		{
 			PreferredBackBufferWidth = GameInfo.VirtualWidth * DefaultScale,
@@ -79,10 +87,16 @@ public sealed class BruceLeeGame : Game
 		_lanternSheet = lanternSheet;
 		_pixel = pixel;
 
-		var context = new ScreenContext(fontSystem, testCard, lanternSheet, pixel);
+		var context = new ScreenContext(fontSystem, testCard, lanternSheet, pixel, _debugState);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
 		_input = new InputSystem(InputBindings.CreateDefault());
+
+		_debugState.OverlayVisible = _startDebugOverlay;
+#if DEBUG
+		_debugController = new DebugController(_debugState);
+		_debugOverlay = new DebugOverlay(fontSystem, pixel, _debugState);
+#endif
 
 		_loaded = true;
 	}
@@ -117,6 +131,11 @@ public sealed class BruceLeeGame : Game
 			gameTime.ElapsedGameTime.TotalSeconds,
 			IsActive);
 
+#if DEBUG
+		_debugController?.Update(_input);
+		_debugOverlay?.Update(gameTime.ElapsedGameTime.TotalSeconds);
+#endif
+
 		if (_input.WasPressed(InputAction.ToggleFullscreen))
 		{
 			_graphics.HardwareModeSwitch = false;
@@ -128,7 +147,25 @@ public sealed class BruceLeeGame : Game
 			Exit();
 		}
 
-		_screens?.Update(gameTime, _input);
+		var simulationTime = gameTime;
+#if DEBUG
+		if (_debugController is not null)
+		{
+			if (!_debugController.ShouldUpdate)
+			{
+				base.Update(gameTime);
+				return;
+			}
+
+			simulationTime = _debugController.ScaleTime(gameTime);
+		}
+#endif
+
+		_screens?.Update(simulationTime, _input);
+
+#if DEBUG
+		_debugController?.ConsumeStep();
+#endif
 
 		base.Update(gameTime);
 	}
@@ -143,7 +180,11 @@ public sealed class BruceLeeGame : Game
 		GraphicsDevice.SetRenderTarget(_canvas);
 		GraphicsDevice.Clear(Palette.Background);
 		_spriteBatch.Begin(sortMode: SpriteSortMode.BackToFront, samplerState: SamplerState.PointClamp);
+		_debugState.BeginFrame();
 		_screens.Draw(_spriteBatch);
+#if DEBUG
+		_debugOverlay?.Draw(_spriteBatch, _screens.Current?.GetType().Name ?? "none");
+#endif
 		_spriteBatch.End();
 
 		GraphicsDevice.SetRenderTarget(null);

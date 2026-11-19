@@ -93,6 +93,13 @@ public sealed class ChamberScreen : IGameScreen
 			SpriteEffects.None,
 			SpriteLayers.World);
 
+		if (_context.Debug.OverlayVisible)
+		{
+			_context.Debug.AddSolid(new Rectangle(0, 160, GameInfo.VirtualWidth, 8));
+			_context.Debug.AddSolid(new Rectangle(24, 56, 128, 96));
+			_context.Debug.AddHitbox(new Rectangle(184, 64, 48, 48));
+		}
+
 		spriteBatch.DrawString(_font16, "CHAMBER 1", new Vector2(16, 12), Palette.Yellow, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, "placeholder scene", new Vector2(16, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, "P: pause   G: game over", new Vector2(16, 176), Palette.Muted, layerDepth: SpriteLayers.Hud);
