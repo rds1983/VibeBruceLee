@@ -7,6 +7,8 @@ namespace VibeBruceLee.Core.Screens;
 
 public interface IGameScreen
 {
+	bool IsOverlay { get; }
+
 	void Activate();
 
 	void Deactivate();
@@ -71,9 +73,21 @@ public sealed class ScreenStack
 	{
 		ArgumentNullException.ThrowIfNull(spriteBatch);
 
-		foreach (var screen in _screens)
+		if (_screens.Count == 0)
 		{
-			screen.Draw(spriteBatch);
+			return;
+		}
+
+		// Draw the deepest full screen plus any overlays above it.
+		var first = _screens.Count - 1;
+		while (first > 0 && _screens[first].IsOverlay)
+		{
+			first--;
+		}
+
+		for (var i = first; i < _screens.Count; i++)
+		{
+			_screens[i].Draw(spriteBatch);
 		}
 	}
 }

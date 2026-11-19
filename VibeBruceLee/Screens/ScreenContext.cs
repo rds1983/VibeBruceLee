@@ -1,6 +1,7 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using VibeBruceLee.Core.Graphics;
 
 namespace VibeBruceLee.Screens;
 
@@ -9,16 +10,16 @@ namespace VibeBruceLee.Screens;
 /// </summary>
 public sealed class ScreenContext
 {
-	public ScreenContext(FontSystem fontSystem, Texture2D testCard, Texture2D lantern, Texture2D pixel)
+	public ScreenContext(FontSystem fontSystem, Texture2D testCard, SpriteSheet lanternSheet, Texture2D pixel)
 	{
 		ArgumentNullException.ThrowIfNull(fontSystem);
 		ArgumentNullException.ThrowIfNull(testCard);
-		ArgumentNullException.ThrowIfNull(lantern);
+		ArgumentNullException.ThrowIfNull(lanternSheet);
 		ArgumentNullException.ThrowIfNull(pixel);
 
 		FontSystem = fontSystem;
 		TestCard = testCard;
-		Lantern = lantern;
+		LanternSheet = lanternSheet;
 		Pixel = pixel;
 	}
 
@@ -26,7 +27,7 @@ public sealed class ScreenContext
 
 	public Texture2D TestCard { get; }
 
-	public Texture2D Lantern { get; }
+	public SpriteSheet LanternSheet { get; }
 
 	public Texture2D Pixel { get; }
 }

@@ -10,6 +10,7 @@ public sealed class AssetGeneratorTests : IDisposable
 	[
 		"art/test-card.png",
 		"art/lantern.png",
+		"art/lantern-sheet.png",
 		"audio/pickup.wav"
 	];
 
@@ -34,6 +35,7 @@ public sealed class AssetGeneratorTests : IDisposable
 
 		AssertPngSize(Path.Combine(_root, "art/test-card.png"), 64, 48);
 		AssertPngSize(Path.Combine(_root, "art/lantern.png"), 16, 16);
+		AssertPngSize(Path.Combine(_root, "art/lantern-sheet.png"), 64, 16);
 		AssertPickupWave(Path.Combine(_root, "audio/pickup.wav"));
 		Assert.Empty(AssetGenerator.Verify(_root));
 	}

@@ -27,6 +27,12 @@ public static class AssetGenerator
 			PngEncoder.EncodeToStream(stream, lantern.Pixels, lantern.Width, lantern.Height, ColorComponents.RedGreenBlueAlpha);
 		}
 
+		var lanternSheet = SampleArt.CreateLanternSheet();
+		using (var stream = File.Create(Path.Combine(artDirectory, "lantern-sheet.png")))
+		{
+			PngEncoder.EncodeToStream(stream, lanternSheet.Pixels, lanternSheet.Width, lanternSheet.Height, ColorComponents.RedGreenBlueAlpha);
+		}
+
 		WavWriter.WritePickup(Path.Combine(audioDirectory, "pickup.wav"));
 	}
 
@@ -42,6 +48,7 @@ public static class AssetGenerator
 
 		VerifyPng(Path.Combine(root, "art", "test-card.png"), SampleArt.CreateTestCard(), errors);
 		VerifyPng(Path.Combine(root, "art", "lantern.png"), SampleArt.CreateLantern(), errors);
+		VerifyPng(Path.Combine(root, "art", "lantern-sheet.png"), SampleArt.CreateLanternSheet(), errors);
 		VerifyWave(Path.Combine(root, "audio", "pickup.wav"), errors);
 
 		return errors;

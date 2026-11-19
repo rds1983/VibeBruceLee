@@ -3,11 +3,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VibeBruceLee.Core.Input;
 using VibeBruceLee.Core.Screens;
+using VibeBruceLee.Presentation;
 
 namespace VibeBruceLee.Screens;
 
 public sealed class GameOverScreen : IGameScreen
 {
+	public bool IsOverlay => false;
+
 	private readonly ScreenStack _screens;
 	private readonly ScreenContext _context;
 	private readonly SpriteFontBase _font16;
@@ -42,7 +45,15 @@ public sealed class GameOverScreen : IGameScreen
 
 	public void Draw(SpriteBatch spriteBatch)
 	{
-		spriteBatch.Draw(_context.Pixel, new Rectangle(0, 0, GameInfo.VirtualWidth, GameInfo.VirtualHeight), Palette.Background);
+		spriteBatch.Draw(
+			_context.Pixel,
+			new Rectangle(0, 0, GameInfo.VirtualWidth, GameInfo.VirtualHeight),
+			null,
+			Palette.Background,
+			0f,
+			Vector2.Zero,
+			SpriteEffects.None,
+			SpriteLayers.Background);
 
 		DrawCentered(spriteBatch, _font16, "GAME OVER", 72, Palette.Yellow);
 		DrawCentered(spriteBatch, _font8, "Enter: title", 112, Palette.White);
@@ -52,6 +63,11 @@ public sealed class GameOverScreen : IGameScreen
 	private static void DrawCentered(SpriteBatch spriteBatch, SpriteFontBase font, string text, float y, Color color)
 	{
 		var size = font.MeasureString(text);
-		spriteBatch.DrawString(font, text, new Vector2((GameInfo.VirtualWidth - size.X) / 2, y), color);
+		spriteBatch.DrawString(
+			font,
+			text,
+			new Vector2((GameInfo.VirtualWidth - size.X) / 2, y),
+			color,
+			layerDepth: SpriteLayers.Hud);
 	}
 }

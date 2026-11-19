@@ -7,14 +7,40 @@ public static class SampleArt
 	private static readonly RgbaColor Magenta = RgbaColor.FromHex(0xD800D8);
 	private static readonly RgbaColor White = RgbaColor.FromHex(0xFFFFFF);
 
-	private static readonly IReadOnlyDictionary<char, RgbaColor> LanternPalette = new Dictionary<char, RgbaColor>
-	{
-		['.'] = RgbaColor.Transparent,
-		['Y'] = Yellow,
-		['O'] = RgbaColor.FromHex(0xFF6C00),
-		['R'] = RgbaColor.FromHex(0xD80000),
-		['W'] = White
-	};
+	private static readonly string[] LanternRows =
+	[
+		"................",
+		".......YY.......",
+		".......YY.......",
+		"......YOOY......",
+		".....YOOOOY.....",
+		"....YORRRROY....",
+		"....YORWWROY....",
+		"....YORWWROY....",
+		"....YORRRROY....",
+		"....YORRRROY....",
+		"....YORRRROY....",
+		".....YOOOOY.....",
+		"......YOOY......",
+		".......YY.......",
+		".......YY.......",
+		"................"
+	];
+
+	private static readonly IReadOnlyDictionary<char, RgbaColor> NormalLantern = CreateLanternPalette(
+		RgbaColor.FromHex(0xFF6C00),
+		RgbaColor.FromHex(0xD80000),
+		White);
+
+	private static readonly IReadOnlyDictionary<char, RgbaColor> GlowLantern = CreateLanternPalette(
+		RgbaColor.FromHex(0xFFB000),
+		RgbaColor.FromHex(0xFF4000),
+		RgbaColor.FromHex(0xFFFFC0));
+
+	private static readonly IReadOnlyDictionary<char, RgbaColor> DimLantern = CreateLanternPalette(
+		RgbaColor.FromHex(0xB05000),
+		RgbaColor.FromHex(0x800000),
+		RgbaColor.FromHex(0xB0B0B0));
 
 	public static RgbaImage CreateTestCard()
 	{
@@ -43,26 +69,30 @@ public static class SampleArt
 
 	public static RgbaImage CreateLantern()
 	{
-		string[] rows =
-		[
-			"................",
-			".......YY.......",
-			".......YY.......",
-			"......YOOY......",
-			".....YOOOOY.....",
-			"....YORRRROY....",
-			"....YORWWROY....",
-			"....YORWWROY....",
-			"....YORRRROY....",
-			"....YORRRROY....",
-			"....YORRRROY....",
-			".....YOOOOY.....",
-			"......YOOY......",
-			".......YY.......",
-			".......YY.......",
-			"................"
-		];
+		return PixelArt.FromRows(LanternRows, NormalLantern);
+	}
 
-		return PixelArt.FromRows(rows, LanternPalette);
+	public static RgbaImage CreateLanternSheet()
+	{
+		var sheet = new RgbaImage(64, 16);
+
+		sheet.Blit(PixelArt.FromRows(LanternRows, NormalLantern), 0, 0);
+		sheet.Blit(PixelArt.FromRows(LanternRows, GlowLantern), 16, 0);
+		sheet.Blit(PixelArt.FromRows(LanternRows, DimLantern), 32, 0);
+		sheet.Blit(PixelArt.FromRows(LanternRows, NormalLantern), 48, 0);
+
+		return sheet;
+	}
+
+	private static Dictionary<char, RgbaColor> CreateLanternPalette(RgbaColor orange, RgbaColor red, RgbaColor highlight)
+	{
+		return new Dictionary<char, RgbaColor>
+		{
+			['.'] = RgbaColor.Transparent,
+			['Y'] = Yellow,
+			['O'] = orange,
+			['R'] = red,
+			['W'] = highlight
+		};
 	}
 }

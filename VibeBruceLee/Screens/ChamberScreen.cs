@@ -1,17 +1,22 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using VibeBruceLee.Core.Animation;
 using VibeBruceLee.Core.Input;
 using VibeBruceLee.Core.Screens;
+using VibeBruceLee.Presentation;
 
 namespace VibeBruceLee.Screens;
 
 public sealed class ChamberScreen : IGameScreen
 {
+	public bool IsOverlay => false;
+
 	private readonly ScreenStack _screens;
 	private readonly ScreenContext _context;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
+	private readonly AnimationPlayer _lanternPlayer = new();
 
 	public ChamberScreen(ScreenStack screens, ScreenContext context)
 	{
@@ -22,6 +27,7 @@ public sealed class ChamberScreen : IGameScreen
 		_context = context;
 		_font16 = context.FontSystem.GetFont(16);
 		_font8 = context.FontSystem.GetFont(8);
+		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
 
 	public void Activate()
@@ -34,6 +40,8 @@ public sealed class ChamberScreen : IGameScreen
 
 	public void Update(GameTime gameTime, InputSystem input)
 	{
+		_lanternPlayer.Update(gameTime.ElapsedGameTime.TotalSeconds);
+
 		if (input.WasPressed(InputAction.Pause))
 		{
 			_screens.Push(new PauseScreen(_screens, _context));
@@ -46,13 +54,47 @@ public sealed class ChamberScreen : IGameScreen
 
 	public void Draw(SpriteBatch spriteBatch)
 	{
-		spriteBatch.Draw(_context.Pixel, new Rectangle(0, 0, GameInfo.VirtualWidth, GameInfo.VirtualHeight), Palette.Background);
-		spriteBatch.Draw(_context.TestCard, new Rectangle(24, 56, 128, 96), Color.White);
-		spriteBatch.Draw(_context.Lantern, new Rectangle(184, 64, 48, 48), Color.White);
-		spriteBatch.Draw(_context.Pixel, new Rectangle(0, 160, GameInfo.VirtualWidth, 8), Palette.Magenta);
+		spriteBatch.Draw(
+			_context.Pixel,
+			new Rectangle(0, 0, GameInfo.VirtualWidth, GameInfo.VirtualHeight),
+			null,
+			Palette.Background,
+			0f,
+			Vector2.Zero,
+			SpriteEffects.None,
+			SpriteLayers.Background);
 
-		spriteBatch.DrawString(_font16, "CHAMBER 1", new Vector2(16, 12), Palette.Yellow);
-		spriteBatch.DrawString(_font8, "placeholder scene", new Vector2(16, 36), Palette.Cyan);
-		spriteBatch.DrawString(_font8, "P: pause   G: game over", new Vector2(16, 176), Palette.Muted);
+		spriteBatch.Draw(
+			_context.TestCard,
+			new Rectangle(24, 56, 128, 96),
+			null,
+			Color.White,
+			0f,
+			Vector2.Zero,
+			SpriteEffects.None,
+			SpriteLayers.World);
+
+		_context.LanternSheet.Draw(
+			spriteBatch,
+			_lanternPlayer.CurrentFrame,
+			new Vector2(184, 64),
+			3,
+			Color.White,
+			SpriteEffects.None,
+			SpriteLayers.World);
+
+		spriteBatch.Draw(
+			_context.Pixel,
+			new Rectangle(0, 160, GameInfo.VirtualWidth, 8),
+			null,
+			Palette.Magenta,
+			0f,
+			Vector2.Zero,
+			SpriteEffects.None,
+			SpriteLayers.World);
+
+		spriteBatch.DrawString(_font16, "CHAMBER 1", new Vector2(16, 12), Palette.Yellow, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(_font8, "placeholder scene", new Vector2(16, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(_font8, "P: pause   G: game over", new Vector2(16, 176), Palette.Muted, layerDepth: SpriteLayers.Hud);
 	}
 }

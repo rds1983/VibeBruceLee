@@ -81,6 +81,8 @@ public class ScreenStackTests
 
 	private sealed class FakeScreen : IGameScreen
 	{
+		public bool IsOverlay => false;
+
 		public int EnterCount { get; private set; }
 
 		public int ExitCount { get; private set; }

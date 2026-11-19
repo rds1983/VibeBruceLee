@@ -50,7 +50,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Map keyboard and gamepad to abstract actions (left, right, up, down, contextual attack, jump, pause, sound toggle). Add short input buffering for jump and attacks. Handle focus loss and gamepad hotplug.
   *Done when:* buffer behavior is unit-tested and remapping lives in one place.
 
-- [ ] **T-012 Rendering and animation**
+- [x] **T-012 Rendering and animation**
   Implement sprite sheets, animation clips, frame timing, horizontal flipping, layer ordering, and deterministic animation updates on top of XNAssets.
   *Done when:* animation state transitions are unit-tested and sprites render pixel-perfect at every integer scale.
 
@@ -221,3 +221,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-005 | 2026-11-20 | Code-driven asset generator using StbImageNext and PCM WAV output; sample lantern and pickup sound; CI reproducibility check; ADR-0003. |
 | T-010 | 2026-11-20 | 256x192 virtual canvas with integer letterboxing, resizable/fullscreen window, tested screen stack and placeholder screens. |
 | T-011 | 2026-11-20 | Action-based input system with central bindings, 120 ms jump/attack buffers, focus-loss reset and gamepad reconnection handling. |
+| T-012 | 2026-11-20 | Sprite sheets, deterministic animation player, four-frame lantern sheet, layer ordering and overlay-aware screen drawing. |

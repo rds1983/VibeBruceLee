@@ -81,4 +81,24 @@ public sealed class RgbaImage
 			}
 		}
 	}
+
+	public void Blit(RgbaImage source, int x, int y)
+	{
+		ArgumentNullException.ThrowIfNull(source);
+
+		if (x < 0 || y < 0 || x + source.Width > Width || y + source.Height > Height)
+		{
+			throw new ArgumentOutOfRangeException(nameof(x), $"Blit at ({x}, {y}) is outside the {Width}x{Height} image.");
+		}
+
+		for (var row = 0; row < source.Height; row++)
+		{
+			Buffer.BlockCopy(
+				source.Pixels,
+				row * source.Width * 4,
+				Pixels,
+				((y + row) * Width + x) * 4,
+				source.Width * 4);
+		}
+	}
 }

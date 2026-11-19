@@ -3,6 +3,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using VibeBruceLee.Core.Graphics;
 using VibeBruceLee.Core.Input;
 using VibeBruceLee.Core.Screens;
 using VibeBruceLee.Presentation;
@@ -23,7 +24,7 @@ public sealed class BruceLeeGame : Game
 	private RenderTarget2D? _canvas;
 	private FontSystem? _fontSystem;
 	private Texture2D? _testCard;
-	private Texture2D? _lantern;
+	private SpriteSheet? _lanternSheet;
 	private Texture2D? _pixel;
 	private ScreenStack? _screens;
 	private InputSystem? _input;
@@ -62,15 +63,23 @@ public sealed class BruceLeeGame : Game
 			RenderTargetUsage.DiscardContents);
 
 		var assets = AssetManager.CreateFileAssetManager(Path.Combine(AppContext.BaseDirectory, "Assets"));
-		_fontSystem = assets.LoadFontSystem("fonts/press-start-2p-regular.ttf");
-		_testCard = assets.LoadTexture2D(GraphicsDevice, "art/test-card.png");
-		_lantern = assets.LoadTexture2D(GraphicsDevice, "art/lantern.png");
+		var fontSystem = assets.LoadFontSystem("fonts/press-start-2p-regular.ttf");
+		var testCard = assets.LoadTexture2D(GraphicsDevice, "art/test-card.png");
+		var lanternSheet = new SpriteSheet(
+			assets.LoadTexture2D(GraphicsDevice, "art/lantern-sheet.png"),
+			16,
+			16);
 
-		_pixel = new Texture2D(GraphicsDevice, 1, 1);
+		var pixel = new Texture2D(GraphicsDevice, 1, 1);
 		Color[] white = [Color.White];
-		_pixel.SetData(white);
+		pixel.SetData(white);
 
-		var context = new ScreenContext(_fontSystem, _testCard, _lantern, _pixel);
+		_fontSystem = fontSystem;
+		_testCard = testCard;
+		_lanternSheet = lanternSheet;
+		_pixel = pixel;
+
+		var context = new ScreenContext(fontSystem, testCard, lanternSheet, pixel);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
 		_input = new InputSystem(InputBindings.CreateDefault());
@@ -85,7 +94,7 @@ public sealed class BruceLeeGame : Game
 
 		_screens = null;
 		_pixel?.Dispose();
-		_lantern?.Dispose();
+		_lanternSheet?.Texture.Dispose();
 		_testCard?.Dispose();
 		_fontSystem?.Dispose();
 		_canvas?.Dispose();
@@ -133,7 +142,7 @@ public sealed class BruceLeeGame : Game
 
 		GraphicsDevice.SetRenderTarget(_canvas);
 		GraphicsDevice.Clear(Palette.Background);
-		_spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+		_spriteBatch.Begin(sortMode: SpriteSortMode.BackToFront, samplerState: SamplerState.PointClamp);
 		_screens.Draw(_spriteBatch);
 		_spriteBatch.End();
 
