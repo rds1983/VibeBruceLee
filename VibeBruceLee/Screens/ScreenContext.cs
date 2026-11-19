@@ -13,29 +13,54 @@ public sealed class ScreenContext
 {
 	public ScreenContext(
 		FontSystem fontSystem,
-		Texture2D testCard,
+		SpriteSheet bruce,
+		SpriteSheet ninja,
+		SpriteSheet yamo,
+		SpriteSheet tiles,
 		SpriteSheet lanternSheet,
+		Texture2D hudLife,
+		Texture2D hudLantern,
 		Texture2D pixel,
 		DebugState debug)
 	{
 		ArgumentNullException.ThrowIfNull(fontSystem);
-		ArgumentNullException.ThrowIfNull(testCard);
+		ArgumentNullException.ThrowIfNull(bruce);
+		ArgumentNullException.ThrowIfNull(ninja);
+		ArgumentNullException.ThrowIfNull(yamo);
+		ArgumentNullException.ThrowIfNull(tiles);
 		ArgumentNullException.ThrowIfNull(lanternSheet);
+		ArgumentNullException.ThrowIfNull(hudLife);
+		ArgumentNullException.ThrowIfNull(hudLantern);
 		ArgumentNullException.ThrowIfNull(pixel);
 		ArgumentNullException.ThrowIfNull(debug);
 
 		FontSystem = fontSystem;
-		TestCard = testCard;
+		Bruce = bruce;
+		Ninja = ninja;
+		Yamo = yamo;
+		Tiles = tiles;
 		LanternSheet = lanternSheet;
+		HudLife = hudLife;
+		HudLantern = hudLantern;
 		Pixel = pixel;
 		Debug = debug;
 	}
 
 	public FontSystem FontSystem { get; }
 
-	public Texture2D TestCard { get; }
+	public SpriteSheet Bruce { get; }
+
+	public SpriteSheet Ninja { get; }
+
+	public SpriteSheet Yamo { get; }
+
+	public SpriteSheet Tiles { get; }
 
 	public SpriteSheet LanternSheet { get; }
+
+	public Texture2D HudLife { get; }
+
+	public Texture2D HudLantern { get; }
 
 	public Texture2D Pixel { get; }
 

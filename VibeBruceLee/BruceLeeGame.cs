@@ -24,8 +24,13 @@ public sealed class BruceLeeGame : Game
 	private SpriteBatch? _spriteBatch;
 	private RenderTarget2D? _canvas;
 	private FontSystem? _fontSystem;
-	private Texture2D? _testCard;
+	private SpriteSheet? _bruceSheet;
+	private SpriteSheet? _ninjaSheet;
+	private SpriteSheet? _yamoSheet;
+	private SpriteSheet? _tilesSheet;
 	private SpriteSheet? _lanternSheet;
+	private Texture2D? _hudLife;
+	private Texture2D? _hudLantern;
 	private Texture2D? _pixel;
 	private ScreenStack? _screens;
 	private InputSystem? _input;
@@ -72,22 +77,42 @@ public sealed class BruceLeeGame : Game
 
 		var assets = AssetManager.CreateFileAssetManager(Path.Combine(AppContext.BaseDirectory, "Assets"));
 		var fontSystem = assets.LoadFontSystem("fonts/press-start-2p-regular.ttf");
-		var testCard = assets.LoadTexture2D(GraphicsDevice, "art/test-card.png");
+		var bruce = new SpriteSheet(assets.LoadTexture2D(GraphicsDevice, "art/bruce.png"), 16, 24);
+		var ninja = new SpriteSheet(assets.LoadTexture2D(GraphicsDevice, "art/ninja.png"), 16, 24);
+		var yamo = new SpriteSheet(assets.LoadTexture2D(GraphicsDevice, "art/yamo.png"), 24, 28);
+		var tiles = new SpriteSheet(assets.LoadTexture2D(GraphicsDevice, "art/tiles.png"), 8, 8);
 		var lanternSheet = new SpriteSheet(
 			assets.LoadTexture2D(GraphicsDevice, "art/lantern-sheet.png"),
 			16,
 			16);
+		var hudLife = assets.LoadTexture2D(GraphicsDevice, "art/hud-life.png");
+		var hudLantern = assets.LoadTexture2D(GraphicsDevice, "art/hud-lantern.png");
 
 		var pixel = new Texture2D(GraphicsDevice, 1, 1);
 		Color[] white = [Color.White];
 		pixel.SetData(white);
 
 		_fontSystem = fontSystem;
-		_testCard = testCard;
+		_bruceSheet = bruce;
+		_ninjaSheet = ninja;
+		_yamoSheet = yamo;
+		_tilesSheet = tiles;
 		_lanternSheet = lanternSheet;
+		_hudLife = hudLife;
+		_hudLantern = hudLantern;
 		_pixel = pixel;
 
-		var context = new ScreenContext(fontSystem, testCard, lanternSheet, pixel, _debugState);
+		var context = new ScreenContext(
+			fontSystem,
+			bruce,
+			ninja,
+			yamo,
+			tiles,
+			lanternSheet,
+			hudLife,
+			hudLantern,
+			pixel,
+			_debugState);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
 		_input = new InputSystem(InputBindings.CreateDefault());
@@ -108,8 +133,13 @@ public sealed class BruceLeeGame : Game
 
 		_screens = null;
 		_pixel?.Dispose();
+		_hudLife?.Dispose();
+		_hudLantern?.Dispose();
 		_lanternSheet?.Texture.Dispose();
-		_testCard?.Dispose();
+		_yamoSheet?.Texture.Dispose();
+		_tilesSheet?.Texture.Dispose();
+		_ninjaSheet?.Texture.Dispose();
+		_bruceSheet?.Texture.Dispose();
 		_fontSystem?.Dispose();
 		_canvas?.Dispose();
 		_spriteBatch?.Dispose();

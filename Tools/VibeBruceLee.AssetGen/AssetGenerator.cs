@@ -15,23 +15,15 @@ public static class AssetGenerator
 		Directory.CreateDirectory(artDirectory);
 		Directory.CreateDirectory(audioDirectory);
 
-		var testCard = SampleArt.CreateTestCard();
-		using (var stream = File.Create(Path.Combine(artDirectory, "test-card.png")))
-		{
-			PngEncoder.EncodeToStream(stream, testCard.Pixels, testCard.Width, testCard.Height, ColorComponents.RedGreenBlueAlpha);
-		}
-
-		var lantern = SampleArt.CreateLantern();
-		using (var stream = File.Create(Path.Combine(artDirectory, "lantern.png")))
-		{
-			PngEncoder.EncodeToStream(stream, lantern.Pixels, lantern.Width, lantern.Height, ColorComponents.RedGreenBlueAlpha);
-		}
-
-		var lanternSheet = SampleArt.CreateLanternSheet();
-		using (var stream = File.Create(Path.Combine(artDirectory, "lantern-sheet.png")))
-		{
-			PngEncoder.EncodeToStream(stream, lanternSheet.Pixels, lanternSheet.Width, lanternSheet.Height, ColorComponents.RedGreenBlueAlpha);
-		}
+		WritePng(Path.Combine(artDirectory, "test-card.png"), SampleArt.CreateTestCard());
+		WritePng(Path.Combine(artDirectory, "lantern.png"), SampleArt.CreateLantern());
+		WritePng(Path.Combine(artDirectory, "lantern-sheet.png"), SampleArt.CreateLanternSheet());
+		WritePng(Path.Combine(artDirectory, "bruce.png"), CharacterArt.CreateBruceSheet());
+		WritePng(Path.Combine(artDirectory, "ninja.png"), CharacterArt.CreateNinjaSheet());
+		WritePng(Path.Combine(artDirectory, "yamo.png"), CharacterArt.CreateYamoSheet());
+		WritePng(Path.Combine(artDirectory, "tiles.png"), TileArt.CreateTiles());
+		WritePng(Path.Combine(artDirectory, "hud-life.png"), TileArt.CreateHudLife());
+		WritePng(Path.Combine(artDirectory, "hud-lantern.png"), TileArt.CreateHudLantern());
 
 		WavWriter.WritePickup(Path.Combine(audioDirectory, "pickup.wav"));
 	}
@@ -49,6 +41,12 @@ public static class AssetGenerator
 		VerifyPng(Path.Combine(root, "art", "test-card.png"), SampleArt.CreateTestCard(), errors);
 		VerifyPng(Path.Combine(root, "art", "lantern.png"), SampleArt.CreateLantern(), errors);
 		VerifyPng(Path.Combine(root, "art", "lantern-sheet.png"), SampleArt.CreateLanternSheet(), errors);
+		VerifyPng(Path.Combine(root, "art", "bruce.png"), CharacterArt.CreateBruceSheet(), errors);
+		VerifyPng(Path.Combine(root, "art", "ninja.png"), CharacterArt.CreateNinjaSheet(), errors);
+		VerifyPng(Path.Combine(root, "art", "yamo.png"), CharacterArt.CreateYamoSheet(), errors);
+		VerifyPng(Path.Combine(root, "art", "tiles.png"), TileArt.CreateTiles(), errors);
+		VerifyPng(Path.Combine(root, "art", "hud-life.png"), TileArt.CreateHudLife(), errors);
+		VerifyPng(Path.Combine(root, "art", "hud-lantern.png"), TileArt.CreateHudLantern(), errors);
 		VerifyWave(Path.Combine(root, "audio", "pickup.wav"), errors);
 
 		return errors;
@@ -58,6 +56,12 @@ public static class AssetGenerator
 	{
 		ArgumentException.ThrowIfNullOrWhiteSpace(assetRoot);
 		return Path.GetFullPath(assetRoot);
+	}
+
+	private static void WritePng(string path, RgbaImage image)
+	{
+		using var stream = File.Create(path);
+		PngEncoder.EncodeToStream(stream, image.Pixels, image.Width, image.Height, ColorComponents.RedGreenBlueAlpha);
 	}
 
 	[SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Verification reports decode failures instead of crashing the CI check.")]

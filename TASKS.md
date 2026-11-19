@@ -66,7 +66,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Add an F1 overlay showing FPS, entity states, hitboxes, and collision boxes. Add slow motion, frame advance, invincibility, and chamber skip. Document it in `Design/debug.md`.
   *Done when:* the overlay is usable during normal play and cheats are disabled outside debug builds.
 
-- [ ] **T-016 Initial asset set**
+- [x] **T-016 Initial asset set**
   Produce a coherent first-pass asset set: Bruce (idle, run, jump, duck, chop, kick, flying kick, climb, hit, death), Ninja, Yamo, tiles, lantern, HUD elements, and a readable pixel font. Include source files and generation notes.
   *Done when:* all entities and the HUD render from the asset pipeline with no placeholders.
 
@@ -225,3 +225,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-013 | 2026-11-20 | Strict JSON chamber model, loader/validator with field-path errors, two sample chambers and format documentation. |
 | T-014 | 2026-11-20 | Deterministic AABB physics with sub-pixel collision, gravity, one-way platforms, vines and world clamps; 12 tests. |
 | T-015 | 2026-11-20 | Debug-only overlay/controller with FPS, boxes, slow motion, frame step, invincibility and skip flags; documented. |
+| T-016 | 2026-11-20 | First-pass Bruce/Ninja/Yamo sheets, tile and HUD atlases, animation frame maps, and title/chamber showcases. |

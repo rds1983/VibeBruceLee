@@ -16,6 +16,7 @@ public sealed class TitleScreen : IGameScreen
 	private readonly ScreenContext _context;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
+	private readonly AnimationPlayer _brucePlayer = new();
 	private readonly AnimationPlayer _lanternPlayer = new();
 
 	public TitleScreen(ScreenStack screens, ScreenContext context)
@@ -27,6 +28,7 @@ public sealed class TitleScreen : IGameScreen
 		_context = context;
 		_font16 = context.FontSystem.GetFont(16);
 		_font8 = context.FontSystem.GetFont(8);
+		_brucePlayer.Play(ScreenAnimations.BruceIdle);
 		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
 
@@ -40,6 +42,7 @@ public sealed class TitleScreen : IGameScreen
 
 	public void Update(GameTime gameTime, InputSystem input)
 	{
+		_brucePlayer.Update(gameTime.ElapsedGameTime.TotalSeconds);
 		_lanternPlayer.Update(gameTime.ElapsedGameTime.TotalSeconds);
 
 		if (input.WasPressed(InputAction.Confirm))
@@ -60,13 +63,12 @@ public sealed class TitleScreen : IGameScreen
 			SpriteEffects.None,
 			SpriteLayers.Background);
 
-		spriteBatch.Draw(
-			_context.TestCard,
-			new Rectangle(16, 56, 128, 96),
-			null,
+		_context.Bruce.Draw(
+			spriteBatch,
+			_brucePlayer.CurrentFrame,
+			new Vector2(24, 44),
+			4,
 			Color.White,
-			0f,
-			Vector2.Zero,
 			SpriteEffects.None,
 			SpriteLayers.World);
 
@@ -81,7 +83,7 @@ public sealed class TitleScreen : IGameScreen
 
 		if (_context.Debug.OverlayVisible)
 		{
-			_context.Debug.AddSolid(new Rectangle(16, 56, 128, 96));
+			_context.Debug.AddSolid(new Rectangle(24, 44, 64, 96));
 			_context.Debug.AddHitbox(new Rectangle(168, 72, 64, 64));
 		}
 

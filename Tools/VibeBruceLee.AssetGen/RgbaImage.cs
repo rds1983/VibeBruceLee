@@ -101,4 +101,39 @@ public sealed class RgbaImage
 				source.Width * 4);
 		}
 	}
+
+	public void DrawLine(int x0, int y0, int x1, int y1, RgbaColor color)
+	{
+		var dx = Math.Abs(x1 - x0);
+		var sx = x0 < x1 ? 1 : -1;
+		var dy = -Math.Abs(y1 - y0);
+		var sy = y0 < y1 ? 1 : -1;
+		var error = dx + dy;
+
+		while (true)
+		{
+			if (x0 >= 0 && y0 >= 0 && x0 < Width && y0 < Height)
+			{
+				SetPixel(x0, y0, color);
+			}
+
+			if (x0 == x1 && y0 == y1)
+			{
+				break;
+			}
+
+			var doubled = 2 * error;
+			if (doubled >= dy)
+			{
+				error += dy;
+				x0 += sx;
+			}
+
+			if (doubled <= dx)
+			{
+				error += dx;
+				y0 += sy;
+			}
+		}
+	}
 }
