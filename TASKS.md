@@ -18,13 +18,13 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 ## M0 - Foundation
 
-- [ ] **T-001 Solution skeleton**
+- [x] **T-001 Solution skeleton**
   Create `VibeBruceLee.slnx`, `VibeBruceLee` (MonoGame DesktopGL, `net8.0`), `VibeBruceLee.Tests` (xUnit), and the asset copy setup.
   *Done when:* `dotnet build` and `dotnet test` pass, the game opens a window, and a trivial test executes.
 
 - [ ] **T-002 Engineering baseline**
-  Add `.gitignore`, `Directory.Build.props` (nullable, implicit usings, analyzers), `.editorconfig`, and a GitHub Actions workflow that builds and tests on Windows and Linux.
-  *Done when:* CI is green and the README commands are verified locally.
+  Add `Directory.Build.props` (nullable, implicit usings, analyzers), `.editorconfig`, and a GitHub Actions workflow that builds and tests on Windows and Linux. Verify the README commands.
+  *Done when:* CI is green and a fresh clone builds without warnings.
 
 - [ ] **T-003 Reference and design docs**
   Research the ZX Spectrum release: controls, scoring, lantern counts, enemy behavior, hazards, and chamber layouts. Record findings in `Design/reference.md`, `Design/overview.md`, and `Design/gameplay.md`. Add ADR-0001 covering engine choice and the 256x192 logical canvas.
@@ -214,3 +214,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | Task | Date | Summary |
 | ---- | ---- | ------- |
 | Docs bootstrap | 2026-11-19 | Added README.md, this roadmap, and AGENTS.md workflow. |
+| T-001 | 2026-11-19 | Solution skeleton: MonoGame host, xUnit project, asset copy rule, architecture doc and .gitignore. |

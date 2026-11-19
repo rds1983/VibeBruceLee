@@ -1,0 +1,37 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Test output
+[Tt]est[Rr]esults/
+*.trx
+*.coverage
+coverage/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Packages and publish output
+*.nupkg
+packages/
+publish/
+
+# MonoGame content pipeline artifacts
+Content/bin/
+Content/obj/
+
+# MonoGame / XNA generated files
+*.xnb
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
