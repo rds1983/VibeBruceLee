@@ -55,7 +55,7 @@ Regenerate from the repository root:
 dotnet run --project Tools/VibeBruceLee.AssetGen -- VibeBruceLee/Assets
 ```
 
-Omit the path to use the same default. CI regenerates the assets and fails if `git diff` finds changes, so stale generated files cannot be merged.
+Omit the path to use the same default. CI checks that the committed PNGs decode to the generated pixels and that the WAV bytes match. PNG bytes can differ between platforms because the compressor is platform-specific; content is what matters.
 
 Do not hand-edit generated PNG/WAV files. Change the generator instead. Fonts are the exception: they are third-party files with their own licenses (see below).
 

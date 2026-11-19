@@ -32,12 +32,19 @@ public static class WavWriter
 	{
 		ArgumentNullException.ThrowIfNull(path);
 
+		using var stream = File.Create(path);
+		Write(stream, samples);
+	}
+
+	public static void Write(Stream stream, ReadOnlySpan<short> samples)
+	{
+		ArgumentNullException.ThrowIfNull(stream);
+
 		const short channels = 1;
 		const short bitsPerSample = 16;
 		var dataSize = samples.Length * sizeof(short);
 
-		using var stream = File.Create(path);
-		using var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: false);
+		using var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: true);
 
 		writer.Write(Encoding.ASCII.GetBytes("RIFF"));
 		writer.Write(36 + dataSize);

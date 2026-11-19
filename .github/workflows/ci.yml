@@ -40,9 +40,7 @@ jobs:
         run: dotnet build VibeBruceLee.slnx --configuration Release --no-restore
 
       - name: Verify generated assets
-        run: |
-          dotnet run --project Tools/VibeBruceLee.AssetGen --configuration Release --no-build --no-restore -- VibeBruceLee/Assets
-          git diff --exit-code -- VibeBruceLee/Assets
+        run: dotnet run --project Tools/VibeBruceLee.AssetGen --configuration Release --no-build --no-restore -- --check VibeBruceLee/Assets
 
       - name: Test
         run: dotnet test VibeBruceLee.slnx --configuration Release --no-build --logger "console;verbosity=normal"

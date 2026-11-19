@@ -17,7 +17,7 @@ The options considered were a fully scripted generator, a free pixel editor with
 3. **PCM WAV:** audio is generated as 16-bit mono PCM at 22,050 Hz with integer math.
 4. **Source of truth:** PNG and WAV files are build artifacts committed for the game to load. Never hand-edit them; edit the generator.
 5. **Fonts:** FontStashSharp loads a licensed TTF. The bootstrap font is Press Start 2P (SIL OFL 1.1); the license ships with the game.
-6. **Reproducibility gate:** CI regenerates the assets and fails if `git diff` finds changes.
+6. **Reproducibility gate:** CI runs the generator's `--check` mode, which decodes the committed PNGs and compares pixels, and compares WAV bytes.
 7. **No editor dependency:** no Aseprite, LibreSprite or Piskel is required. An editor can still be introduced later for specific hand-drawn assets if this workflow becomes a bottleneck; that change needs a new ADR.
 
 ## Consequences
@@ -26,7 +26,7 @@ The options considered were a fully scripted generator, a free pixel editor with
 - Generated art is diff-friendly at the source level and easy for an agent to iterate on.
 - Complex animation requires writing pixel-row definitions or small drawing helpers; this is slower than a dedicated pixel editor.
 - StbImageNext handles PNG details (filters, compression, CRCs), so the tool stays small.
-- Generated binaries are committed; CI regenerates them on Windows and Linux and fails on any difference.
+- Generated binaries are committed; CI verifies their decoded pixels and audio samples on Windows and Linux. PNG bytes can differ between platforms, so the check compares content, not bytes.
 - The tool is not shipped with the game; it is a development dependency only.
 
 ## Alternatives considered

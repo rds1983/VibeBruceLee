@@ -35,6 +35,22 @@ public sealed class AssetGeneratorTests : IDisposable
 		AssertPngSize(Path.Combine(_root, "art/test-card.png"), 64, 48);
 		AssertPngSize(Path.Combine(_root, "art/lantern.png"), 16, 16);
 		AssertPickupWave(Path.Combine(_root, "audio/pickup.wav"));
+		Assert.Empty(AssetGenerator.Verify(_root));
+	}
+
+	[Fact]
+	public void VerifyReportsMissingOrCorruptAssets()
+	{
+		AssetGenerator.Generate(_root);
+
+		File.Delete(Path.Combine(_root, "art/lantern.png"));
+		var missing = AssetGenerator.Verify(_root);
+		Assert.Contains(missing, error => error.Contains("lantern.png", StringComparison.Ordinal));
+
+		AssetGenerator.Generate(_root);
+		File.WriteAllText(Path.Combine(_root, "art/test-card.png"), "not a png");
+		var corrupt = AssetGenerator.Verify(_root);
+		Assert.Contains(corrupt, error => error.Contains("test-card.png", StringComparison.Ordinal));
 	}
 
 	[Fact]
