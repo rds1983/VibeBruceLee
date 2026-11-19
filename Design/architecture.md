@@ -30,7 +30,9 @@ Rendering is intentionally minimal in this task: the device is cleared to a dark
 
 ## Assets
 
-The project does not use the MonoGame content pipeline. Raw assets are copied from `VibeBruceLee/Assets` to `Assets` next to the executable and will be loaded through XNAssets (T-004). Fonts are rendered through FontStashSharp.
+The project does not use the MonoGame content pipeline. Raw runtime files are copied from `VibeBruceLee/Assets` to `Assets` next to the executable; source files and readmes are excluded. The game creates an XNAssets `AssetManager` and uses `LoadTexture2D`, `LoadFontSystem`, `FontSystem` and `SpriteBatch.DrawString` directly. There are no wrapper services. Missing keys raise XNAssets' `AssetNotFoundException` with the resolved path.
+
+`Rendering/AssetPipelineTestScene` demonstrates both paths and is replaced by the screen stack in T-010. Hot reload is not implemented; restart after changing assets. See `Design/assets.md` and ADR-0002.
 
 ## Testing
 

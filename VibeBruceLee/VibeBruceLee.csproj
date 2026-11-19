@@ -8,9 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.6.1" />
+    <PackageReference Include="XNAssets.FontStashSharp.Monogame" Version="0.8.9" />
+    <PackageReference Include="XNAssets.Monogame" Version="0.8.9" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Assets\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Assets\README.md" CopyToOutputDirectory="Never" />
+    <None Update="Assets\source\**\*" CopyToOutputDirectory="Never" />
   </ItemGroup>
 </Project>

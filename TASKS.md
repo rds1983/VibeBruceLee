@@ -30,9 +30,9 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Research the ZX Spectrum release: controls, scoring, lantern counts, enemy behavior, hazards, and chamber layouts. Record findings in `Design/reference.md`, `Design/overview.md`, and `Design/gameplay.md`. Add ADR-0001 covering engine choice and the 256x192 logical canvas.
   *Done when:* docs are enough to implement without re-researching the original.
 
-- [ ] **T-004 Asset pipeline**
-  Integrate XNAssets behind a small asset service and FontStashSharp behind a text renderer service. Define the asset root, naming rules, missing-asset diagnostics, hot reload if cheap, and the license folder. Add ADR-0002.
-  *Done when:* a test scene draws an XNAssets texture and FontStashSharp text; a unit test verifies asset resolution.
+- [x] **T-004 Asset pipeline**
+  Integrate XNAssets and FontStashSharp directly. Define the asset root, key conventions, missing-asset diagnostics, hot reload stance, and the license folder. Add ADR-0002.
+  *Done when:* a test scene draws an XNAssets texture and FontStashSharp text, and a missing asset fails with XNAssets' resolved-path diagnostics.
 
 - [ ] **T-005 Asset authoring toolchain**
   Decide and document how sprites, tiles, fonts, and audio are produced: scripted generation versus an external editor. Ask the developer before installing any software. Commit the reproducible pipeline and a sample sprite plus sample sound.
@@ -217,3 +217,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-001 | 2026-11-19 | Solution skeleton: MonoGame host, xUnit project, asset copy rule, architecture doc and .gitignore. |
 | T-002 | 2026-11-19 | Engineering baseline: shared build props, SDK pin, editorconfig with tab indentation, and Windows/Linux CI. |
 | T-003 | 2026-11-20 | Reference research, overview, gameplay rules, design index and ADR-0001; roadmap corrected for vines, falls, scoring and chamber graph. |
+| T-004 | 2026-11-20 | XNAssets + FontStashSharp asset pipeline: relative keys, test scene, test card and OFL font, asset docs and ADR-0002. |
