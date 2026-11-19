@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using VibeBruceLee.Core.Debugging;
 using VibeBruceLee.Core.Graphics;
 using VibeBruceLee.Core.Input;
+using VibeBruceLee.Core.Levels;
 using VibeBruceLee.Core.Screens;
 using VibeBruceLee.Presentation;
 using VibeBruceLee.Screens;
@@ -87,6 +88,11 @@ public sealed class BruceLeeGame : Game
 			16);
 		var hudLife = assets.LoadTexture2D(GraphicsDevice, "art/hud-life.png");
 		var hudLantern = assets.LoadTexture2D(GraphicsDevice, "art/hud-lantern.png");
+		var chamber = ChamberLoader.Load(Path.Combine(
+			AppContext.BaseDirectory,
+			"Assets",
+			"levels",
+			"chamber-01.json"));
 
 		var pixel = new Texture2D(GraphicsDevice, 1, 1);
 		Color[] white = [Color.White];
@@ -112,7 +118,8 @@ public sealed class BruceLeeGame : Game
 			hudLife,
 			hudLantern,
 			pixel,
-			_debugState);
+			_debugState,
+			chamber);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
 		_input = new InputSystem(InputBindings.CreateDefault());

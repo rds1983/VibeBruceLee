@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VibeBruceLee.Core.Debugging;
 using VibeBruceLee.Core.Graphics;
+using VibeBruceLee.Core.Levels;
 
 namespace VibeBruceLee.Screens;
 
@@ -21,7 +22,8 @@ public sealed class ScreenContext
 		Texture2D hudLife,
 		Texture2D hudLantern,
 		Texture2D pixel,
-		DebugState debug)
+		DebugState debug,
+		ChamberDefinition chamber)
 	{
 		ArgumentNullException.ThrowIfNull(fontSystem);
 		ArgumentNullException.ThrowIfNull(bruce);
@@ -33,6 +35,7 @@ public sealed class ScreenContext
 		ArgumentNullException.ThrowIfNull(hudLantern);
 		ArgumentNullException.ThrowIfNull(pixel);
 		ArgumentNullException.ThrowIfNull(debug);
+		ArgumentNullException.ThrowIfNull(chamber);
 
 		FontSystem = fontSystem;
 		Bruce = bruce;
@@ -44,6 +47,7 @@ public sealed class ScreenContext
 		HudLantern = hudLantern;
 		Pixel = pixel;
 		Debug = debug;
+		Chamber = chamber;
 	}
 
 	public FontSystem FontSystem { get; }
@@ -65,6 +69,8 @@ public sealed class ScreenContext
 	public Texture2D Pixel { get; }
 
 	public DebugState Debug { get; }
+
+	public ChamberDefinition Chamber { get; }
 }
 
 public static class Palette

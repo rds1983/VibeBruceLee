@@ -74,7 +74,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 ## M2 - Player character
 
-- [ ] **T-020 Locomotion**
+- [x] **T-020 Locomotion**
   Implement run acceleration, variable-height jump, ducking, climbing vines up, down and sideways, and safe drops, with matching animations.
   *Done when:* all movement states are unit-tested and a manual feel check passes.
 
@@ -226,3 +226,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-014 | 2026-11-20 | Deterministic AABB physics with sub-pixel collision, gravity, one-way platforms, vines and world clamps; 12 tests. |
 | T-015 | 2026-11-20 | Debug-only overlay/controller with FPS, boxes, slow motion, frame step, invincibility and skip flags; documented. |
 | T-016 | 2026-11-20 | First-pass Bruce/Ninja/Yamo sheets, tile and HUD atlases, animation frame maps, and title/chamber showcases. |
+| T-020 | 2026-11-20 | Player locomotion: run, variable jump, duck, vine climbing/detach, state animations, wired into the sample chamber. |
