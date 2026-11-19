@@ -58,7 +58,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Define a chamber format (platforms, vines, required and optional lanterns, spawn points, hazards, exit connections, decor) in JSON under `VibeBruceLee/Assets/levels`. Add schema validation with actionable errors and a sample chamber.
   *Done when:* loader and validator are tested, including malformed input.
 
-- [ ] **T-014 Physics and collision**
+- [x] **T-014 Physics and collision**
   Implement AABB collision, gravity, one-way platforms, landing, ceilings, screen bounds, and vine climbing (up, down and sideways) in a fixed-step, deterministic world.
   *Done when:* edge cases such as tunneling at max speed and landing on thin platforms are tested.
 
@@ -223,3 +223,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-011 | 2026-11-20 | Action-based input system with central bindings, 120 ms jump/attack buffers, focus-loss reset and gamepad reconnection handling. |
 | T-012 | 2026-11-20 | Sprite sheets, deterministic animation player, four-frame lantern sheet, layer ordering and overlay-aware screen drawing. |
 | T-013 | 2026-11-20 | Strict JSON chamber model, loader/validator with field-path errors, two sample chambers and format documentation. |
+| T-014 | 2026-11-20 | Deterministic AABB physics with sub-pixel collision, gravity, one-way platforms, vines and world clamps; 12 tests. |
