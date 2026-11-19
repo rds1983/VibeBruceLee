@@ -15,5 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VibeBruceLee\VibeBruceLee.csproj" />
+    <ProjectReference Include="..\Tools\VibeBruceLee.AssetGen\VibeBruceLee.AssetGen.csproj" />
   </ItemGroup>
 </Project>

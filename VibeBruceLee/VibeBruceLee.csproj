@@ -15,6 +15,5 @@
   <ItemGroup>
     <None Update="Assets\**\*" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Assets\README.md" CopyToOutputDirectory="Never" />
-    <None Update="Assets\source\**\*" CopyToOutputDirectory="Never" />
   </ItemGroup>
 </Project>

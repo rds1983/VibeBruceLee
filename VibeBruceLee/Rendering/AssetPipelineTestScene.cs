@@ -16,6 +16,7 @@ public sealed class AssetPipelineTestScene : IDisposable
 	private static readonly Color MutedText = new(160, 160, 160);
 
 	private readonly Texture2D _testCard;
+	private readonly Texture2D _lantern;
 	private readonly FontSystem _fontSystem;
 
 	public AssetPipelineTestScene(AssetManager assetManager, GraphicsDevice graphicsDevice)
@@ -24,6 +25,7 @@ public sealed class AssetPipelineTestScene : IDisposable
 		ArgumentNullException.ThrowIfNull(graphicsDevice);
 
 		_testCard = assetManager.LoadTexture2D(graphicsDevice, "art/test-card.png");
+		_lantern = assetManager.LoadTexture2D(graphicsDevice, "art/lantern.png");
 		_fontSystem = assetManager.LoadFontSystem("fonts/press-start-2p-regular.ttf");
 	}
 
@@ -36,16 +38,23 @@ public sealed class AssetPipelineTestScene : IDisposable
 			new Rectangle(48, 96, _testCard.Width * 6, _testCard.Height * 6),
 			Color.White);
 
+		spriteBatch.Draw(
+			_lantern,
+			new Rectangle(48, 420, _lantern.Width * 8, _lantern.Height * 8),
+			Color.White);
+
 		spriteBatch.DrawString(_fontSystem.GetFont(48), "VibeBruceLee", new Vector2(480, 96), SpectrumYellow);
 		spriteBatch.DrawString(_fontSystem.GetFont(24), "Asset pipeline online", new Vector2(480, 176), Color.White);
 		spriteBatch.DrawString(_fontSystem.GetFont(16), "XNAssets texture + FontStashSharp text", new Vector2(480, 224), SpectrumCyan);
 		spriteBatch.DrawString(_fontSystem.GetFont(16), "art/test-card.png", new Vector2(480, 256), MutedText);
+		spriteBatch.DrawString(_fontSystem.GetFont(16), "art/lantern.png", new Vector2(220, 450), MutedText);
 		spriteBatch.DrawString(_fontSystem.GetFont(16), "Esc to quit", new Vector2(48, 880), MutedText);
 	}
 
 	public void Dispose()
 	{
 		_testCard.Dispose();
+		_lantern.Dispose();
 		_fontSystem.Dispose();
 		GC.SuppressFinalize(this);
 	}

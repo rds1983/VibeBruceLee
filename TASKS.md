@@ -34,7 +34,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Integrate XNAssets and FontStashSharp directly. Define the asset root, key conventions, missing-asset diagnostics, hot reload stance, and the license folder. Add ADR-0002.
   *Done when:* a test scene draws an XNAssets texture and FontStashSharp text, and a missing asset fails with XNAssets' resolved-path diagnostics.
 
-- [ ] **T-005 Asset authoring toolchain**
+- [x] **T-005 Asset authoring toolchain**
   Decide and document how sprites, tiles, fonts, and audio are produced: scripted generation versus an external editor. Ask the developer before installing any software. Commit the reproducible pipeline and a sample sprite plus sample sound.
   *Done when:* regenerating sample assets from scratch requires no undocumented steps.
 
@@ -218,3 +218,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-002 | 2026-11-19 | Engineering baseline: shared build props, SDK pin, editorconfig with tab indentation, and Windows/Linux CI. |
 | T-003 | 2026-11-20 | Reference research, overview, gameplay rules, design index and ADR-0001; roadmap corrected for vines, falls, scoring and chamber graph. |
 | T-004 | 2026-11-20 | XNAssets + FontStashSharp asset pipeline: relative keys, test scene, test card and OFL font, asset docs and ADR-0002. |
+| T-005 | 2026-11-20 | Code-driven asset generator using StbImageNext and PCM WAV output; sample lantern and pickup sound; CI reproducibility check; ADR-0003. |

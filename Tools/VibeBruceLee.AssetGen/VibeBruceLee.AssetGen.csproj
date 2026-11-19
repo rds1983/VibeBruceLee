@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>VibeBruceLee.AssetGen</RootNamespace>
+    <AssemblyName>VibeBruceLee.AssetGen</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="StbImageNext" Version="1.1.0" />
+  </ItemGroup>
+</Project>

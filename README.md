@@ -18,6 +18,7 @@ A from-scratch remake of the 1984 classic **Bruce Lee**, as released for the ZX 
 
 ```
 Design/               Design and technical documentation (Markdown)
+Tools/                Build-time tools, including the asset generator
 VibeBruceLee/         Game source code and csproj
 VibeBruceLee/Assets/  All game assets (art, audio, fonts, levels)
 VibeBruceLee.Tests/   xUnit tests
@@ -45,7 +46,13 @@ dotnet test VibeBruceLee.slnx
 
 ## Assets
 
-All art, audio and fonts are created for this project. The original game is used only as a visual and behavioral reference; no original assets are redistributed. Third-party assets (for example fonts) keep their licenses in `VibeBruceLee/Assets/Licenses/`.
+Art and audio are generated from code by `Tools/VibeBruceLee.AssetGen`; fonts and licenses live alongside the generated files. Regenerate from the repository root:
+
+```sh
+dotnet run --project Tools/VibeBruceLee.AssetGen -- VibeBruceLee/Assets
+```
+
+All art, audio and fonts are created for this project or used under a compatible license. The original game is used only as a visual and behavioral reference; no original assets are redistributed. Third-party assets (for example fonts) keep their licenses in `VibeBruceLee/Assets/licenses/`.
 
 ## License
 
