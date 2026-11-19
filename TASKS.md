@@ -42,7 +42,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 ## M1 - Engine core
 
-- [ ] **T-010 Game shell and screen flow**
+- [x] **T-010 Game shell and screen flow**
   Implement the MonoGame host, fixed 60 Hz timestep, 256x192 virtual canvas with integer scaling and letterboxing, and a screen stack (title, chamber, pause, game over).
   *Done when:* resize and fullscreen keep the image undistorted; screen transitions are tested.
 
@@ -219,3 +219,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-003 | 2026-11-20 | Reference research, overview, gameplay rules, design index and ADR-0001; roadmap corrected for vines, falls, scoring and chamber graph. |
 | T-004 | 2026-11-20 | XNAssets + FontStashSharp asset pipeline: relative keys, test scene, test card and OFL font, asset docs and ADR-0002. |
 | T-005 | 2026-11-20 | Code-driven asset generator using StbImageNext and PCM WAV output; sample lantern and pickup sound; CI reproducibility check; ADR-0003. |
+| T-010 | 2026-11-20 | 256x192 virtual canvas with integer letterboxing, resizable/fullscreen window, tested screen stack and placeholder screens. |
