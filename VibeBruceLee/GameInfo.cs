@@ -5,11 +5,11 @@ namespace VibeBruceLee;
 /// </summary>
 public static class GameInfo
 {
-    public const string Title = "VibeBruceLee";
+	public const string Title = "VibeBruceLee";
 
-    /// <summary>Width of the ZX Spectrum-style logical canvas.</summary>
-    public const int VirtualWidth = 256;
+	/// <summary>Width of the ZX Spectrum-style logical canvas.</summary>
+	public const int VirtualWidth = 256;
 
-    /// <summary>Height of the ZX Spectrum-style logical canvas.</summary>
-    public const int VirtualHeight = 192;
+	/// <summary>Height of the ZX Spectrum-style logical canvas.</summary>
+	public const int VirtualHeight = 192;
 }

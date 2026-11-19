@@ -9,6 +9,14 @@
 
 `VibeBruceLee.slnx` contains both projects. The game's `Assets/` folder is the runtime asset root and is copied to the output directory with `PreserveNewest`.
 
+## Toolchain
+
+- The SDK is pinned through `global.json` to .NET 10 (`latestFeature` roll-forward). The `.slnx` solution format requires SDK 9 or newer, and the README asks for SDK 10.
+- The game targets `net8.0` for MonoGame compatibility; SDK 10 builds and runs it.
+- `Directory.Build.props` enables nullable reference types, implicit usings, .NET analyzers at the recommended level, and treats warnings as errors.
+- Formatting and style defaults live in `.editorconfig`: C# uses tab indentation; XML, JSON and YAML use two spaces.
+- CI runs restore, Release build, and tests on Windows and Linux (`.github/workflows/ci.yml`).
+
 ## Host
 
 `BruceLeeGame` is the MonoGame `Game` host:

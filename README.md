@@ -29,7 +29,7 @@ AGENTS.md             Agentic development workflow
 
 ## Build and run
 
-Requires the .NET 8 SDK or newer.
+Requires the .NET 10 SDK or newer (the solution uses `.slnx`).
 
 ```sh
 dotnet build VibeBruceLee.slnx

@@ -4,9 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>VibeBruceLee</RootNamespace>
     <AssemblyName>VibeBruceLee</AssemblyName>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
