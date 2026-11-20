@@ -80,7 +80,7 @@ var levelsDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels")
 var chambers = ChamberLoader.LoadAll(levelsDirectory);
 ```
 
-`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. Twelve chambers are committed: the three-room entrance hub (01-03), the first two underworld rooms (04-05), and the mid-game chain (06-12).
+`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. Nineteen chambers are committed: the three-room entrance hub (01-03), the first two underworld rooms (04-05), the mid-game chain (06-12), and the late-game chain (13-19).
 
 ## Entrance hub and hatch (T-041)
 
@@ -139,8 +139,26 @@ The chain runs 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 01. Every
 | 12 | Underworks | Three-vine room with a centre vine and side ledges | Electric arc, dagger, bush and crusher | Ninja + Yamo |
 
 - Each chamber has three required lanterns except 07, which has two required and one optional centre lantern.
-- Chamber-12 currently returns to chamber-01, closing the mid-game loop until T-044 adds chambers 13-19.
+- Chamber-12 now leads into chamber-13. The late-game chain continues to chamber-19, currently looping back to chamber-01 until T-045 adds the Fire Wizard.
 - Hazards are placed off the spawn points so the player always has a safe starting position.
+
+## Late-game chambers (T-044)
+
+The chain runs 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 01. Back doors and lantern-gated forward doors follow the same rule as the mid-game.
+
+| Chamber | Name | Layout | Hazards | Enemies |
+| ------- | ---- | ------ | ------- | ------- |
+| 13 | Iron Bridge | Three ascending vine tiers | Two crushers and a mine | Ninja + Yamo |
+| 14 | Shock Gallery | Centre vine, two mid ledges and a top platform | PAN light, electric arc and a mine | Yamo + Ninja |
+| 15 | Blade Spire | Three vine tiers | Daggers, a sword and a PAN light | Ninja + Yamo |
+| 16 | Shock Chain | Three vine tiers | Three staggered electric/PAN lanes and a mine | Ninja + Yamo |
+| 17 | Fire Walk | Centre vine, two mid ledges and a top platform | Three fireballs, a PAN light and a bush | Yamo + Ninja |
+| 18 | Web of Traps | Three vine tiers | Electric arc, mine, bush, crusher, sword and bug | Ninja + Yamo |
+| 19 | Last Gate | Three vine tiers plus an optional centre lantern | Electric, PAN platform light, mine, crusher, fireball and bug | Ninja + Yamo |
+
+- All seven chambers have safe spawn areas and at least one safe waiting spot before every hazard band.
+- Beam and projectile timings stay at T-042 values; no jump or hazard requires frame-perfect input.
+- Chamber-19 currently loops to chamber-01; T-045 replaces that forward exit with the Fire Wizard chamber.
 
 ## Progress and transitions
 
@@ -167,4 +185,4 @@ The chain runs 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 01. Every
 | 05 | Moving wall | `(104, 160, 48, 8)` | Speed 30, eight-pixel crusher sweeping the 48 px range |
 | 05 | Bug | `(240, 160, 8, 8)` | Speed 50, moves left |
 
-Sword and fireball use the shared projectile implementation and are reserved for later chambers and the wizard. All hazards reset with the chamber on a non-final death. Chambers 06-12 combine the same families; their per-room placements are listed in the mid-game table above.
+Sword and fireball use the shared projectile implementation and are reserved for later chambers and the wizard. All hazards reset with the chamber on a non-final death. Chambers 06-19 combine the same families; their per-room placements are listed in the mid-game and late-game tables above.

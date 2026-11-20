@@ -131,7 +131,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Build the mid-game chambers, introducing and combining hazards and tighter enemy placement.
   *Done when:* all seven chambers are beatable and recorded in `Design/chambers.md`.
 
-- [ ] **T-044 Chambers 13-19**
+- [x] **T-044 Chambers 13-19**
   Build the late-game chambers with the hardest layouts, hazard combinations, and enemy pressure.
   *Done when:* all seven chambers are beatable and no layout requires frame-perfect input.
 
@@ -240,3 +240,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-041 | 2026-11-20 | Three-room entrance hub with persistent pooled lanterns, per-room death resets, data-driven `requiresHub` floor hatch, and chambers 03-05 with multi-vine layouts. |
 | T-042 | 2026-11-20 | Hazard families for electric/PAN beams, bushes, mines, moving walls and projectiles; central player/enemy damage, reset, debug boxes and example placements in chambers 01-05. |
 | T-043 | 2026-11-20 | Seven-chamber mid-game chain 06-12 with back/forward doors, escalating hazard combinations, two enemies per room and the 12-chamber catalog/chain tests. |
+| T-044 | 2026-11-20 | Seven-chamber late-game chain 13-19 with beam lanes, projectiles, crushers, mines and combined trap rooms; safe spawn/wait gaps and the 19-chamber catalog/chain tests. |

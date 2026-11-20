@@ -1,0 +1,40 @@
+{
+  "id": "chamber-17",
+  "name": "Fire Walk",
+  "width": 256,
+  "height": 192,
+  "playerSpawn": {
+    "x": 32,
+    "y": 144
+  },
+  "platforms": [
+    { "x": 0, "y": 176, "width": 256, "height": 16 },
+    { "x": 16, "y": 120, "width": 80, "height": 8 },
+    { "x": 160, "y": 120, "width": 80, "height": 8 },
+    { "x": 96, "y": 64, "width": 64, "height": 8 }
+  ],
+  "vines": [
+    { "x": 124, "y": 64, "width": 8, "height": 112, "orientation": "vertical" }
+  ],
+  "lanterns": [
+    { "id": "lantern-1", "x": 40, "y": 100, "required": true },
+    { "id": "lantern-2", "x": 208, "y": 100, "required": true },
+    { "id": "lantern-3", "x": 128, "y": 40, "required": true }
+  ],
+  "enemySpawns": [
+    { "type": "yamo", "x": 80, "y": 144 },
+    { "type": "ninja", "x": 220, "y": 144 }
+  ],
+  "hazards": [
+    { "type": "fireball", "x": 240, "y": 160, "width": 8, "height": 8, "speed": 70, "directionX": -1 },
+    { "type": "fireball", "x": 16, "y": 136, "width": 8, "height": 8, "speed": 70, "directionX": 1 },
+    { "type": "fireball", "x": 240, "y": 136, "width": 8, "height": 8, "speed": 90, "directionX": -1 },
+    { "type": "floor-light", "x": 96, "y": 168, "width": 64, "height": 8, "periodSeconds": 2.0 },
+    { "type": "bush", "x": 72, "y": 160, "width": 24, "height": 16 }
+  ],
+  "exits": [
+    { "x": 0, "y": 152, "width": 8, "height": 24, "target": "chamber-16", "requiresLanterns": false },
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-18" }
+  ],
+  "decor": []
+}

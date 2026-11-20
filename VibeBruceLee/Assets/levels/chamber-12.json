@@ -36,7 +36,7 @@
   ],
   "exits": [
     { "x": 0, "y": 152, "width": 8, "height": 24, "target": "chamber-11", "requiresLanterns": false },
-    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-01" }
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-13" }
   ],
   "decor": []
 }

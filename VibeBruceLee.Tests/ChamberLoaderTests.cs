@@ -158,7 +158,7 @@ public sealed class ChamberLoaderTests : IDisposable
 
 		var chambers = ChamberLoader.LoadAll(directory);
 
-		Assert.Equal(12, chambers.Count);
+		Assert.Equal(19, chambers.Count);
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-01");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-02");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-03");
@@ -171,6 +171,13 @@ public sealed class ChamberLoaderTests : IDisposable
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-10");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-11");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-12");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-13");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-14");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-15");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-16");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-17");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-18");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-19");
 	}
 
 	[Fact]
@@ -187,7 +194,14 @@ public sealed class ChamberLoaderTests : IDisposable
 		Assert.Equal("chamber-10", chambers["chamber-09"].Exits.MaxBy(exit => exit.X)!.Target);
 		Assert.Equal("chamber-11", chambers["chamber-10"].Exits.MaxBy(exit => exit.X)!.Target);
 		Assert.Equal("chamber-12", chambers["chamber-11"].Exits.MaxBy(exit => exit.X)!.Target);
-		Assert.Equal("chamber-01", chambers["chamber-12"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-13", chambers["chamber-12"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-14", chambers["chamber-13"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-15", chambers["chamber-14"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-16", chambers["chamber-15"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-17", chambers["chamber-16"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-18", chambers["chamber-17"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-19", chambers["chamber-18"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-01", chambers["chamber-19"].Exits.MaxBy(exit => exit.X)!.Target);
 	}
 
 	private string Write(string name, string json)
