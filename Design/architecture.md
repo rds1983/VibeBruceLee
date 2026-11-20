@@ -38,7 +38,8 @@
 - SpriteBatch uses `SpriteSortMode.BackToFront` with `SpriteLayers` (background, world, overlay, UI) so draw order is explicit.
 - `SpriteSheetLayout` validates frame grids and maps frame indices to source rectangles; `SpriteSheet.Draw` supports integer scaling, horizontal flipping via `SpriteEffects`, and layer depth.
 - `AnimationClip` holds frame indices and a per-frame duration. `AnimationPlayer` advances deterministically on a fixed-step clock, loops or finishes, and exposes the current frame. The title and chamber placeholders animate the four-frame lantern.
-- The title, chamber and game-over screens are real screens now; the title starts chamber-01, the chamber runs the T-040 loop, and game over returns to the title.
+- The title, chamber and game-over screens are real screens now; the title starts chamber-01, the chamber runs the T-040 loop, and game over returns to the title. `ControlsScreen` is opened from the title with C/B and returns with Confirm or Controls.
+- `TitleScreen` draws a two-line logo, a short story, a blinking start prompt, Bruce and lantern decorations, and keyboard/gamepad hints. It starts a new run on Confirm. `ControlsScreen` lists every default keyboard and gamepad binding in one-column form.
 
 ## Input
 

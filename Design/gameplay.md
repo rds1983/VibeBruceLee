@@ -21,6 +21,7 @@ Default bindings. Remapping and the final table land in T-011.
 | Confirm | `Enter` | A |
 | Cancel / quit | `Esc` | Back |
 | Sound toggle | `F2` | Y |
+| Controls help | `C` | B |
 | Fullscreen | `F11` | — |
 
 - Movement keys mirror the Spectrum original; modern keys are aliases.
@@ -28,6 +29,7 @@ Default bindings. Remapping and the final table land in T-011.
 - Up climbs vines; jumping is `X`/`Space`.
 - Jump and attack presses are buffered for 120 ms so a slightly early input still lands.
 - Fullscreen and integer scaling are presentation settings, not gameplay actions.
+- The title screen shows the logo, a short story intro, a blinking `PRESS ENTER` prompt and a controls hint. Pressing `C`/`B` opens a full keyboard and gamepad controls screen; Enter/A or C/B returns.
 
 ## Movement
 

@@ -13,6 +13,7 @@ public enum InputAction
 	Cancel,
 	ToggleFullscreen,
 	ToggleSound,
+	Controls,
 	DebugGameOver,
 	ToggleDebugOverlay,
 	DebugSlowMotion,

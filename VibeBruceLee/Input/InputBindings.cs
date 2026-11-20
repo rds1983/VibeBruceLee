@@ -39,6 +39,7 @@ public sealed class InputBindings
 				[InputAction.Cancel] = [Keys.Escape],
 				[InputAction.ToggleFullscreen] = [Keys.F11],
 				[InputAction.ToggleSound] = [Keys.F2],
+				[InputAction.Controls] = [Keys.C],
 				[InputAction.DebugGameOver] = [Keys.G],
 				[InputAction.ToggleDebugOverlay] = [Keys.F1],
 				[InputAction.DebugSlowMotion] = [Keys.F3],
@@ -58,7 +59,8 @@ public sealed class InputBindings
 				[InputAction.Pause] = [Buttons.Start],
 				[InputAction.Confirm] = [Buttons.A],
 				[InputAction.Cancel] = [Buttons.Back],
-				[InputAction.ToggleSound] = [Buttons.Y]
+				[InputAction.ToggleSound] = [Buttons.Y],
+				[InputAction.Controls] = [Buttons.B]
 			});
 	}
 

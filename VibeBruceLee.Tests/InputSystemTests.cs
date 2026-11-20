@@ -25,6 +25,16 @@ public class InputSystemTests
 	}
 
 	[Fact]
+	public void ControlsKeyIsBound()
+	{
+		var input = CreateSystem();
+		input.Update(new KeyboardState(), default, Frame, true);
+		input.Update(new KeyboardState(Keys.C), default, Frame, true);
+
+		Assert.True(input.WasPressed(InputAction.Controls));
+	}
+
+	[Fact]
 	public void AttackPressIsBufferedAndConsumedOnce()
 	{
 		var input = CreateSystem();

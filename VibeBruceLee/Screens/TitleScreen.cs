@@ -13,10 +13,12 @@ public sealed class TitleScreen : IGameScreen
 
 	private readonly ScreenStack _screens;
 	private readonly ScreenContext _context;
+	private readonly SpriteFontBase _logo;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
 	private readonly AnimationPlayer _brucePlayer = new();
 	private readonly AnimationPlayer _lanternPlayer = new();
+	private double _blinkTime;
 
 	public TitleScreen(ScreenStack screens, ScreenContext context)
 	{
@@ -25,6 +27,7 @@ public sealed class TitleScreen : IGameScreen
 
 		_screens = screens;
 		_context = context;
+		_logo = context.FontSystem.GetFont(24);
 		_font16 = context.FontSystem.GetFont(16);
 		_font8 = context.FontSystem.GetFont(8);
 		_brucePlayer.Play(ScreenAnimations.BruceIdle);
@@ -43,8 +46,13 @@ public sealed class TitleScreen : IGameScreen
 	{
 		_brucePlayer.Update(gameTime.ElapsedGameTime.TotalSeconds);
 		_lanternPlayer.Update(gameTime.ElapsedGameTime.TotalSeconds);
+		_blinkTime += gameTime.ElapsedGameTime.TotalSeconds;
 
-		if (input.WasPressed(InputAction.Confirm))
+		if (input.WasPressed(InputAction.Controls))
+		{
+			_screens.Push(new ControlsScreen(_screens, _context));
+		}
+		else if (input.WasPressed(InputAction.Confirm))
 		{
 			_context.Session.StartNewRun();
 			_screens.Push(new ChamberScreen(_screens, _context, _context.Chambers.First));
@@ -66,8 +74,8 @@ public sealed class TitleScreen : IGameScreen
 		_context.Bruce.Draw(
 			spriteBatch,
 			_brucePlayer.CurrentFrame,
-			new Vector2(24, 44),
-			4,
+			new Vector2(8, 126),
+			2,
 			Color.White,
 			SpriteEffects.None,
 			SpriteLayers.World);
@@ -75,21 +83,38 @@ public sealed class TitleScreen : IGameScreen
 		_context.LanternSheet.Draw(
 			spriteBatch,
 			_lanternPlayer.CurrentFrame,
-			new Vector2(168, 72),
-			4,
+			new Vector2(216, 142),
+			2,
 			Color.White,
 			SpriteEffects.None,
 			SpriteLayers.World);
 
-		if (_context.Debug.OverlayVisible)
+		DrawCentered(spriteBatch, _font16, "VIBE", 8, Palette.Cyan);
+		DrawCentered(spriteBatch, _logo, "BRUCE LEE", 24, Palette.Yellow);
+		DrawCentered(spriteBatch, _font8, "THE FORTRESS OF THE FIRE WIZARD", 52, Palette.Muted);
+
+		DrawCentered(spriteBatch, _font8, "THE FIRE WIZARD HAS TAKEN", 66, Palette.White);
+		DrawCentered(spriteBatch, _font8, "THE FORTRESS. GATHER THE", 76, Palette.White);
+		DrawCentered(spriteBatch, _font8, "LANTERNS, THEN DESTROY HIM.", 86, Palette.White);
+
+		if (((int)(_blinkTime * 2.5) & 1) == 0)
 		{
-			_context.Debug.AddSolid(new Rectangle(24, 44, 64, 96));
-			_context.Debug.AddHitbox(new Rectangle(168, 72, 64, 64));
+			DrawCentered(spriteBatch, _font16, "PRESS ENTER", 96, Palette.Yellow);
 		}
 
-		spriteBatch.DrawString(_font16, "VibeBruceLee", new Vector2(16, 12), Palette.Yellow, layerDepth: SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, "screen stack online", new Vector2(16, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, "Enter: start", new Vector2(16, 160), Palette.White, layerDepth: SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, "F11: fullscreen  Esc: quit", new Vector2(16, 176), Palette.Muted, layerDepth: SpriteLayers.Hud);
+		DrawCentered(spriteBatch, _font8, "ENTER / A: START", 114, Palette.Cyan);
+		DrawCentered(spriteBatch, _font8, "C / B: CONTROLS", 124, Palette.Cyan);
+		DrawCentered(spriteBatch, _font8, "F11: FULLSCREEN   ESC: QUIT", 180, Palette.Muted);
+	}
+
+	private static void DrawCentered(SpriteBatch spriteBatch, SpriteFontBase font, string text, float y, Color color)
+	{
+		var size = font.MeasureString(text);
+		spriteBatch.DrawString(
+			font,
+			text,
+			new Vector2((GameInfo.VirtualWidth - size.X) / 2, y),
+			color,
+			layerDepth: SpriteLayers.Hud);
 	}
 }
