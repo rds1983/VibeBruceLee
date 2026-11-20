@@ -11,6 +11,7 @@ public static class ChamberValidator
 		"moving-wall",
 		"floor-light",
 		"dagger",
+		"sword",
 		"bug",
 		"bush",
 		"fireball"

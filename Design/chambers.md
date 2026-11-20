@@ -80,7 +80,7 @@ var levelsDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels")
 var chambers = ChamberLoader.LoadAll(levelsDirectory);
 ```
 
-`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. Five chambers are committed: the three-room entrance hub (01-03) and the first two underworld rooms (04-05).
+`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. Twelve chambers are committed: the three-room entrance hub (01-03), the first two underworld rooms (04-05), and the mid-game chain (06-12).
 
 ## Entrance hub and hatch (T-041)
 
@@ -122,7 +122,25 @@ var chambers = ChamberLoader.LoadAll(levelsDirectory);
 
 - Three staggered levels: left-low at y128, right-high at y96, top at y64, each served by a vine from the ground.
 - Three required lanterns, one on each level.
-- The right-wall exit leads back to chamber-04 until T-043 extends the fortress.
+- The right wall exit opens after the three lanterns and leads into chamber-06; the left door returns to chamber-04.
+
+## Mid-game chambers (T-043)
+
+The chain runs 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 01. Every chamber has a left back door that stays open and a right forward door that opens when its required lanterns are complete.
+
+| Chamber | Name | Layout | Hazards | Enemies |
+| ------- | ---- | ------ | ------- | ------- |
+| 06 | Spark Gallery | Three vine tiers: left y128, middle y96, right y64 | Electric on the ground, PAN light on the middle platform | Ninja + Yamo |
+| 07 | Crusher Walk | Two side vine ledges, optional centre jump lantern | Two sweeping crushers and a mine | Yamo + Ninja |
+| 08 | Spore Garden | Centre vine, two mid ledges and a top platform | Two bushes and a bug | Ninja + Yamo |
+| 09 | Blade Run | Three vines to left/right/top ledges | Dagger, sword and a PAN light | Ninja + Yamo |
+| 10 | Furnace | Centre vine and three lantern tiers | Two fireballs, PAN light and electric arc | Yamo + Ninja |
+| 11 | The Gauntlet | Three ascending vine tiers | Electric arc, mine, bush, crusher and bug | Ninja + Yamo |
+| 12 | Underworks | Three-vine room with a centre vine and side ledges | Electric arc, dagger, bush and crusher | Ninja + Yamo |
+
+- Each chamber has three required lanterns except 07, which has two required and one optional centre lantern.
+- Chamber-12 currently returns to chamber-01, closing the mid-game loop until T-044 adds chambers 13-19.
+- Hazards are placed off the spawn points so the player always has a safe starting position.
 
 ## Progress and transitions
 
@@ -149,4 +167,4 @@ var chambers = ChamberLoader.LoadAll(levelsDirectory);
 | 05 | Moving wall | `(104, 160, 48, 8)` | Speed 30, eight-pixel crusher sweeping the 48 px range |
 | 05 | Bug | `(240, 160, 8, 8)` | Speed 50, moves left |
 
-Sword and fireball use the shared projectile implementation and are reserved for later chambers and the wizard. All hazards reset with the chamber on a non-final death.
+Sword and fireball use the shared projectile implementation and are reserved for later chambers and the wizard. All hazards reset with the chamber on a non-final death. Chambers 06-12 combine the same families; their per-room placements are listed in the mid-game table above.

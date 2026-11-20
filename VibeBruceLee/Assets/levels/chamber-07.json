@@ -1,0 +1,38 @@
+{
+  "id": "chamber-07",
+  "name": "Crusher Walk",
+  "width": 256,
+  "height": 192,
+  "playerSpawn": {
+    "x": 32,
+    "y": 144
+  },
+  "platforms": [
+    { "x": 0, "y": 176, "width": 256, "height": 16 },
+    { "x": 16, "y": 128, "width": 80, "height": 8 },
+    { "x": 176, "y": 96, "width": 80, "height": 8 }
+  ],
+  "vines": [
+    { "x": 48, "y": 128, "width": 8, "height": 48, "orientation": "vertical" },
+    { "x": 216, "y": 96, "width": 8, "height": 80, "orientation": "vertical" }
+  ],
+  "lanterns": [
+    { "id": "lantern-1", "x": 32, "y": 108, "required": true },
+    { "id": "lantern-2", "x": 216, "y": 76, "required": true },
+    { "id": "lantern-3", "x": 128, "y": 120, "required": false }
+  ],
+  "enemySpawns": [
+    { "type": "yamo", "x": 80, "y": 144 },
+    { "type": "ninja", "x": 220, "y": 144 }
+  ],
+  "hazards": [
+    { "type": "moving-wall", "x": 64, "y": 160, "width": 88, "height": 8, "speed": 35 },
+    { "type": "moving-wall", "x": 136, "y": 160, "width": 88, "height": 8, "speed": 35, "directionX": -1 },
+    { "type": "mine", "x": 120, "y": 168, "width": 16, "height": 8 }
+  ],
+  "exits": [
+    { "x": 0, "y": 152, "width": 8, "height": 24, "target": "chamber-06", "requiresLanterns": false },
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-08" }
+  ],
+  "decor": []
+}

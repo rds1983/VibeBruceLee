@@ -133,7 +133,7 @@ public class HubProgressTests
 		var directory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels");
 		var catalog = new ChamberCatalog(ChamberLoader.LoadAll(directory));
 
-		Assert.Equal(5, catalog.Chambers.Count);
+		Assert.Equal(12, catalog.Chambers.Count);
 		Assert.True(catalog.Get("chamber-01").Hub);
 		Assert.True(catalog.Get("chamber-02").Hub);
 		Assert.True(catalog.Get("chamber-03").Hub);

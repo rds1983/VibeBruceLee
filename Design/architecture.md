@@ -131,7 +131,7 @@ The chamber HUD reads score, blows, falls and lantern progress from the player, 
 - The chamber HUD shows pooled `HUB x/y` progress in hub rooms and `HATCH OPEN` when the hub gate clears. Non-hub rooms show `EXIT OPEN` when their own required lanterns are complete.
 - `ChamberScreen` awards 125 per lantern and 2,000 for entering an exit. On an exit it replaces itself with the target chamber from the catalog. On a non-final death it respawns Bruce, resets lanterns, enemies, encounter pressure and dust, and keeps score and falls.
 - Lanterns disappear once collected and return on a chamber reset. The HUD shows required progress and displays `EXIT OPEN` when the gate clears.
-- Chamber-specific hazards remain inert until T-042. Chambers 01-03 are the entrance hub and 04-05 are the first underworld rooms; T-043 extends the fortress.
+- Chamber-specific hazards remain inert until T-042, then T-043 uses them in the mid-game. Chambers 01-03 are the entrance hub, 04-12 form the first underworld chain, and T-044 extends the fortress.
 
 ## Chamber data
 

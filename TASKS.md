@@ -127,7 +127,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Implement electric charges, exploding T'Sung-Lin bushes, PAN floor lights, mines, moving walls, and projectile hazards (daggers, swords, bugs, fireballs) as reusable, testable hazards. Enemies must be vulnerable to them too.
   *Done when:* each hazard has tests for activation, damage, and despawn.
 
-- [ ] **T-043 Chambers 6-12**
+- [x] **T-043 Chambers 6-12**
   Build the mid-game chambers, introducing and combining hazards and tighter enemy placement.
   *Done when:* all seven chambers are beatable and recorded in `Design/chambers.md`.
 
@@ -239,3 +239,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-040 | 2026-11-20 | Chamber catalog and per-attempt progress; playable entrance hall with lantern collection, exit gating, 125/2,000 scoring, chamber transition, death reset and HUD progress. |
 | T-041 | 2026-11-20 | Three-room entrance hub with persistent pooled lanterns, per-room death resets, data-driven `requiresHub` floor hatch, and chambers 03-05 with multi-vine layouts. |
 | T-042 | 2026-11-20 | Hazard families for electric/PAN beams, bushes, mines, moving walls and projectiles; central player/enemy damage, reset, debug boxes and example placements in chambers 01-05. |
+| T-043 | 2026-11-20 | Seven-chamber mid-game chain 06-12 with back/forward doors, escalating hazard combinations, two enemies per room and the 12-chamber catalog/chain tests. |

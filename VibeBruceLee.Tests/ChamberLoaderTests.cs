@@ -158,12 +158,36 @@ public sealed class ChamberLoaderTests : IDisposable
 
 		var chambers = ChamberLoader.LoadAll(directory);
 
-		Assert.Equal(5, chambers.Count);
+		Assert.Equal(12, chambers.Count);
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-01");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-02");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-03");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-04");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-05");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-06");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-07");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-08");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-09");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-10");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-11");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-12");
+	}
+
+	[Fact]
+	public void SampleChambersFormAContinuousChain()
+	{
+		var directory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels");
+		var chambers = ChamberLoader.LoadAll(directory).ToDictionary(chamber => chamber.Id, StringComparer.Ordinal);
+
+		Assert.Equal("chamber-05", chambers["chamber-04"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-06", chambers["chamber-05"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-07", chambers["chamber-06"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-08", chambers["chamber-07"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-09", chambers["chamber-08"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-10", chambers["chamber-09"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-11", chambers["chamber-10"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-12", chambers["chamber-11"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-01", chambers["chamber-12"].Exits.MaxBy(exit => exit.X)!.Target);
 	}
 
 	private string Write(string name, string json)
