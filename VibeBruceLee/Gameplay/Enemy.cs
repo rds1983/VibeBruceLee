@@ -845,6 +845,12 @@ public sealed class Enemy
 
 	private void BeginRespawn()
 	{
+		if (Definition.RespawnFrames <= 0)
+		{
+			Respawn();
+			return;
+		}
+
 		State = EnemyState.Respawning;
 		_respawnFrames = Definition.RespawnFrames;
 		Body.Velocity = Vector2.Zero;

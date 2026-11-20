@@ -59,6 +59,7 @@ Each chamber is a single 256x192 screen defined by a JSON file in `VibeBruceLee/
 | `lanterns` | `id` unique per chamber; point position; `required` defaults to `true`. |
 | `enemySpawns` | `type` is `ninja` or `yamo`; point position. |
 | `hazards` | `type` from the allowed list; rectangle; optional `periodSeconds` (> 0), `speed` (>= 0) and `directionX` (1 or -1). |
+| `loopHazards` | Same shape as `hazards`; added to the chamber from loop 2 onward. |
 | `exits` | Rectangle; `target` chamber id; `requiresLanterns` defaults to `true`; `requiresHub` defaults to `false`. |
 | `decor` | `sprite` asset key; point position; integer `scale` >= 1. |
 
@@ -143,7 +144,7 @@ The chain runs 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 01. Every
 | 12 | Underworks | Three-vine room with a centre vine and side ledges | Electric arc, dagger, bush and crusher | Ninja + Yamo |
 
 - Each chamber has three required lanterns except 07, which has two required and one optional centre lantern.
-- Chamber-12 now leads into chamber-13. The late-game chain continues to chamber-19, currently looping back to chamber-01 until T-045 adds the Fire Wizard.
+- Chamber-12 leads into chamber-13; the late-game chain continues to the Fire Wizard in chamber-20.
 - Hazards are placed off the spawn points so the player always has a safe starting position.
 
 ## Late-game chambers (T-044)
@@ -162,6 +163,7 @@ The chain runs 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20. Back 
 
 - All seven chambers have safe spawn areas and at least one safe waiting spot before every hazard band.
 - Beam and projectile timings stay at T-042 values; no jump or hazard requires frame-perfect input.
+- Chamber-16's `loopHazards` fill its two ground beam gaps from loop 2, removing the safe waiting spots and making the upper route the reliable path.
 - Chamber-19's right exit opens after its lanterns and leads to chamber-20.
 
 ## Chamber-20: Fire Wizard
@@ -170,7 +172,7 @@ The chain runs 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20. Back 
 - The wizard sits above the centre platform at `(112, 56, 32, 32)`. He fires aimed fireballs from alternating eyes every 1.4 s, with a 0.3 s warning flash.
 - The destruction button is on the left platform at `(24, 112, 16, 8)`. The player climbs the left vine, stands at the button and presses Attack.
 - Pressing the button awards 3,000 points, clears all fireballs and starts a two-second defeat flash.
-- After the defeat timer, the ending screen appears. Confirm returns to the title screen.
+- After the defeat timer, the ending screen appears. Confirm advances to the next loop at chamber-01, keeping score and falls and resetting hub progress.
 - The chamber has no exits; `ChamberValidator` allows this only for a boss room with a valid wizard definition.
 
 ## Progress and transitions

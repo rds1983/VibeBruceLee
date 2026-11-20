@@ -182,6 +182,16 @@ public sealed class ChamberLoaderTests : IDisposable
 	}
 
 	[Fact]
+	public void ElectrifiedCombAddsLoopHazards()
+	{
+		var directory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels");
+		var chambers = ChamberLoader.LoadAll(directory).ToDictionary(chamber => chamber.Id, StringComparer.Ordinal);
+
+		Assert.Equal(2, chambers["chamber-16"].LoopHazards.Count);
+		Assert.Empty(chambers["chamber-01"].LoopHazards);
+	}
+
+	[Fact]
 	public void SampleChambersFormAContinuousChain()
 	{
 		var directory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels");

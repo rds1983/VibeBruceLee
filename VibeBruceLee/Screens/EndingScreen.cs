@@ -39,7 +39,8 @@ public sealed class EndingScreen : IGameScreen
 	{
 		if (input.WasPressed(InputAction.Confirm))
 		{
-			_screens.Replace(new TitleScreen(_screens, _context));
+			_context.Session.AdvanceLoop();
+			_screens.Replace(new ChamberScreen(_screens, _context, _context.Chambers.First));
 		}
 	}
 
@@ -55,7 +56,12 @@ public sealed class EndingScreen : IGameScreen
 			SpriteEffects.None,
 			SpriteLayers.Background);
 
-		DrawCentered(spriteBatch, _font16, "THE END", 40, Palette.Yellow);
+		DrawCentered(
+			spriteBatch,
+			_font16,
+			"LOOP " + _context.Session.Loop.ToString(CultureInfo.InvariantCulture) + " CLEARED",
+			40,
+			Palette.Yellow);
 		DrawCentered(spriteBatch, _font8, "FIRE WIZARD DESTROYED", 72, Palette.Cyan);
 		DrawCentered(
 			spriteBatch,
@@ -63,7 +69,12 @@ public sealed class EndingScreen : IGameScreen
 			"SCORE " + _context.Session.Score.ToString("D6", CultureInfo.InvariantCulture),
 			92,
 			Palette.White);
-		DrawCentered(spriteBatch, _font8, "Enter: title", 136, Palette.White);
+		DrawCentered(
+			spriteBatch,
+			_font8,
+			"Enter: loop " + (_context.Session.Loop + 1).ToString(CultureInfo.InvariantCulture),
+			136,
+			Palette.White);
 		DrawCentered(spriteBatch, _font8, "Esc: quit", 152, Palette.Muted);
 	}
 

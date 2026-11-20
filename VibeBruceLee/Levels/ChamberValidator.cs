@@ -145,44 +145,8 @@ public static class ChamberValidator
 			}
 		}
 
-		if (chamber.Hazards is null)
-		{
-			errors.Add("hazards must be an array.");
-		}
-		else
-		{
-			for (var i = 0; i < chamber.Hazards.Count; i++)
-			{
-				var hazard = chamber.Hazards[i];
-				if (hazard is null)
-				{
-					errors.Add($"hazards[{i}] must be an object.");
-					continue;
-				}
-
-				if (Array.IndexOf(HazardTypes, hazard.Type) < 0)
-				{
-					errors.Add($"hazards[{i}].type must be one of: {string.Join(", ", HazardTypes)}.");
-				}
-
-				if (hazard.PeriodSeconds is <= 0)
-				{
-					errors.Add($"hazards[{i}].periodSeconds must be positive.");
-				}
-
-				if (hazard.Speed is < 0)
-				{
-					errors.Add($"hazards[{i}].speed must not be negative.");
-				}
-
-				if (hazard.DirectionX is not (1 or -1))
-				{
-					errors.Add($"hazards[{i}].directionX must be 1 or -1.");
-				}
-
-				ValidateRect(errors, $"hazards[{i}]", hazard.X, hazard.Y, hazard.Width, hazard.Height, chamber);
-			}
-		}
+		ValidateHazards(errors, "hazards", chamber.Hazards, chamber);
+		ValidateHazards(errors, "loopHazards", chamber.LoopHazards, chamber);
 
 		if (chamber.Exits is null)
 		{
@@ -318,6 +282,51 @@ public static class ChamberValidator
 		}
 
 		return errors;
+	}
+
+	private static void ValidateHazards(
+		List<string> errors,
+		string path,
+		List<HazardDefinition>? hazards,
+		ChamberDefinition chamber)
+	{
+		if (hazards is null)
+		{
+			errors.Add($"{path} must be an array.");
+			return;
+		}
+
+		for (var i = 0; i < hazards.Count; i++)
+		{
+			var hazard = hazards[i];
+			if (hazard is null)
+			{
+				errors.Add($"{path}[{i}] must be an object.");
+				continue;
+			}
+
+			if (Array.IndexOf(HazardTypes, hazard.Type) < 0)
+			{
+				errors.Add($"{path}[{i}].type must be one of: {string.Join(", ", HazardTypes)}.");
+			}
+
+			if (hazard.PeriodSeconds is <= 0)
+			{
+				errors.Add($"{path}[{i}].periodSeconds must be positive.");
+			}
+
+			if (hazard.Speed is < 0)
+			{
+				errors.Add($"{path}[{i}].speed must not be negative.");
+			}
+
+			if (hazard.DirectionX is not (1 or -1))
+			{
+				errors.Add($"{path}[{i}].directionX must be 1 or -1.");
+			}
+
+			ValidateRect(errors, $"{path}[{i}]", hazard.X, hazard.Y, hazard.Width, hazard.Height, chamber);
+		}
 	}
 
 	private static void ValidateRect(

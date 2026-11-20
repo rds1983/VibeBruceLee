@@ -28,6 +28,8 @@ public sealed class ChamberDefinition
 
 	public List<HazardDefinition> Hazards { get; set; } = [];
 
+	public List<HazardDefinition> LoopHazards { get; set; } = [];
+
 	public List<ExitDefinition> Exits { get; set; } = [];
 
 	public List<DecorDefinition> Decor { get; set; } = [];

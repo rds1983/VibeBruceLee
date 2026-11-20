@@ -116,6 +116,16 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 - Completing chamber 20 starts the next loop at chamber 1.
 - Loops increase difficulty: faster and more aggressive enemies, immediate enemy respawns, and removed safe spots in the electrified-comb chamber. Score and falls carry into the next loop.
 
+### Loop scaling (T-046)
+
+- `GameSession.Loop` starts at 1 and advances on the ending screen's Continue action. Score and falls carry; hub lantern progress resets.
+- Enemy run, patrol and climb speeds gain 15% per loop, capped at 2x.
+- Enemy attack, secondary-attack, jump and idle delays lose 10% per loop, capped at 0.5x. Sight gains 10% per loop, capped at 1.5x.
+- From loop 2, defeated enemies respawn immediately after their knockdown instead of waiting out the 3-4 s respawn delay.
+- Chamber-16 is the electrified comb. From loop 2 its `loopHazards` fill the two gaps in the ground beam lanes, removing the safe waiting spots and pushing the player to the upper route.
+- The HUD shows `LOOP n` from loop 2 onward.
+- The ending screen shows the cleared loop and continues into the next one; it does not return to the title.
+
 ## Enemies
 
 - Both enemies share a state machine: idle, patrol, chase, attack, stunned, knocked down, respawning. They path along platforms and use vines.

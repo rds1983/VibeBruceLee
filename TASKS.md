@@ -4,7 +4,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 **Legend:** `[ ]` todo - `[~]` in progress - `[x]` done - `[!]` blocked
 
-**Current milestone:** M4 - Chambers
+**Current milestone:** M5 - Presentation
 
 ## Guiding principles
 
@@ -139,7 +139,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Implement the final chamber: fireballs from the wizard's eyes, the destruction button, defeat sequence, and ending screen.
   *Done when:* the boss is beatable, testable, and the ending returns to the title cleanly.
 
-- [ ] **T-046 Loop and difficulty scaling**
+- [x] **T-046 Loop and difficulty scaling**
   After chamber 20, loop the game with faster enemies, immediate respawns, and removed safe spots, matching the original's escalation.
   *Done when:* loop state is persisted across chambers and covered by tests.
 
@@ -242,3 +242,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-043 | 2026-11-20 | Seven-chamber mid-game chain 06-12 with back/forward doors, escalating hazard combinations, two enemies per room and the 12-chamber catalog/chain tests. |
 | T-044 | 2026-11-20 | Seven-chamber late-game chain 13-19 with beam lanes, projectiles, crushers, mines and combined trap rooms; safe spawn/wait gaps and the 19-chamber catalog/chain tests. |
 | T-045 | 2026-11-20 | Fire Wizard boss with aimed eye fireballs, warning flash, destruction button, 3,000-point win, defeat timer, ending screen and boss/wizard validation. |
+| T-046 | 2026-11-20 | Persistent loops with carried score/falls, enemy speed/cooldown/sight scaling, immediate respawns, chamber-16 loop hazards, `LOOP n` HUD and loop-continue ending. |

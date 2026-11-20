@@ -69,7 +69,9 @@ public sealed class ChamberScreen : IGameScreen
 		var random = new SeededRandom(0x5EED);
 		foreach (var enemySpawn in _chamber.EnemySpawns)
 		{
-			var definition = EnemyDefinitions.Get(enemySpawn.Type);
+			var definition = EnemyScaling.Apply(
+				EnemyDefinitions.Get(enemySpawn.Type),
+				_context.Session.Loop);
 			var centerX = enemySpawn.X + (definition.BodyWidth * 0.5f);
 			var groundY = FindGroundBelow(centerX, enemySpawn.Y);
 			var position = new Vector2(enemySpawn.X, groundY - definition.BodyHeight);
@@ -84,7 +86,7 @@ public sealed class ChamberScreen : IGameScreen
 
 		_enemies = enemies;
 		_encounter = new EnemyEncounter(_player, _enemies, _context.Session);
-		_hazards = new HazardSystem(_chamber.Hazards);
+		_hazards = new HazardSystem(_chamber.Hazards, _chamber.LoopHazards, _context.Session.Loop);
 
 		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
@@ -559,6 +561,16 @@ public sealed class ChamberScreen : IGameScreen
 		}
 
 		spriteBatch.DrawString(_font8, "P: pause", new Vector2(8, 176), Palette.Muted, layerDepth: SpriteLayers.Hud);
+
+		if (_context.Session.Loop > 1)
+		{
+			spriteBatch.DrawString(
+				_font8,
+				"LOOP " + _context.Session.Loop.ToString(CultureInfo.InvariantCulture),
+				new Vector2(80, 176),
+				Palette.Cyan,
+				layerDepth: SpriteLayers.Hud);
+		}
 	}
 
 	private static Rectangle ToRectangle(Aabb bounds)

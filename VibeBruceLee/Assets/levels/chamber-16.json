@@ -33,6 +33,10 @@
     { "type": "electric", "x": 192, "y": 168, "width": 48, "height": 8, "periodSeconds": 2.4 },
     { "type": "mine", "x": 120, "y": 168, "width": 16, "height": 8 }
   ],
+  "loopHazards": [
+    { "type": "electric", "x": 96, "y": 168, "width": 16, "height": 8, "periodSeconds": 1.6 },
+    { "type": "electric", "x": 176, "y": 168, "width": 16, "height": 8, "periodSeconds": 1.6 }
+  ],
   "exits": [
     { "x": 0, "y": 152, "width": 8, "height": 24, "target": "chamber-15", "requiresLanterns": false },
     { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-17" }

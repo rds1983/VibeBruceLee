@@ -9,13 +9,20 @@ namespace VibeBruceLee.Gameplay;
 public sealed class HazardSystem
 {
 	private readonly IReadOnlyList<HazardDefinition> _definitions;
+	private readonly IReadOnlyList<HazardDefinition> _loopDefinitions;
+	private readonly int _loop;
 	private readonly List<Hazard> _hazards = [];
 
-	public HazardSystem(IReadOnlyList<HazardDefinition> definitions)
+	public HazardSystem(
+		IReadOnlyList<HazardDefinition> definitions,
+		IReadOnlyList<HazardDefinition>? loopDefinitions = null,
+		int loop = 1)
 	{
 		ArgumentNullException.ThrowIfNull(definitions);
 
 		_definitions = definitions;
+		_loopDefinitions = loopDefinitions ?? [];
+		_loop = loop;
 		Reset();
 	}
 
@@ -90,6 +97,14 @@ public sealed class HazardSystem
 		foreach (var definition in _definitions)
 		{
 			_hazards.Add(Create(definition));
+		}
+
+		if (_loop >= 2)
+		{
+			foreach (var definition in _loopDefinitions)
+			{
+				_hazards.Add(Create(definition));
+			}
 		}
 	}
 
