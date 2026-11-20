@@ -1,8 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using VibeBruceLee.Core.Gameplay;
-using VibeBruceLee.Core.Input;
-using VibeBruceLee.Core.Physics;
+using VibeBruceLee.Gameplay;
+using VibeBruceLee.Input;
+using VibeBruceLee.Physics;
 using Xunit;
 
 namespace VibeBruceLee.Tests;

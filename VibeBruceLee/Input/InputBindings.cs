@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Input;
 
-namespace VibeBruceLee.Core.Input;
+namespace VibeBruceLee.Input;
 
 /// <summary>
 /// Central keyboard and gamepad bindings. Change default controls here.

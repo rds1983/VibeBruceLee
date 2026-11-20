@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace VibeBruceLee.Core.Physics;
+namespace VibeBruceLee.Physics;
 
 /// <summary>
 /// Deterministic fixed-step physics for axis-aligned bodies. Movement is split

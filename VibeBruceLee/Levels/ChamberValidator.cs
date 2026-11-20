@@ -1,4 +1,4 @@
-namespace VibeBruceLee.Core.Levels;
+namespace VibeBruceLee.Levels;
 
 public static class ChamberValidator
 {

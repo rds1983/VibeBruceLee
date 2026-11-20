@@ -1,4 +1,4 @@
-using VibeBruceLee.Core.Animation;
+using VibeBruceLee.Animation;
 
 namespace VibeBruceLee.Screens;
 

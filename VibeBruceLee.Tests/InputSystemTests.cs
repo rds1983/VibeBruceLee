@@ -1,5 +1,5 @@
 using Microsoft.Xna.Framework.Input;
-using VibeBruceLee.Core.Input;
+using VibeBruceLee.Input;
 using Xunit;
 
 namespace VibeBruceLee.Tests;

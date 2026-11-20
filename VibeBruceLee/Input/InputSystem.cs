@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Input;
 
-namespace VibeBruceLee.Core.Input;
+namespace VibeBruceLee.Input;
 
 /// <summary>
 /// Polls keyboard and gamepad states into actions, with short jump and attack

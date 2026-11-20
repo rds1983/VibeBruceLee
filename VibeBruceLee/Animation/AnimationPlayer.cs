@@ -1,4 +1,4 @@
-namespace VibeBruceLee.Core.Animation;
+namespace VibeBruceLee.Animation;
 
 /// <summary>
 /// Plays an animation clip on a fixed-step clock. Updates are deterministic for

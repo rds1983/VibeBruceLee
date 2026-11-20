@@ -3,11 +3,10 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using VibeBruceLee.Core.Debugging;
-using VibeBruceLee.Core.Graphics;
-using VibeBruceLee.Core.Input;
-using VibeBruceLee.Core.Levels;
-using VibeBruceLee.Core.Screens;
+using VibeBruceLee.Debugging;
+using VibeBruceLee.Graphics;
+using VibeBruceLee.Input;
+using VibeBruceLee.Levels;
 using VibeBruceLee.Presentation;
 using VibeBruceLee.Screens;
 

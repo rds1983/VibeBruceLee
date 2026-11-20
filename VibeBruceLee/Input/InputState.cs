@@ -1,4 +1,4 @@
-namespace VibeBruceLee.Core.Input;
+namespace VibeBruceLee.Input;
 
 /// <summary>
 /// Action states for one frame.

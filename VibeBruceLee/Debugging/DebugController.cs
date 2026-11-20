@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
-using VibeBruceLee.Core.Input;
+using VibeBruceLee.Input;
 
-namespace VibeBruceLee.Core.Debugging;
+namespace VibeBruceLee.Debugging;
 
 /// <summary>
 /// Handles debug-only keys, slow motion and frame stepping. Instantiated only

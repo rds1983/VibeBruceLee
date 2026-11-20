@@ -1,4 +1,4 @@
-namespace VibeBruceLee.Core.Animation;
+namespace VibeBruceLee.Animation;
 
 public sealed class AnimationClip
 {

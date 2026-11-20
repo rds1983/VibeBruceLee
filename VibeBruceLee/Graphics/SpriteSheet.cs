@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace VibeBruceLee.Core.Graphics;
+namespace VibeBruceLee.Graphics;
 
 public readonly struct SpriteSheetLayout
 {

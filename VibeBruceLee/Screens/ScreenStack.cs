@@ -1,9 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VibeBruceLee.Core.Input;
+using VibeBruceLee.Input;
 
-namespace VibeBruceLee.Core.Screens;
+namespace VibeBruceLee.Screens;
 
 public interface IGameScreen
 {

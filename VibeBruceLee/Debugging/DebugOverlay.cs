@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VibeBruceLee.Presentation;
 
-namespace VibeBruceLee.Core.Debugging;
+namespace VibeBruceLee.Debugging;
 
 public sealed class DebugOverlay
 {

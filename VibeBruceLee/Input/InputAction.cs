@@ -1,4 +1,4 @@
-namespace VibeBruceLee.Core.Input;
+namespace VibeBruceLee.Input;
 
 public enum InputAction
 {

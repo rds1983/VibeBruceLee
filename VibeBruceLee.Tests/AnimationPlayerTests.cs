@@ -1,4 +1,4 @@
-using VibeBruceLee.Core.Animation;
+using VibeBruceLee.Animation;
 using Xunit;
 
 namespace VibeBruceLee.Tests;

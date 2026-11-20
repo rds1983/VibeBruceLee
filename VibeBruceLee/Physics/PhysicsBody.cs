@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace VibeBruceLee.Core.Physics;
+namespace VibeBruceLee.Physics;
 
 public sealed class PhysicsBody
 {

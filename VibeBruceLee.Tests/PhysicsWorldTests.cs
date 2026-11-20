@@ -1,5 +1,5 @@
 using Microsoft.Xna.Framework;
-using VibeBruceLee.Core.Physics;
+using VibeBruceLee.Physics;
 using Xunit;
 
 namespace VibeBruceLee.Tests;

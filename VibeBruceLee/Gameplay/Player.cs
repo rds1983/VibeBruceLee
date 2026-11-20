@@ -1,9 +1,9 @@
 using Microsoft.Xna.Framework;
-using VibeBruceLee.Core.Animation;
-using VibeBruceLee.Core.Input;
-using VibeBruceLee.Core.Physics;
+using VibeBruceLee.Animation;
+using VibeBruceLee.Input;
+using VibeBruceLee.Physics;
 
-namespace VibeBruceLee.Core.Gameplay;
+namespace VibeBruceLee.Gameplay;
 
 /// <summary>
 /// Bruce's locomotion and combat state machine on top of <see cref="PhysicsWorld"/>.

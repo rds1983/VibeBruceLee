@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using VibeBruceLee.Core.Debugging;
-using VibeBruceLee.Core.Input;
+using VibeBruceLee.Debugging;
+using VibeBruceLee.Input;
 using Xunit;
 
 namespace VibeBruceLee.Tests;

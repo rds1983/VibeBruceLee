@@ -1,12 +1,11 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VibeBruceLee.Core.Animation;
-using VibeBruceLee.Core.Gameplay;
-using VibeBruceLee.Core.Input;
-using VibeBruceLee.Core.Levels;
-using VibeBruceLee.Core.Physics;
-using VibeBruceLee.Core.Screens;
+using VibeBruceLee.Animation;
+using VibeBruceLee.Gameplay;
+using VibeBruceLee.Input;
+using VibeBruceLee.Levels;
+using VibeBruceLee.Physics;
 using VibeBruceLee.Presentation;
 
 namespace VibeBruceLee.Screens;

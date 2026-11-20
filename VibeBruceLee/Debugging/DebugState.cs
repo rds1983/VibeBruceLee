@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace VibeBruceLee.Core.Debugging;
+namespace VibeBruceLee.Debugging;
 
 public sealed class DebugState
 {

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace VibeBruceLee.Core.Levels;
+namespace VibeBruceLee.Levels;
 
 public static class ChamberLoader
 {

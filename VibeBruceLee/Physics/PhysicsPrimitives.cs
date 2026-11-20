@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace VibeBruceLee.Core.Physics;
+namespace VibeBruceLee.Physics;
 
 public readonly record struct Aabb(float X, float Y, float Width, float Height)
 {

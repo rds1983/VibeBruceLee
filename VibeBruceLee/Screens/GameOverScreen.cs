@@ -1,8 +1,7 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VibeBruceLee.Core.Input;
-using VibeBruceLee.Core.Screens;
+using VibeBruceLee.Input;
 using VibeBruceLee.Presentation;
 
 namespace VibeBruceLee.Screens;

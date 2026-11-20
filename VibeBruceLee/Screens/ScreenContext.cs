@@ -1,9 +1,9 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using VibeBruceLee.Core.Debugging;
-using VibeBruceLee.Core.Graphics;
-using VibeBruceLee.Core.Levels;
+using VibeBruceLee.Debugging;
+using VibeBruceLee.Graphics;
+using VibeBruceLee.Levels;
 
 namespace VibeBruceLee.Screens;
 

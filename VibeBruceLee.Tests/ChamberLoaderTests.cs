@@ -1,4 +1,4 @@
-using VibeBruceLee.Core.Levels;
+using VibeBruceLee.Levels;
 using Xunit;
 
 namespace VibeBruceLee.Tests;

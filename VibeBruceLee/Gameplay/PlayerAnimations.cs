@@ -1,6 +1,6 @@
-using VibeBruceLee.Core.Animation;
+using VibeBruceLee.Animation;
 
-namespace VibeBruceLee.Core.Gameplay;
+namespace VibeBruceLee.Gameplay;
 
 public enum PlayerState
 {

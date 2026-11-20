@@ -1,4 +1,4 @@
-namespace VibeBruceLee.Core.Gameplay;
+namespace VibeBruceLee.Gameplay;
 
 public enum AttackType
 {

@@ -1,7 +1,7 @@
-using VibeBruceLee.Core.Levels;
-using VibeBruceLee.Core.Physics;
+using VibeBruceLee.Levels;
+using VibeBruceLee.Physics;
 
-namespace VibeBruceLee.Core.Gameplay;
+namespace VibeBruceLee.Gameplay;
 
 /// <summary>
 /// Converts validated chamber data into physics primitives.
