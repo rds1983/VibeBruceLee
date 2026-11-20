@@ -36,7 +36,7 @@ Debug rectangles use color coding:
 | Green | Hurtbox |
 | Blue | Solid geometry |
 
-Screens register rectangles through `ScreenContext.Debug` while drawing. The chamber screen registers platform solids, Bruce's hurtbox and attack box, and every visible enemy's hurtbox and attack box.
+Screens register rectangles through `ScreenContext.Debug` while drawing. The chamber screen registers platform solids, Bruce's hurtbox and attack box, every visible enemy's hurtbox and attack box, and active hazard boxes.
 
 ## Pause and slow motion
 

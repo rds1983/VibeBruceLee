@@ -2,7 +2,7 @@
 
 A from-scratch remake of the 1984 classic **Bruce Lee**, as released for the ZX Spectrum: one martial artist, twenty trap-filled chambers, two relentless enemies, and a wizard waiting at the top of the tower. Built with modern C# tooling and original, hand-made assets.
 
-> Status: early development. Five playable chambers are in place: the three-room entrance hub with hatch gating, plus two underworld rooms, with combat, lanterns, falls and game over.
+> Status: early development. Five playable chambers are in place: the three-room entrance hub with hatch gating, plus two underworld rooms, with combat, lanterns, hazards, falls and game over.
 
 ## Tech stack
 

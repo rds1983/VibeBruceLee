@@ -24,7 +24,9 @@
   "enemySpawns": [
     { "type": "yamo", "x": 80, "y": 144 }
   ],
-  "hazards": [],
+  "hazards": [
+    { "type": "floor-light", "x": 96, "y": 168, "width": 64, "height": 8, "periodSeconds": 2.5 }
+  ],
   "exits": [
     { "x": 0, "y": 152, "width": 8, "height": 24, "target": "chamber-02", "requiresLanterns": false }
   ],

@@ -601,6 +601,21 @@ public class EnemyTests
 	}
 
 	[Fact]
+	public void HazardKnocksEnemyOffVine()
+	{
+		var vine = new Vine(new Aabb(40, 60, 8, 80), VineOrientation.Vertical);
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 40, 176), [Floor(176)]);
+		enemy.Body.ClimbingVine = vine;
+
+		var defeated = enemy.ApplyHazard(fromLeft: true);
+
+		Assert.True(defeated);
+		Assert.Null(enemy.Body.ClimbingVine);
+		Assert.Equal(EnemyState.KnockedDown, enemy.State);
+		Assert.Equal(0, enemy.HitsRemaining);
+	}
+
+	[Fact]
 	public void SeededRandomIsDeterministic()
 	{
 		var first = new SeededRandom(12345);

@@ -174,6 +174,11 @@ public static class ChamberValidator
 					errors.Add($"hazards[{i}].speed must not be negative.");
 				}
 
+				if (hazard.DirectionX is not (1 or -1))
+				{
+					errors.Add($"hazards[{i}].directionX must be 1 or -1.");
+				}
+
 				ValidateRect(errors, $"hazards[{i}]", hazard.X, hazard.Y, hazard.Width, hazard.Height, chamber);
 			}
 		}

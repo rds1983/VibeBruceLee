@@ -27,7 +27,11 @@
     { "type": "ninja", "x": 220, "y": 144 },
     { "type": "yamo", "x": 80, "y": 144 }
   ],
-  "hazards": [],
+  "hazards": [
+    { "type": "bush", "x": 160, "y": 160, "width": 24, "height": 16 },
+    { "type": "moving-wall", "x": 104, "y": 160, "width": 48, "height": 8, "speed": 30 },
+    { "type": "bug", "x": 240, "y": 160, "width": 8, "height": 8, "speed": 50, "directionX": -1 }
+  ],
   "exits": [
     { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-04" }
   ],

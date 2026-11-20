@@ -242,6 +242,20 @@ public class PlayerTests
 	}
 
 	[Fact]
+	public void TakingAHitWhileClimbingDetachesFromVine()
+	{
+		var vine = new Vine(new Aabb(40, 60, 8, 80), VineOrientation.Vertical);
+		var (player, input) = CreatePlayer(new Vector2(40, 80), [], [vine]);
+		Step(player, input, Keys.Q);
+		Assert.NotNull(player.Body.ClimbingVine);
+
+		player.ApplyHit(AttackDefinitions.Chop, fromLeft: true);
+
+		Assert.Null(player.Body.ClimbingVine);
+		Assert.Equal(PlayerState.Hit, player.State);
+	}
+
+	[Fact]
 	public void ResolveBodyBlockPushesPlayerOutOfAReservedBody()
 	{
 		var (player, _) = CreatePlayer(new Vector2(44, 138), [Floor(160)]);

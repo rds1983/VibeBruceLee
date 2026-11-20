@@ -392,6 +392,7 @@ public sealed class Player
 		_knockdownFrames = 0;
 		_hitstopFrames = HitstopFrames;
 		_hitFlashFrames = HitFlashFrames;
+		Body.ClimbingVine = null;
 		Body.Velocity = new Vector2(
 			(fromLeft ? 1 : -1) * hit.KnockbackX,
 			hit.KnockbackY);
@@ -434,6 +435,7 @@ public sealed class Player
 		}
 
 		_blowsRemaining = 0;
+		Body.ClimbingVine = null;
 		Body.Velocity = new Vector2(0, -40);
 		_hitstopFrames = HitstopFrames;
 		_hitFlashFrames = HitFlashFrames;

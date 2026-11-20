@@ -192,8 +192,18 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 | Wizard fireball | Projectile aimed at Bruce | Costs a fall |
 
 - All hazards are telegraphed and deterministic. No hazard may be unavoidable at its spawn location.
-- Enemies are vulnerable to hazards and respawn afterward.
+- Enemies are vulnerable to hazards and respawn afterward. Hazard knockouts award no score.
 - The hazard framework is built in T-042; chambers introduce hazards in increasing combinations.
+
+### Hazard timing (T-042)
+
+- Electric charge and PAN floor light share a timed beam: the cycle comes from `periodSeconds` (minimum 0.8 s), with 0.3 s of warning and 0.4 s active. They never despawn.
+- T'Sung-Lin bush: hidden for 1.2 s, visible warning for 0.45 s, explosion for 0.35 s, then despawns.
+- Mine: armed until Bruce or an enemy overlaps it, then a 0.35 s fuse and a 0.25 s explosion. It despawns after exploding.
+- Moving wall: the data rectangle is its travel range. The eight-pixel-wide crusher moves at `speed`, reverses at the ends, and is always dangerous.
+- Dagger, sword, bug and fireball are straight-line projectiles using `speed` and `directionX`; they despawn after leaving the screen or eight seconds. Their visuals differ; behaviour is shared for now.
+- Bruce's contact with an active hazard costs a whole fall through `Kill`, respecting invulnerability. Enemies are knocked out and go through their normal knockdown/respawn cycle.
+- Hazards reset with the rest of the chamber after a non-final death.
 
 ## Scoring
 

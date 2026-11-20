@@ -97,6 +97,8 @@ public sealed class HazardDefinition
 	public double? PeriodSeconds { get; set; }
 
 	public double? Speed { get; set; }
+
+	public int DirectionX { get; set; } = 1;
 }
 
 public sealed class ExitDefinition

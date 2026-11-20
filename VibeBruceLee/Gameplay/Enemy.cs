@@ -284,6 +284,7 @@ public sealed class Enemy
 		_hitFlashFrames = Definition.HitFlashFrames;
 		_invulnerableFrames = Definition.HitInvulnerabilityFrames;
 		HitsRemaining = Math.Max(0, HitsRemaining - 1);
+		Body.ClimbingVine = null;
 		Body.Velocity = new Vector2(
 			(fromLeft ? 1 : -1) * hit.KnockbackX,
 			hit.KnockbackY);
@@ -313,6 +314,35 @@ public sealed class Enemy
 		}
 
 		return false;
+	}
+
+	/// <summary>
+	/// Knocks an enemy out with a hazard. Hazards bypass normal hit-point
+	/// damage, award no score, and send the enemy through knockdown/respawn.
+	/// </summary>
+	public bool ApplyHazard(bool fromLeft)
+	{
+		if (!CanBeHit)
+		{
+			return false;
+		}
+
+		HitsRemaining = 0;
+		_hitFlashFrames = Definition.HitFlashFrames;
+		Body.ClimbingVine = null;
+		Body.Velocity = new Vector2(
+			(fromLeft ? 1 : -1) * 90f,
+			-25f);
+		_attack = null;
+		_attackFrame = 0;
+		_hasHitThisAttack = false;
+		_attackCooldownFrames = 0;
+		_attackCooldownAfter = 0;
+		_jumpFrame = 0;
+		_jumpCooldownFrames = Definition.JumpCooldownFrames;
+		ClearRoute();
+		EnterKnockdown();
+		return true;
 	}
 
 	/// <summary>

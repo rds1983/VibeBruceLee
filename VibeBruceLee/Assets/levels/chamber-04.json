@@ -27,7 +27,10 @@
     { "type": "ninja", "x": 220, "y": 144 },
     { "type": "yamo", "x": 80, "y": 144 }
   ],
-  "hazards": [],
+  "hazards": [
+    { "type": "mine", "x": 120, "y": 168, "width": 16, "height": 8 },
+    { "type": "dagger", "x": 240, "y": 160, "width": 8, "height": 8, "speed": 70, "directionX": -1 }
+  ],
   "exits": [
     { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-05" }
   ],

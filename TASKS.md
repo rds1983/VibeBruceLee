@@ -123,7 +123,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Add four chambers that extend platforming and vine movement, plus the three-room entrance hub rule: clearing chambers 1-3 opens the floor hatch in the middle chamber.
   *Done when:* each chamber validates, loads, and can be completed, and the hatch gating is tested.
 
-- [ ] **T-042 Hazards framework**
+- [x] **T-042 Hazards framework**
   Implement electric charges, exploding T'Sung-Lin bushes, PAN floor lights, mines, moving walls, and projectile hazards (daggers, swords, bugs, fireballs) as reusable, testable hazards. Enemies must be vulnerable to them too.
   *Done when:* each hazard has tests for activation, damage, and despawn.
 
@@ -238,3 +238,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-033 | 2026-11-20 | Headless enemy encounter with one attack token, 30-frame post-hit pressure gate, friendly fire, score validity gating and weighted enemy separation; deterministic scripted encounter tests. |
 | T-040 | 2026-11-20 | Chamber catalog and per-attempt progress; playable entrance hall with lantern collection, exit gating, 125/2,000 scoring, chamber transition, death reset and HUD progress. |
 | T-041 | 2026-11-20 | Three-room entrance hub with persistent pooled lanterns, per-room death resets, data-driven `requiresHub` floor hatch, and chambers 03-05 with multi-vine layouts. |
+| T-042 | 2026-11-20 | Hazard families for electric/PAN beams, bushes, mines, moving walls and projectiles; central player/enemy damage, reset, debug boxes and example placements in chambers 01-05. |

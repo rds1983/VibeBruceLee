@@ -56,7 +56,7 @@ Each chamber is a single 256x192 screen defined by a JSON file in `VibeBruceLee/
 | `vines` | Rectangles with `orientation` `vertical` or `horizontal`. |
 | `lanterns` | `id` unique per chamber; point position; `required` defaults to `true`. |
 | `enemySpawns` | `type` is `ninja` or `yamo`; point position. |
-| `hazards` | `type` from the allowed list; rectangle; optional `periodSeconds` (> 0) and `speed` (>= 0). |
+| `hazards` | `type` from the allowed list; rectangle; optional `periodSeconds` (> 0), `speed` (>= 0) and `directionX` (1 or -1). |
 | `exits` | Rectangle; `target` chamber id; `requiresLanterns` defaults to `true`; `requiresHub` defaults to `false`. |
 | `decor` | `sprite` asset key; point position; integer `scale` >= 1. |
 
@@ -136,3 +136,17 @@ var chambers = ChamberLoader.LoadAll(levelsDirectory);
 - resets the current chamber's lantern set on death.
 
 `ChamberScreen` awards 125 per lantern and 2,000 when entering an exit, then replaces itself with the target chamber from `ChamberCatalog`. Score and falls live in `GameSession` and survive chamber changes and non-final deaths. `GameSession.StartNewRun` clears hub progress.
+
+## Hazard placements (T-042)
+
+| Chamber | Hazard | Position | Notes |
+| ------- | ------ | -------- | ----- |
+| 01 | Electric | `(96, 168, 64, 8)` | 2 s cycle on the centre floor |
+| 03 | PAN floor light | `(96, 168, 64, 8)` | 2.5 s cycle |
+| 04 | Mine | `(120, 168, 16, 8)` | Contact fuse on the ground |
+| 04 | Dagger | `(240, 160, 8, 8)` | Speed 70, moves left |
+| 05 | T'Sung-Lin bush | `(160, 160, 24, 16)` | One-shot explosion |
+| 05 | Moving wall | `(104, 160, 48, 8)` | Speed 30, eight-pixel crusher sweeping the 48 px range |
+| 05 | Bug | `(240, 160, 8, 8)` | Speed 50, moves left |
+
+Sword and fireball use the shared projectile implementation and are reserved for later chambers and the wizard. All hazards reset with the chamber on a non-final death.

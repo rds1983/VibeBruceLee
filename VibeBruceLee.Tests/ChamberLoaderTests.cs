@@ -119,6 +119,18 @@ public sealed class ChamberLoaderTests : IDisposable
 	}
 
 	[Fact]
+	public void InvalidHazardDirectionIsReported()
+	{
+		var path = Write("direction.json", ValidChamber.Replace(
+			"\"type\": \"mine\"",
+			"\"type\": \"mine\", \"directionX\": 0"));
+
+		var exception = Assert.Throws<InvalidDataException>(() => ChamberLoader.Load(path));
+
+		Assert.Contains("directionX", exception.Message, StringComparison.Ordinal);
+	}
+
+	[Fact]
 	public void LoadAllRejectsUnknownExitTarget()
 	{
 		Write("chamber.json", ValidChamber.Replace("\"target\": \"test-chamber\"", "\"target\": \"missing\""));

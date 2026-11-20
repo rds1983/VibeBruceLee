@@ -31,6 +31,7 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
 	private readonly IReadOnlyList<Enemy> _enemies;
+	private readonly HazardSystem _hazards;
 	private readonly AnimationPlayer _lanternPlayer = new();
 	private readonly LandingDust _dust = new();
 
@@ -81,6 +82,7 @@ public sealed class ChamberScreen : IGameScreen
 
 		_enemies = enemies;
 		_encounter = new EnemyEncounter(_player, _enemies, _context.Session);
+		_hazards = new HazardSystem(_chamber.Hazards);
 
 		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
@@ -98,6 +100,7 @@ public sealed class ChamberScreen : IGameScreen
 		var seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 		_player.Invincible = _context.Debug.Invincible;
 		_encounter.Update(input, seconds);
+		_hazards.Update(seconds, _player, _enemies);
 
 		if (!_player.IsDead)
 		{
@@ -168,6 +171,7 @@ public sealed class ChamberScreen : IGameScreen
 
 		DrawGeometry(spriteBatch);
 		DrawExits(spriteBatch);
+		DrawHazards(spriteBatch);
 		DrawLanterns(spriteBatch);
 		DrawEnemies(spriteBatch);
 		DrawPlayer(spriteBatch);
@@ -200,6 +204,14 @@ public sealed class ChamberScreen : IGameScreen
 				if (enemy.TryGetAttackHitbox(out var enemyAttackBox))
 				{
 					_context.Debug.AddHitbox(ToRectangle(enemyAttackBox));
+				}
+			}
+
+			foreach (var hazard in _hazards.Hazards)
+			{
+				if (hazard.IsActive)
+				{
+					_context.Debug.AddHitbox(ToRectangle(hazard.Bounds));
 				}
 			}
 		}
@@ -248,6 +260,7 @@ public sealed class ChamberScreen : IGameScreen
 		}
 
 		_encounter.Reset();
+		_hazards.Reset();
 		_dust.Clear();
 	}
 
@@ -283,6 +296,64 @@ public sealed class ChamberScreen : IGameScreen
 					SpriteLayers.World);
 			}
 		}
+	}
+
+	private void DrawHazards(SpriteBatch spriteBatch)
+	{
+		foreach (var hazard in _hazards.Hazards)
+		{
+			if (!hazard.IsVisible)
+			{
+				continue;
+			}
+
+			spriteBatch.Draw(
+				_context.Pixel,
+				new Rectangle(
+					(int)hazard.Bounds.X,
+					(int)hazard.Bounds.Y,
+					(int)hazard.Bounds.Width,
+					(int)hazard.Bounds.Height),
+				null,
+				GetHazardColor(hazard),
+				0f,
+				Vector2.Zero,
+				SpriteEffects.None,
+				SpriteLayers.World);
+		}
+	}
+
+	private static Color GetHazardColor(Hazard hazard)
+	{
+		if (hazard.IsWarning)
+		{
+			return new Color(255, 150, 40);
+		}
+
+		if (!hazard.IsActive)
+		{
+			return hazard.Kind switch
+			{
+				HazardKind.Electric => new Color(0, 60, 60),
+				HazardKind.FloorLight => new Color(80, 70, 0),
+				HazardKind.Mine => new Color(120, 40, 40),
+				_ => new Color(70, 70, 70)
+			};
+		}
+
+		return hazard.Kind switch
+		{
+			HazardKind.Electric => Palette.Cyan,
+			HazardKind.FloorLight => Palette.Yellow,
+			HazardKind.Bush => new Color(80, 200, 80),
+			HazardKind.Mine => new Color(255, 160, 0),
+			HazardKind.MovingWall => new Color(160, 160, 160),
+			HazardKind.Dagger => new Color(200, 200, 200),
+			HazardKind.Sword => Palette.White,
+			HazardKind.Bug => new Color(100, 220, 60),
+			HazardKind.Fireball => new Color(255, 90, 20),
+			_ => Palette.White
+		};
 	}
 
 	private void DrawLanterns(SpriteBatch spriteBatch)
