@@ -1,0 +1,134 @@
+namespace VibeBruceLee.Gameplay;
+
+public enum EnemyState
+{
+	Idle,
+	Patrol,
+	Chase,
+	Attack,
+	Stunned,
+	KnockedDown,
+	Respawning
+}
+
+/// <summary>
+/// Shared tuning for an enemy type. The Ninja and Yamo differ only through
+/// these values and their attack frame data; the state machine is shared.
+/// </summary>
+public sealed record EnemyDefinition(
+	string Type,
+	int MaxHits,
+	int BodyWidth,
+	int BodyHeight,
+	float RunSpeed,
+	float PatrolSpeed,
+	float ClimbSpeed,
+	int IdleFrames,
+	float SightRange,
+	float AttackRange,
+	int AttackCooldownFrames,
+	int KnockdownFrames,
+	int RespawnFrames,
+	int HitFlashFrames,
+	int HitInvulnerabilityFrames,
+	int KnockoutScore,
+	AttackDefinition Attack);
+
+public static class EnemyDefinitions
+{
+	/// <summary>
+	/// Fast pursuer. T-031 refines the bokken strike and jump attacks.
+	/// </summary>
+	public static readonly AttackDefinition NinjaStrike = new(
+		AttackType.Chop,
+		"Ninja strike",
+		StartupFrames: 4,
+		ActiveFrames: 3,
+		RecoveryFrames: 8,
+		StartupAnimationFrame: 6,
+		ActiveAnimationFrame: 7,
+		RecoveryAnimationFrame: 6,
+		HitboxWidth: 12,
+		HitboxHeight: 8,
+		HitboxOffsetY: 6,
+		HitPoints: 1,
+		KnockbackX: 55f,
+		KnockbackY: -15f,
+		HitstunFrames: 10,
+		KnocksDown: false,
+		Score: 0,
+		ForwardSpeed: 20f);
+
+	/// <summary>
+	/// Heavy wrestler blow. T-032 adds his crushing kick and blocking.
+	/// </summary>
+	public static readonly AttackDefinition YamoCrush = new(
+		AttackType.Kick,
+		"Yamo crush",
+		StartupFrames: 6,
+		ActiveFrames: 3,
+		RecoveryFrames: 10,
+		StartupAnimationFrame: 6,
+		ActiveAnimationFrame: 7,
+		RecoveryAnimationFrame: 6,
+		HitboxWidth: 14,
+		HitboxHeight: 10,
+		HitboxOffsetY: 7,
+		HitPoints: 1,
+		KnockbackX: 65f,
+		KnockbackY: -18f,
+		HitstunFrames: 12,
+		KnocksDown: false,
+		Score: 0,
+		ForwardSpeed: 25f);
+
+	public static readonly EnemyDefinition Ninja = new(
+		Type: "ninja",
+		MaxHits: 2,
+		BodyWidth: 10,
+		BodyHeight: 22,
+		RunSpeed: 70f,
+		PatrolSpeed: 35f,
+		ClimbSpeed: 70f,
+		IdleFrames: 30,
+		SightRange: 180f,
+		AttackRange: 22f,
+		AttackCooldownFrames: 45,
+		KnockdownFrames: 50,
+		RespawnFrames: 180,
+		HitFlashFrames: 8,
+		HitInvulnerabilityFrames: 10,
+		KnockoutScore: 200,
+		Attack: NinjaStrike);
+
+	public static readonly EnemyDefinition Yamo = new(
+		Type: "yamo",
+		MaxHits: 3,
+		BodyWidth: 14,
+		BodyHeight: 26,
+		RunSpeed: 45f,
+		PatrolSpeed: 24f,
+		ClimbSpeed: 45f,
+		IdleFrames: 40,
+		SightRange: 150f,
+		AttackRange: 28f,
+		AttackCooldownFrames: 60,
+		KnockdownFrames: 60,
+		RespawnFrames: 240,
+		HitFlashFrames: 8,
+		HitInvulnerabilityFrames: 10,
+		KnockoutScore: 450,
+		Attack: YamoCrush);
+
+	public static EnemyDefinition Get(string type)
+	{
+		ArgumentException.ThrowIfNullOrWhiteSpace(type);
+
+		return type switch
+		{
+			"ninja" => Ninja,
+			"yamo" => Yamo,
+			_ => throw new ArgumentOutOfRangeException(nameof(type), $"No enemy definition for '{type}'.")
+		};
+	}
+}

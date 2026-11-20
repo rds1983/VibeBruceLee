@@ -4,7 +4,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 **Legend:** `[ ]` todo - `[~]` in progress - `[x]` done - `[!]` blocked
 
-**Current milestone:** M0 - Foundation
+**Current milestone:** M3 - Enemies
 
 ## Guiding principles
 
@@ -95,7 +95,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 ## M3 - Enemies
 
-- [ ] **T-030 Enemy framework**
+- [x] **T-030 Enemy framework**
   Build a shared enemy state machine (idle, patrol, chase, attack, stunned, knocked down, respawn), platform-aware pathing, and a seeded random source for determinism.
   *Done when:* the state machine is tested with a fake world and enemies navigate vines correctly.
 
@@ -108,7 +108,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* he pressures the player without feeling unfair, and his timings are tested.
 
 - [ ] **T-033 Enemy interactions and pacing**
-  Let enemies take damage from hazards, fall, get knocked into mines, and recover. Tune aggression so two enemies create pressure without stun-locking the player.
+  Let enemies take damage from hazards, fall, get knocked into mines, and recover. Stop enemies from stacking on the same spot. Tune aggression so two enemies create pressure without stun-locking the player.
   *Done when:* difficulty values are documented and a scripted encounter test passes repeatedly.
 
 ---
@@ -231,3 +231,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-021 | 2026-11-20 | Grounded chop/running-kick combat with centralized frame data, one-hit hitboxes, hitstun/knockdown and corrected source research. |
 | T-022 | 2026-11-20 | Health/falls/respawn: three blows, hit i-frames, death, five falls, extra falls per 30k, HUD/game over; longer momentum-carrying kick. |
 | T-023 | 2026-11-20 | Hitstop, flash, landing dust, sound hooks; vine-top platform transition and feet-anchored sprite alignment. |
+| T-030 | 2026-11-20 | Shared enemy state machine, deterministic platform/vine navigation and xorshift RNG; Ninja/Yamo baseline stats, hit exchange, knockout scores, respawns and debug boxes. |

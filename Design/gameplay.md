@@ -116,12 +116,28 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 
 ## Enemies
 
-- Both enemies share a state machine: idle, chase, attack, stunned, knocked down, respawning. They path along platforms and use vines.
+- Both enemies share a state machine: idle, patrol, chase, attack, stunned, knocked down, respawning. They path along platforms and use vines.
 - The Ninja is fast, attacks with a bokken, and jumps at Bruce. Two hits knock him out.
 - The Yamo is slower and heavier; he runs Bruce down with punches and crushing kicks. Three hits knock him out.
 - Neither can duck.
 - Enemies pursue relentlessly but respect fairness rules: no stun-locking, no attacks from off-screen, and a short grace period after Bruce respawns.
 - In two-player versus, the second player controls Yamo. If idle for a few seconds, the AI takes over until input resumes.
+
+### Enemy framework (T-030)
+
+- `EnemyDefinitions` holds the shared tuning. The state machine is identical for both types; only the values and attack frame data differ.
+- `EnemyNavigator` plans routes over platform tops and vertical vines: walk to a vine, climb it, step onto the upper platform, or walk off a ledge to drop to a lower one. Routes are deterministic.
+- A seeded xorshift generator (`SeededRandom`) chooses patrol direction and idle variation, so replays are stable.
+- Baseline values before T-031/T-032 refinement:
+
+| Enemy | Hits | Run / patrol | Sight | Attack range | Strike | Knockout score | Respawn |
+| ----- | ---- | ------------ | ----- | ------------ | ------ | -------------- | ------- |
+| Ninja | 2 | 70 / 35 px/s | 180 px | 22 px | 4 startup, 3 active, 8 recovery | 200 | 3 s |
+| Yamo | 3 | 45 / 24 px/s | 150 px | 28 px | 6 startup, 3 active, 10 recovery | 450 | 4 s |
+
+- Player hits stun or knock down enemies, and the final hit awards the knockout bonus. Enemies ignore further hits while down.
+- The framework currently ignores horizontal vines for enemy pathing; the sample chambers use vertical vines. Revisit when a chamber needs it.
+- Enemy type-specific moves, blocking and aggression are T-031/T-032; enemy hazards, overlap and pacing are T-033.
 
 ## Hazards
 

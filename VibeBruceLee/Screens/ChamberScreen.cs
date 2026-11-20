@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using VibeBruceLee.Animation;
 using VibeBruceLee.Effects;
 using VibeBruceLee.Gameplay;
-using VibeBruceLee.Graphics;
 using VibeBruceLee.Input;
 using VibeBruceLee.Levels;
 using VibeBruceLee.Physics;
@@ -26,8 +25,7 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly Vector2 _spawn;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
-	private readonly AnimationPlayer _ninjaPlayer = new();
-	private readonly AnimationPlayer _yamoPlayer = new();
+	private readonly IReadOnlyList<Enemy> _enemies;
 	private readonly AnimationPlayer _lanternPlayer = new();
 	private readonly LandingDust _dust = new();
 
@@ -52,8 +50,25 @@ public sealed class ChamberScreen : IGameScreen
 			_geometry.Platforms,
 			_geometry.Vines);
 
-		_ninjaPlayer.Play(ScreenAnimations.NinjaIdle);
-		_yamoPlayer.Play(ScreenAnimations.YamoIdle);
+		var enemies = new List<Enemy>(_chamber.EnemySpawns.Count);
+		var random = new SeededRandom(0x5EED);
+		foreach (var enemySpawn in _chamber.EnemySpawns)
+		{
+			var definition = EnemyDefinitions.Get(enemySpawn.Type);
+			var centerX = enemySpawn.X + (definition.BodyWidth * 0.5f);
+			var groundY = FindGroundBelow(centerX, enemySpawn.Y);
+			var position = new Vector2(enemySpawn.X, groundY - definition.BodyHeight);
+			enemies.Add(new Enemy(
+				definition,
+				position,
+				_world,
+				_geometry.Platforms,
+				_geometry.Vines,
+				random));
+		}
+
+		_enemies = enemies;
+
 		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
 
@@ -70,6 +85,19 @@ public sealed class ChamberScreen : IGameScreen
 		var seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 		_player.Invincible = _context.Debug.Invincible;
 		_player.Update(input, seconds);
+
+		var targetFeet = _player.IsDead
+			? (Vector2?)null
+			: new Vector2(
+				_player.Body.Position.X + (_player.Body.Size.X * 0.5f),
+				_player.Body.Position.Y + _player.Body.Size.Y);
+
+		foreach (var enemy in _enemies)
+		{
+			enemy.Update(targetFeet, seconds);
+		}
+
+		ResolveEnemyCombat();
 
 		if (_player.ConsumeLanded())
 		{
@@ -93,8 +121,6 @@ public sealed class ChamberScreen : IGameScreen
 			}
 		}
 
-		_ninjaPlayer.Update(seconds);
-		_yamoPlayer.Update(seconds);
 		_lanternPlayer.Update(seconds);
 
 		if (input.WasPressed(InputAction.Pause))
@@ -139,6 +165,20 @@ public sealed class ChamberScreen : IGameScreen
 			if (_player.TryGetAttackHitbox(out var attackBox))
 			{
 				_context.Debug.AddHitbox(ToRectangle(attackBox));
+			}
+
+			foreach (var enemy in _enemies)
+			{
+				if (!enemy.IsVisible)
+				{
+					continue;
+				}
+
+				_context.Debug.AddHurtbox(ToRectangle(enemy.Hurtbox));
+				if (enemy.TryGetAttackHitbox(out var enemyAttackBox))
+				{
+					_context.Debug.AddHitbox(ToRectangle(enemyAttackBox));
+				}
 			}
 		}
 	}
@@ -193,33 +233,64 @@ public sealed class ChamberScreen : IGameScreen
 
 	private void DrawEnemies(SpriteBatch spriteBatch)
 	{
-		foreach (var spawn in _chamber.EnemySpawns)
+		foreach (var enemy in _enemies)
 		{
-			if (spawn.Type == "ninja")
+			if (!enemy.IsVisible)
 			{
-				DrawEnemy(spriteBatch, _context.Ninja, _ninjaPlayer.CurrentFrame, spawn.X, spawn.Y, 22);
+				continue;
 			}
-			else
-			{
-				DrawEnemy(spriteBatch, _context.Yamo, _yamoPlayer.CurrentFrame, spawn.X, spawn.Y, 26);
-			}
+
+			var sheet = enemy.Definition.Type == "ninja" ? _context.Ninja : _context.Yamo;
+			var position = new Vector2(
+				enemy.Body.Position.X + (enemy.Body.Size.X * 0.5f) - (sheet.Layout.FrameWidth * 0.5f),
+				enemy.Body.Position.Y);
+			var effects = enemy.FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			var tint = enemy.IsFlashing ? new Color(255, 140, 140) : Color.White;
+
+			sheet.Draw(
+				spriteBatch,
+				enemy.CurrentFrame,
+				position,
+				1,
+				tint,
+				effects,
+				SpriteLayers.World);
 		}
 	}
 
-	private void DrawEnemy(SpriteBatch spriteBatch, SpriteSheet sheet, int frame, int x, int y, int footOffset)
+	private void ResolveEnemyCombat()
 	{
-		var centerX = x + (sheet.Layout.FrameWidth / 2f);
-		var groundY = FindGroundBelow(centerX, y);
-		var drawY = groundY - footOffset;
+		foreach (var enemy in _enemies)
+		{
+			if (!enemy.IsVisible)
+			{
+				continue;
+			}
 
-		sheet.Draw(
-			spriteBatch,
-			frame,
-			new Vector2(x, drawY),
-			1,
-			Color.White,
-			SpriteEffects.None,
-			SpriteLayers.World);
+			var hit = _player.TryHit(enemy.Hurtbox);
+			if (hit is not null)
+			{
+				var fromLeft = _player.Body.Bounds.Center.X <= enemy.Body.Bounds.Center.X;
+				var defeated = enemy.ApplyHit(hit, fromLeft);
+				_context.Session.AddScore(hit.Score);
+
+				if (defeated)
+				{
+					_context.Session.AddScore(enemy.Definition.KnockoutScore);
+				}
+			}
+
+			if (_player.IsDead || _player.IsInvulnerable)
+			{
+				continue;
+			}
+
+			var enemyHit = enemy.TryHit(_player.Hurtbox);
+			if (enemyHit is not null)
+			{
+				_player.ApplyHit(enemyHit, enemy.Body.Bounds.Center.X <= _player.Body.Bounds.Center.X);
+			}
+		}
 	}
 
 	private float FindGroundBelow(float x, float fromY)
