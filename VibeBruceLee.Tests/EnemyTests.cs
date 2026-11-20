@@ -496,6 +496,95 @@ public class EnemyTests
 	}
 
 	[Fact]
+	public void YamoUsesPunchAtCloseRange()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Yamo, OnFloor(EnemyDefinitions.Yamo, 80, 176), [Floor(176)]);
+		var target = new Vector2(enemy.Feet.X + 20f, 176);
+		var frames = 0;
+
+		while (enemy.State != EnemyState.Attack)
+		{
+			enemy.Update(target, Frame);
+			frames++;
+			Assert.True(frames < 120);
+		}
+
+		Assert.Equal("Yamo punch", enemy.CurrentAttack?.Name);
+		Assert.Equal(20f, enemy.StandoffDistance, 1);
+	}
+
+	[Fact]
+	public void YamoUsesCrushKickAtMidRange()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Yamo, OnFloor(EnemyDefinitions.Yamo, 80, 176), [Floor(176)]);
+		var target = new Vector2(enemy.Feet.X + 30f, 176);
+		var frames = 0;
+
+		while (enemy.State != EnemyState.Attack)
+		{
+			enemy.Update(target, Frame);
+			frames++;
+			Assert.True(frames < 120);
+		}
+
+		Assert.Equal("Yamo crush kick", enemy.CurrentAttack?.Name);
+		Assert.True(EnemyDefinitions.YamoCrush.TotalFrames > EnemyDefinitions.YamoPunch.TotalFrames);
+		Assert.True(EnemyDefinitions.YamoCrush.KnocksDown);
+		Assert.True(EnemyDefinitions.YamoCrush.KnockbackX > EnemyDefinitions.YamoPunch.KnockbackX);
+	}
+
+	[Fact]
+	public void YamoCrushKickRecoveryUsesLongCooldown()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Yamo, OnFloor(EnemyDefinitions.Yamo, 80, 176), [Floor(176)]);
+		var target = new Vector2(enemy.Feet.X + 30f, 176);
+
+		while (enemy.State != EnemyState.Attack)
+		{
+			enemy.Update(target, Frame);
+		}
+
+		var frames = 0;
+		while (enemy.State == EnemyState.Attack && frames < 120)
+		{
+			enemy.Update(target, Frame);
+			frames++;
+		}
+
+		Assert.NotEqual(EnemyState.Attack, enemy.State);
+		Assert.Equal(EnemyDefinitions.Yamo.SecondaryAttackCooldownFrames, enemy.AttackCooldownRemaining);
+	}
+
+	[Fact]
+	public void YamoPunchUsesShortCooldown()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Yamo, OnFloor(EnemyDefinitions.Yamo, 80, 176), [Floor(176)]);
+		var target = new Vector2(enemy.Feet.X + 20f, 176);
+
+		while (enemy.State != EnemyState.Attack)
+		{
+			enemy.Update(target, Frame);
+		}
+
+		var frames = 0;
+		while (enemy.State == EnemyState.Attack && frames < 120)
+		{
+			enemy.Update(target, Frame);
+			frames++;
+		}
+
+		Assert.NotEqual(EnemyState.Attack, enemy.State);
+		Assert.Equal(EnemyDefinitions.Yamo.AttackCooldownFrames, enemy.AttackCooldownRemaining);
+	}
+
+	[Fact]
+	public void YamoBlocksMovementAndNinjaDoesNot()
+	{
+		Assert.True(EnemyDefinitions.Yamo.BlocksMovement);
+		Assert.False(EnemyDefinitions.Ninja.BlocksMovement);
+	}
+
+	[Fact]
 	public void SeededRandomIsDeterministic()
 	{
 		var first = new SeededRandom(12345);

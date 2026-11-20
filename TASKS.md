@@ -103,7 +103,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Implement the fast pursuer: chase behavior, bokken strike, jump attacks, and return after being defeated. Keep him threatening but dodgeable.
   *Done when:* attack patterns are documented and balanced, with tests for decisions and cooldowns.
 
-- [ ] **T-032 The Green Yamo**
+- [x] **T-032 The Green Yamo**
   Implement the slow, powerful wrestler: blocking presence, punches, crushing kicks, and return after defeat.
   *Done when:* he pressures the player without feeling unfair, and his timings are tested.
 
@@ -160,7 +160,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* every gameplay event is wired, audio failures never crash the game, and generated audio sources are committed.
 
 - [ ] **T-053 Art polish**
-  Replace first-pass art with final tiles, backdrops, character animation, portraits, and the wizard. Give the Ninja a dedicated leap wind-up and airborne pose. Document the palette and pixel grid in `Design/assets.md`.
+  Replace first-pass art with final tiles, backdrops, character animation, portraits, and the wizard. Give the Ninja a dedicated leap wind-up and airborne pose, and the Yamo distinct punch and kick poses. Document the palette and pixel grid in `Design/assets.md`.
   *Done when:* visuals are consistent across all chambers and every asset has a source file.
 
 - [ ] **T-054 Local two-player mode**
@@ -233,3 +233,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-023 | 2026-11-20 | Hitstop, flash, landing dust, sound hooks; vine-top platform transition and feet-anchored sprite alignment. |
 | T-030 | 2026-11-20 | Shared enemy state machine, deterministic platform/vine navigation and xorshift RNG; Ninja/Yamo baseline stats, hit exchange, knockout scores, respawns and debug boxes. |
 | T-031 | 2026-11-20 | Ninja leap attack with a telegraphed fixed arc, gap crossing, air strike and jump cooldown; attack decisions documented and enemy stand-off added so pursuers no longer overlap Bruce. |
+| T-032 | 2026-11-20 | Yamo punch and knockdown crush kick with distance selection and per-attack cooldowns; solid body blocking, stand-off attacks, timings documented and tested. |

@@ -440,6 +440,26 @@ public sealed class Player
 		Die();
 	}
 
+	/// <summary>
+	/// Pushes Bruce out of a solid body, such as the Yamo. The blocker is not
+	/// moved; this keeps the wrestler feeling like a wall without adding a
+	/// second physics body.
+	/// </summary>
+	public void ResolveBodyBlock(Aabb blocker)
+	{
+		if (_isDead || Body.ClimbingVine is not null || !Body.Bounds.Intersects(blocker))
+		{
+			return;
+		}
+
+		var x = Body.Bounds.Center.X < blocker.Center.X
+			? blocker.X - Body.Size.X
+			: blocker.Right;
+
+		Body.Position = new Vector2(x, Body.Position.Y);
+		Body.Velocity = new Vector2(0, Body.Velocity.Y);
+	}
+
 	public bool ConsumeDeathFinished()
 	{
 		if (!_deathFinished)

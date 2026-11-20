@@ -133,7 +133,7 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 | Enemy | Hits | Run / patrol | Sight | Attack range | Strike | Knockout score | Respawn |
 | ----- | ---- | ------------ | ----- | ------------ | ------ | -------------- | ------- |
 | Ninja | 2 | 70 / 35 px/s | 180 px | 22 px | 4 startup, 3 active, 8 recovery | 200 | 3 s |
-| Yamo | 3 | 45 / 24 px/s | 150 px | 28 px | 6 startup, 3 active, 10 recovery | 450 | 4 s |
+| Yamo | 3 | 45 / 24 px/s | 150 px | 24 px punch, 38 px kick | Punch 6 / 3 / 8; kick 12 / 4 / 14 | 450 | 4 s |
 
 - Player hits stun or knock down enemies, and the final hit awards the knockout bonus. Enemies ignore further hits while down.
 - Enemies keep a stand-off: they stop just inside their attack range and back away if Bruce closes in, instead of walking into his position.
@@ -154,6 +154,19 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 - It will not attempt to leap onto a target more than 24 px above it; higher routes stay with the vines.
 - Jump cooldown is 90 frames (1.5 s) after landing. Bokken cooldown is 45 frames (0.75 s) after recovery.
 - The Ninja still takes two hits to defeat, stays down for 50 frames and returns after 180 frames (3 s). Immediate respawns in later loops are T-046.
+
+### The Green Yamo (T-032)
+
+| Move | Trigger | Startup | Active | Recovery | Hitbox | Effect |
+| ---- | ------- | ------- | ------ | -------- | ------ | ------ |
+| Punch | Same surface within 24 px; 45-frame cooldown | 6 | 3 | 8 | 12x8, +7 | 10 hitstun, no knockdown |
+| Crush kick | 25-38 px; 100-frame cooldown | 12 | 4 | 14 | 18x10, +8 | 16 hitstun, knockdown |
+
+- Move selection is distance-based: punch when Bruce is inside 24 px, crush kick from 25 to 38 px. While closing, the first attack is therefore usually the kick.
+- The crush kick leans forward at 30 px/s and knocks Bruce down. Its 12-frame wind-up, 14-frame recovery and 100-frame cooldown are the punish window; whiffing it gives Bruce time to counter.
+- Yamo holds a 20 px stand-off and punches from there. He takes three hits, stays down for 60 frames and returns after 240 frames (4 s).
+- Yamo is a blocking presence: his body is solid to Bruce. Bruce cannot walk through him and is pushed out of any overlap. A jump can still clear him.
+- A kick sets the attack timer to 100 frames and a punch to 45, so a whiffed kick cannot be chained into another heavy attack.
 
 ## Hazards
 

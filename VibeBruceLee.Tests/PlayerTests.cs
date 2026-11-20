@@ -240,4 +240,35 @@ public class PlayerTests
 		Assert.Null(player.Body.ClimbingVine);
 		Assert.Equal(PlayerState.Jump, player.State);
 	}
+
+	[Fact]
+	public void ResolveBodyBlockPushesPlayerOutOfAReservedBody()
+	{
+		var (player, _) = CreatePlayer(new Vector2(44, 138), [Floor(160)]);
+		var blocker = new Aabb(50, 130, 14, 22);
+
+		player.ResolveBodyBlock(blocker);
+
+		Assert.Equal(40f, player.Body.Position.X, 1);
+		Assert.False(player.Body.Bounds.Intersects(blocker));
+
+		player.Body.Position = new Vector2(56, 138);
+
+		player.ResolveBodyBlock(blocker);
+
+		Assert.Equal(64f, player.Body.Position.X, 1);
+		Assert.False(player.Body.Bounds.Intersects(blocker));
+	}
+
+	[Fact]
+	public void ResolveBodyBlockIgnoresNonOverlappingBodies()
+	{
+		var (player, _) = CreatePlayer(new Vector2(10, 138), [Floor(160)]);
+		var start = player.Body.Position;
+		var blocker = new Aabb(50, 130, 14, 22);
+
+		player.ResolveBodyBlock(blocker);
+
+		Assert.Equal(start, player.Body.Position);
+	}
 }

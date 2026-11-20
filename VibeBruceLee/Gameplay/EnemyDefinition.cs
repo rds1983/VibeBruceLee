@@ -40,7 +40,12 @@ public sealed record EnemyDefinition(
 	int JumpWindupFrames,
 	float JumpRange,
 	int JumpCooldownFrames,
-	AttackDefinition? JumpAttack);
+	AttackDefinition? JumpAttack,
+	AttackDefinition? SecondaryAttack,
+	float SecondaryAttackRange,
+	int SecondaryAttackCooldownFrames,
+	float PreferredRange,
+	bool BlocksMovement);
 
 public static class EnemyDefinitions
 {
@@ -92,27 +97,50 @@ public static class EnemyDefinitions
 		ForwardSpeed: 0f);
 
 	/// <summary>
-	/// Heavy wrestler blow. T-032 adds his crushing kick and blocking.
+	/// Fast close-range wrestler blow.
 	/// </summary>
-	public static readonly AttackDefinition YamoCrush = new(
-		AttackType.Kick,
-		"Yamo crush",
+	public static readonly AttackDefinition YamoPunch = new(
+		AttackType.Chop,
+		"Yamo punch",
 		StartupFrames: 6,
 		ActiveFrames: 3,
-		RecoveryFrames: 10,
+		RecoveryFrames: 8,
 		StartupAnimationFrame: 6,
 		ActiveAnimationFrame: 7,
 		RecoveryAnimationFrame: 6,
-		HitboxWidth: 14,
-		HitboxHeight: 10,
+		HitboxWidth: 12,
+		HitboxHeight: 8,
 		HitboxOffsetY: 7,
 		HitPoints: 1,
-		KnockbackX: 65f,
-		KnockbackY: -18f,
-		HitstunFrames: 12,
+		KnockbackX: 50f,
+		KnockbackY: -15f,
+		HitstunFrames: 10,
 		KnocksDown: false,
 		Score: 0,
-		ForwardSpeed: 25f);
+		ForwardSpeed: 15f);
+
+	/// <summary>
+	/// Slow mid-range kick. The long wind-up and recovery make it punishable.
+	/// </summary>
+	public static readonly AttackDefinition YamoCrush = new(
+		AttackType.Kick,
+		"Yamo crush kick",
+		StartupFrames: 12,
+		ActiveFrames: 4,
+		RecoveryFrames: 14,
+		StartupAnimationFrame: 6,
+		ActiveAnimationFrame: 7,
+		RecoveryAnimationFrame: 6,
+		HitboxWidth: 18,
+		HitboxHeight: 10,
+		HitboxOffsetY: 8,
+		HitPoints: 1,
+		KnockbackX: 95f,
+		KnockbackY: -35f,
+		HitstunFrames: 16,
+		KnocksDown: true,
+		Score: 0,
+		ForwardSpeed: 30f);
 
 	public static readonly EnemyDefinition Ninja = new(
 		Type: "ninja",
@@ -138,7 +166,12 @@ public static class EnemyDefinitions
 		JumpWindupFrames: 12,
 		JumpRange: 80f,
 		JumpCooldownFrames: 90,
-		JumpAttack: NinjaJumpAttack);
+		JumpAttack: NinjaJumpAttack,
+		SecondaryAttack: null,
+		SecondaryAttackRange: 0f,
+		SecondaryAttackCooldownFrames: 0,
+		PreferredRange: 22f,
+		BlocksMovement: false);
 
 	public static readonly EnemyDefinition Yamo = new(
 		Type: "yamo",
@@ -150,21 +183,26 @@ public static class EnemyDefinitions
 		ClimbSpeed: 45f,
 		IdleFrames: 40,
 		SightRange: 150f,
-		AttackRange: 28f,
-		AttackCooldownFrames: 60,
+		AttackRange: 24f,
+		AttackCooldownFrames: 45,
 		KnockdownFrames: 60,
 		RespawnFrames: 240,
 		HitFlashFrames: 8,
 		HitInvulnerabilityFrames: 10,
 		KnockoutScore: 450,
-		Attack: YamoCrush,
+		Attack: YamoPunch,
 		CanJump: false,
 		JumpSpeed: 0f,
 		JumpForwardSpeed: 0f,
 		JumpWindupFrames: 0,
 		JumpRange: 0f,
 		JumpCooldownFrames: 0,
-		JumpAttack: null);
+		JumpAttack: null,
+		SecondaryAttack: YamoCrush,
+		SecondaryAttackRange: 38f,
+		SecondaryAttackCooldownFrames: 100,
+		PreferredRange: 22f,
+		BlocksMovement: true);
 
 	public static EnemyDefinition Get(string type)
 	{

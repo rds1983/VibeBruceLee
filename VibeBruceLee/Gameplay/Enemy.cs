@@ -30,6 +30,8 @@ public sealed class Enemy
 	private int _patrolDirection;
 	private int _attackFrame;
 	private int _attackCooldownFrames;
+	private int _attackCooldownAfter;
+	private AttackDefinition? _attack;
 	private bool _hasHitThisAttack;
 	private int _jumpFrame;
 	private int _jumpCooldownFrames;
@@ -87,13 +89,19 @@ public sealed class Enemy
 
 	public int JumpCooldownRemaining => _jumpCooldownFrames;
 
+	public AttackDefinition? CurrentAttack => GetCurrentAttack();
+
+	public bool BlocksMovement => Definition.BlocksMovement;
+
 	public bool IsFlashing => _hitFlashFrames > 0;
 
 	public bool IsVisible => State != EnemyState.Respawning;
 
 	public Vector2 Feet => new(Body.Position.X + (Body.Size.X * 0.5f), Body.Position.Y + Body.Size.Y);
 
-	public float StandoffDistance => MathF.Max(8f, Definition.AttackRange - StandoffMargin);
+	public float StandoffDistance => MathF.Max(
+		8f,
+		(Definition.PreferredRange > 0f ? Definition.PreferredRange : Definition.AttackRange) - StandoffMargin);
 
 	public Aabb Hurtbox => Body.Bounds;
 
@@ -109,7 +117,7 @@ public sealed class Enemy
 				case EnemyState.Stunned:
 					return 8;
 				case EnemyState.Attack:
-					return GetAttackAnimationFrame(Definition.Attack, _attackFrame);
+					return GetAttackAnimationFrame(_attack ?? Definition.Attack, _attackFrame);
 				case EnemyState.Jumping:
 					if (_jumpFrame <= Definition.JumpWindupFrames)
 					{
@@ -273,9 +281,11 @@ public sealed class Enemy
 		Body.Velocity = new Vector2(
 			(fromLeft ? 1 : -1) * hit.KnockbackX,
 			hit.KnockbackY);
+		_attack = null;
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
 		_attackCooldownFrames = 0;
+		_attackCooldownAfter = 0;
 		_jumpFrame = 0;
 		_jumpCooldownFrames = Definition.JumpCooldownFrames;
 		ClearRoute();
@@ -313,9 +323,11 @@ public sealed class Enemy
 		_knockdownFrames = 0;
 		_hitFlashFrames = 0;
 		_invulnerableFrames = 0;
+		_attack = null;
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
 		_attackCooldownFrames = 0;
+		_attackCooldownAfter = 0;
 		_jumpFrame = 0;
 		_jumpCooldownFrames = 0;
 		_jumpTargetX = 0;
@@ -397,9 +409,10 @@ public sealed class Enemy
 		}
 
 		var surface = _navigator.FindSurface(feet);
+		var maxAttackRange = MathF.Max(Definition.AttackRange, Definition.SecondaryAttackRange);
 		if (surface is not null &&
 			MathF.Abs(feet.Y - targetFeet.Y) <= 3f &&
-			MathF.Abs(targetFeet.X - feet.X) <= Definition.AttackRange &&
+			MathF.Abs(targetFeet.X - feet.X) <= maxAttackRange &&
 			_attackCooldownFrames <= 0)
 		{
 			StartAttack(targetFeet);
@@ -530,7 +543,7 @@ public sealed class Enemy
 	{
 		return State switch
 		{
-			EnemyState.Attack => Definition.Attack,
+			EnemyState.Attack => _attack,
 			EnemyState.Jumping => Definition.JumpAttack,
 			_ => null
 		};
@@ -703,12 +716,26 @@ public sealed class Enemy
 
 	private void StartAttack(Vector2 targetFeet)
 	{
+		var distance = MathF.Abs(targetFeet.X - Feet.X);
+		var attack = Definition.Attack;
+		var cooldown = Definition.AttackCooldownFrames;
+
+		if (Definition.SecondaryAttack is not null &&
+			distance > Definition.AttackRange &&
+			distance <= Definition.SecondaryAttackRange)
+		{
+			attack = Definition.SecondaryAttack;
+			cooldown = Definition.SecondaryAttackCooldownFrames;
+		}
+
 		State = EnemyState.Attack;
+		_attack = attack;
+		_attackCooldownAfter = cooldown;
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
 		FacingLeft = targetFeet.X < Feet.X;
 
-		var forward = Definition.Attack.ForwardSpeed;
+		var forward = attack.ForwardSpeed;
 		Body.Velocity = forward > 0
 			? new Vector2((FacingLeft ? -1 : 1) * forward, Body.Velocity.Y)
 			: new Vector2(0, Body.Velocity.Y);
@@ -716,16 +743,19 @@ public sealed class Enemy
 
 	private void TickAttack(float deltaSeconds)
 	{
+		var attack = _attack ?? Definition.Attack;
 		_attackFrame++;
-		if (_attackFrame >= Definition.Attack.TotalFrames)
+		if (_attackFrame >= attack.TotalFrames)
 		{
 			State = EnemyState.Chase;
-			_attackCooldownFrames = Definition.AttackCooldownFrames;
+			_attackCooldownFrames = _attackCooldownAfter;
+			_attack = null;
+			_attackCooldownAfter = 0;
 			_attackFrame = 0;
 			_hasHitThisAttack = false;
 			ClearRoute();
 		}
-		else if (Definition.Attack.ForwardSpeed <= 0)
+		else if (attack.ForwardSpeed <= 0)
 		{
 			ApplyDrag(deltaSeconds);
 		}

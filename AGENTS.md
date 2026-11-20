@@ -69,6 +69,7 @@ Follow these steps for every task, in order.
    Explicit confirmation means a clear approval such as "approved", "looks good, commit", or "yes, done". Silence, an unrelated reply, or "ok" without context is not confirmation; ask again. If the developer requests changes, keep the task `[~]`, make the changes, retest, and return to step 5.
    After confirmation:
    - mark the task `[x]` and add a row to the Done log in `TASKS.md`,
+   - revise the remaining roadmap freely: add, remove, split, rewrite or reorder future tasks as needed,
    - commit the task as one logical commit (code, tests, docs, assets together),
    - push to the remote.
 
@@ -80,6 +81,7 @@ Follow these steps for every task, in order.
 - If a task is obsolete, remove it or rewrite it; do not leave stale instructions.
 - Keep the legend, current milestone, and Done log accurate.
 - A task is never "done" because code exists; it is done when tested, documented, and confirmed.
+- **After a task is completed, you may modify the remaining roadmap however you want** - including removing or adding tasks - without asking for approval. Keep completed IDs and the Done log intact.
 
 ## Testing policy
 

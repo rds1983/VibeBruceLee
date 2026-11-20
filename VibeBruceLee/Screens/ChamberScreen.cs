@@ -94,6 +94,14 @@ public sealed class ChamberScreen : IGameScreen
 
 		foreach (var enemy in _enemies)
 		{
+			if (enemy.IsVisible && enemy.BlocksMovement)
+			{
+				_player.ResolveBodyBlock(enemy.Body.Bounds);
+			}
+		}
+
+		foreach (var enemy in _enemies)
+		{
 			enemy.Update(targetFeet, seconds);
 		}
 
