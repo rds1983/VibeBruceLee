@@ -12,6 +12,8 @@ public sealed class ChamberDefinition
 
 	public PointDefinition? PlayerSpawn { get; set; }
 
+	public bool Hub { get; set; }
+
 	public List<PlatformDefinition> Platforms { get; set; } = [];
 
 	public List<VineDefinition> Vines { get; set; } = [];
@@ -110,6 +112,8 @@ public sealed class ExitDefinition
 	public string Target { get; set; } = string.Empty;
 
 	public bool RequiresLanterns { get; set; } = true;
+
+	public bool RequiresHub { get; set; }
 }
 
 public sealed class DecorDefinition

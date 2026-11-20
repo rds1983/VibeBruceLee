@@ -119,7 +119,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Recreate the first entrance chamber from reference. Implement lantern collection, the exit opening only after the required lanterns are taken, scoring, death and restart, and a complete playable loop.
   *Done when:* the chamber is beatable and losing all falls returns to game over.
 
-- [ ] **T-041 Chambers 2-5 and the entrance hub**
+- [x] **T-041 Chambers 2-5 and the entrance hub**
   Add four chambers that extend platforming and vine movement, plus the three-room entrance hub rule: clearing chambers 1-3 opens the floor hatch in the middle chamber.
   *Done when:* each chamber validates, loads, and can be completed, and the hatch gating is tested.
 
@@ -237,3 +237,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-032 | 2026-11-20 | Yamo punch and knockdown crush kick with distance selection and per-attack cooldowns; solid body blocking, stand-off attacks, timings documented and tested. |
 | T-033 | 2026-11-20 | Headless enemy encounter with one attack token, 30-frame post-hit pressure gate, friendly fire, score validity gating and weighted enemy separation; deterministic scripted encounter tests. |
 | T-040 | 2026-11-20 | Chamber catalog and per-attempt progress; playable entrance hall with lantern collection, exit gating, 125/2,000 scoring, chamber transition, death reset and HUD progress. |
+| T-041 | 2026-11-20 | Three-room entrance hub with persistent pooled lanterns, per-room death resets, data-driven `requiresHub` floor hatch, and chambers 03-05 with multi-vine layouts. |

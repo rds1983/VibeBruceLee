@@ -24,6 +24,8 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly Player _player;
 	private readonly EnemyEncounter _encounter;
 	private readonly ChamberProgress _progress;
+	private readonly HubProgress _hub;
+	private readonly bool _isHubChamber;
 	private readonly string _title;
 	private readonly Vector2 _spawn;
 	private readonly SpriteFontBase _font16;
@@ -41,7 +43,11 @@ public sealed class ChamberScreen : IGameScreen
 		_screens = screens;
 		_context = context;
 		_chamber = chamber;
-		_progress = new ChamberProgress(_chamber);
+		_progress = new ChamberProgress(
+			_chamber,
+			_chamber.Hub ? context.Session.Hub.GetLanternSet(_chamber.Id) : null);
+		_hub = context.Session.Hub;
+		_isHubChamber = _chamber.Hub;
 		_title = _chamber.Name.ToUpperInvariant();
 		_geometry = ChamberGeometry.From(_chamber);
 		_world = new PhysicsWorld(GameInfo.VirtualWidth, GameInfo.VirtualHeight, 900, 600);
@@ -101,7 +107,8 @@ public sealed class ChamberScreen : IGameScreen
 				_context.Session.AddScore(collected * ChamberProgress.LanternScore);
 			}
 
-			if (_progress.TryFindOpenExit(_player.Body.Bounds, out var exit))
+			var hubHatchOpen = _hub.AllRequiredCollected(_context.Chambers);
+			if (_progress.TryFindOpenExit(_player.Body.Bounds, hubHatchOpen, out var exit))
 			{
 				_context.Session.AddScore(ChamberProgress.ExitScore);
 				_screens.Replace(new ChamberScreen(
@@ -246,9 +253,11 @@ public sealed class ChamberScreen : IGameScreen
 
 	private void DrawExits(SpriteBatch spriteBatch)
 	{
+		var hubHatchOpen = _hub.AllRequiredCollected(_context.Chambers);
+
 		foreach (var exit in _chamber.Exits)
 		{
-			var open = _progress.IsExitOpen(exit);
+			var open = _progress.IsExitOpen(exit, hubHatchOpen);
 			var color = open ? Palette.Yellow : new Color(80, 60, 40);
 
 			spriteBatch.Draw(
@@ -385,7 +394,24 @@ public sealed class ChamberScreen : IGameScreen
 
 		spriteBatch.DrawString(_font16, _title, new Vector2(8, 16), Palette.Yellow, layerDepth: SpriteLayers.Hud);
 
-		if (_progress.RequiredComplete)
+		if (_isHubChamber)
+		{
+			if (_hub.AllRequiredCollected(_context.Chambers))
+			{
+				spriteBatch.DrawString(_font8, "HATCH OPEN", new Vector2(8, 36), Palette.Yellow, layerDepth: SpriteLayers.Hud);
+			}
+			else
+			{
+				spriteBatch.DrawString(
+					_font8,
+					"HUB " + _hub.RequiredCollected(_context.Chambers).ToString(CultureInfo.InvariantCulture) +
+						"/" + HubProgress.RequiredTotal(_context.Chambers).ToString(CultureInfo.InvariantCulture),
+					new Vector2(8, 36),
+					Palette.Cyan,
+					layerDepth: SpriteLayers.Hud);
+			}
+		}
+		else if (_progress.RequiredComplete)
 		{
 			spriteBatch.DrawString(_font8, "EXIT OPEN", new Vector2(8, 36), Palette.Yellow, layerDepth: SpriteLayers.Hud);
 		}

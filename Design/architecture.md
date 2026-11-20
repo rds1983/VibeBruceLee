@@ -118,10 +118,12 @@ The chamber HUD reads score, blows, falls and lantern progress from the player, 
 
 - `ChamberCatalog` holds every loaded chamber in sorted file order. `First` is the start chamber, `Get(id)` resolves exit targets, and `TryGet` handles optional lookups.
 - `ScreenContext` carries the catalog instead of a single chamber. `TitleScreen` starts `Chambers.First`.
-- `ChamberProgress` owns per-attempt lantern state. It collects a lantern when Bruce's hurtbox intersects its 16x16 box, tracks required and optional counts, opens exits when required lanterns are complete (`requiresLanterns: false` bypasses the gate), finds an open exit under Bruce, and resets on death.
+- `ChamberProgress` owns per-attempt lantern state. It collects a lantern when Bruce's hurtbox intersects its 16x16 box, computes required and optional counts from its set, opens exits when required lanterns are complete (`requiresLanterns: false` bypasses the gate), additionally checks the hub hatch flag for `requiresHub` exits, finds an open exit under Bruce, and resets on death.
+- Hub chambers (`hub: true`) pass the set owned by `HubProgress` (on `GameSession`) into `ChamberProgress`, so collected lanterns persist between the three rooms. The middle room's `requiresHub` floor hatch opens only when every required lantern across the hub is collected. Dying resets only the current room's set; a new run clears all hub progress.
+- The chamber HUD shows pooled `HUB x/y` progress in hub rooms and `HATCH OPEN` when the hub gate clears. Non-hub rooms show `EXIT OPEN` when their own required lanterns are complete.
 - `ChamberScreen` awards 125 per lantern and 2,000 for entering an exit. On an exit it replaces itself with the target chamber from the catalog. On a non-final death it respawns Bruce, resets lanterns, enemies, encounter pressure and dust, and keeps score and falls.
 - Lanterns disappear once collected and return on a chamber reset. The HUD shows required progress and displays `EXIT OPEN` when the gate clears.
-- Chamber-specific hazards remain inert until T-042; chamber-02 is a placeholder until T-041.
+- Chamber-specific hazards remain inert until T-042. Chambers 01-03 are the entrance hub and 04-05 are the first underworld rooms; T-043 extends the fortress.
 
 ## Chamber data
 
@@ -137,4 +139,4 @@ Unit tests cover letterbox math, screen-stack lifecycle, input actions and buffe
 
 ## Decisions
 
-Architecture decision records live in `Design/decisions/`. ADR-0001 covers the engine, logical resolution and timestep; ADR-0002 the asset pipeline; ADR-0003 asset authoring; ADR-0004 enemy navigation and deterministic randomness; ADR-0005 the Ninja's committed leap; ADR-0006 Yamo move selection and body blocking; ADR-0007 enemy encounter pacing; ADR-0008 the chamber catalog and per-attempt progress.
+Architecture decision records live in `Design/decisions/`. ADR-0001 covers the engine, logical resolution and timestep; ADR-0002 the asset pipeline; ADR-0003 asset authoring; ADR-0004 enemy navigation and deterministic randomness; ADR-0005 the Ninja's committed leap; ADR-0006 Yamo move selection and body blocking; ADR-0007 enemy encounter pacing; ADR-0008 the chamber catalog and per-attempt progress; ADR-0009 hub progress and hatch gating.

@@ -19,6 +19,8 @@ public sealed class GameSession
 
 	public int ExtraFallsAwarded { get; private set; }
 
+	public HubProgress Hub { get; } = new();
+
 	public bool IsGameOver => Falls <= 0;
 
 	public void StartNewRun()
@@ -26,6 +28,7 @@ public sealed class GameSession
 		Score = 0;
 		Falls = StartingFalls;
 		ExtraFallsAwarded = 0;
+		Hub.Reset();
 	}
 
 	public void AddScore(int points)

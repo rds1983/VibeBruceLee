@@ -1,10 +1,11 @@
 {
   "id": "chamber-02",
-  "name": "Vine Shaft",
+  "name": "Vine Hub",
   "width": 256,
   "height": 192,
+  "hub": true,
   "playerSpawn": {
-    "x": 32,
+    "x": 128,
     "y": 144
   },
   "platforms": [
@@ -22,7 +23,9 @@
   ],
   "hazards": [],
   "exits": [
-    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-01" }
+    { "x": 0, "y": 152, "width": 8, "height": 24, "target": "chamber-01", "requiresLanterns": false },
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-03", "requiresLanterns": false },
+    { "x": 88, "y": 168, "width": 16, "height": 8, "target": "chamber-04", "requiresLanterns": false, "requiresHub": true }
   ],
   "decor": []
 }

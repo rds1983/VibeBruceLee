@@ -17,6 +17,7 @@ Each chamber is a single 256x192 screen defined by a JSON file in `VibeBruceLee/
   "name": "Entrance Hall",
   "width": 256,
   "height": 192,
+  "hub": true,
   "playerSpawn": { "x": 32, "y": 144 },
   "platforms": [
     { "x": 0, "y": 176, "width": 256, "height": 16 }
@@ -34,7 +35,7 @@ Each chamber is a single 256x192 screen defined by a JSON file in `VibeBruceLee/
     { "type": "electric", "x": 96, "y": 168, "width": 64, "height": 8, "periodSeconds": 2.0 }
   ],
   "exits": [
-    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-02" }
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-02", "requiresLanterns": false }
   ],
   "decor": [
     { "sprite": "art/lantern.png", "x": 8, "y": 8, "scale": 1 }
@@ -50,12 +51,13 @@ Each chamber is a single 256x192 screen defined by a JSON file in `VibeBruceLee/
 | `name` | Required display name. |
 | `width`, `height` | Must be 256x192. Defaults to those values. |
 | `playerSpawn` | Required point inside the chamber. |
+| `hub` | Optional boolean; true for the three entrance-hub chambers. Hub lantern state persists between rooms. |
 | `platforms` | Rectangles. `oneWay` is optional and defaults to `false`. |
 | `vines` | Rectangles with `orientation` `vertical` or `horizontal`. |
 | `lanterns` | `id` unique per chamber; point position; `required` defaults to `true`. |
 | `enemySpawns` | `type` is `ninja` or `yamo`; point position. |
 | `hazards` | `type` from the allowed list; rectangle; optional `periodSeconds` (> 0) and `speed` (>= 0). |
-| `exits` | Rectangle; `target` chamber id; `requiresLanterns` defaults to `true`. |
+| `exits` | Rectangle; `target` chamber id; `requiresLanterns` defaults to `true`; `requiresHub` defaults to `false`. |
 | `decor` | `sprite` asset key; point position; integer `scale` >= 1. |
 
 Allowed hazard types: `electric`, `mine`, `moving-wall`, `floor-light`, `dagger`, `bug`, `bush`, `fireball`.
@@ -78,31 +80,59 @@ var levelsDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels")
 var chambers = ChamberLoader.LoadAll(levelsDirectory);
 ```
 
-`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. The two committed files are a first pass; chamber-01 is the T-040 playable entrance slice, and chamber-02 is a temporary one-lantern return room until T-041 replaces it with the real entrance hub.
+`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. Five chambers are committed: the three-room entrance hub (01-03) and the first two underworld rooms (04-05).
 
-## Chamber-01: Entrance Hall (T-040)
+## Entrance hub and hatch (T-041)
+
+- Chambers 01, 02 and 03 are marked `"hub": true`.
+- Their required lanterns are pooled: `HubProgress` keeps a collected set per hub chamber, so lanterns stay collected when moving between hub rooms.
+- Dying in a hub room resets only that room's lantern set and enemies; the other hub rooms keep their progress. Score and falls stay.
+- Chamber-02 is the middle room. Its floor hatch is an exit with `"requiresLanterns": false, "requiresHub": true`; it stays locked until every required lantern in chambers 01-03 is collected.
+- Side doors between 01-03 use `"requiresLanterns": false`, so the player can move around the hub freely while hunting lanterns.
+- The hub HUD shows `HUB x/y` progress, or `HATCH OPEN` when all required hub lanterns are collected.
+
+## Chamber-01: Entrance Hall
 
 - Three required lanterns: one above each mid ledge and one above the top platform.
-- The exit is a door on the right wall at `(248, 152, 8, 24)`, reachable from the ground floor. It stays locked until all three required lanterns are collected.
+- The right-wall exit leads to chamber-02 and is always open.
 - The central vine connects the ground to the top platform. The mid ledges are reached by dropping from the top; the player can return to the ground and climb again.
 - The electric hazard entry is present in the data but inert until T-042.
-- On a fall, lanterns and enemies reset and the exit closes again. Score and falls are kept. Losing the last fall opens the game-over screen.
 
-## Chamber-02: Vine Shaft (temporary)
+## Chamber-02: Vine Hub
 
-- A one-lantern return room used to exercise the chamber transition before T-041.
-- The lantern is above the left side of the ground; the vine and mid ledge remain from the format sample.
-- The right-wall exit returns to chamber-01, producing a two-chamber loop.
-- T-041 replaces this with the real second entrance chamber and the three-room hub.
+- Middle hub room with one required lantern above the left side of the ground.
+- Left and right wall doors lead to chambers 01 and 03.
+- A floor hatch at `(88, 168, 16, 8)` leads to chamber-04 once the whole hub is cleared.
+- The full-height vine and mid ledge are optional traversal routes.
+
+## Chamber-03: Pillar Room
+
+- Left low ledge and right high ledge, each reached by its own vine.
+- Two required lanterns, one above each ledge.
+- The left-wall door returns to chamber-02.
+
+## Chamber-04: Underhall
+
+- Three vines: left and right to the mid ledges, centre to the top platform.
+- Three required lanterns, one on each level.
+- The right-wall exit opens after the three lanterns and leads to chamber-05.
+- This is the first underworld chamber reached through the hub hatch.
+
+## Chamber-05: Deep Vault
+
+- Three staggered levels: left-low at y128, right-high at y96, top at y64, each served by a vine from the ground.
+- Three required lanterns, one on each level.
+- The right-wall exit leads back to chamber-04 until T-043 extends the fortress.
 
 ## Progress and transitions
 
 `ChamberProgress` owns the attempt state:
 
 - collects any uncollected lantern whose 16x16 box intersects Bruce,
-- tracks required and optional counts separately,
+- computes required and optional counts from its set; hub chambers share the set owned by `HubProgress`,
 - opens an exit when its required lanterns are complete, or immediately when `requiresLanterns` is false,
+- additionally requires `hubHatchOpen` when the exit has `requiresHub`,
 - finds an open exit whose rectangle intersects Bruce,
-- resets all lantern state on death.
+- resets the current chamber's lantern set on death.
 
-`ChamberScreen` awards 125 per lantern and 2,000 when entering an exit, then replaces itself with the target chamber from `ChamberCatalog`. Score and falls live in `GameSession` and survive chamber changes and non-final deaths.
+`ChamberScreen` awards 125 per lantern and 2,000 when entering an exit, then replaces itself with the target chamber from `ChamberCatalog`. Score and falls live in `GameSession` and survive chamber changes and non-final deaths. `GameSession.StartNewRun` clears hub progress.

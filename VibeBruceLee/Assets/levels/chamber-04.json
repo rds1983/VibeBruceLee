@@ -1,0 +1,35 @@
+{
+  "id": "chamber-04",
+  "name": "Underhall",
+  "width": 256,
+  "height": 192,
+  "playerSpawn": {
+    "x": 32,
+    "y": 144
+  },
+  "platforms": [
+    { "x": 0, "y": 176, "width": 256, "height": 16 },
+    { "x": 16, "y": 120, "width": 80, "height": 8 },
+    { "x": 160, "y": 120, "width": 80, "height": 8 },
+    { "x": 96, "y": 64, "width": 64, "height": 8 }
+  ],
+  "vines": [
+    { "x": 48, "y": 120, "width": 8, "height": 56, "orientation": "vertical" },
+    { "x": 202, "y": 120, "width": 8, "height": 56, "orientation": "vertical" },
+    { "x": 124, "y": 64, "width": 8, "height": 112, "orientation": "vertical" }
+  ],
+  "lanterns": [
+    { "id": "lantern-1", "x": 40, "y": 100, "required": true },
+    { "id": "lantern-2", "x": 208, "y": 100, "required": true },
+    { "id": "lantern-3", "x": 128, "y": 40, "required": true }
+  ],
+  "enemySpawns": [
+    { "type": "ninja", "x": 220, "y": 144 },
+    { "type": "yamo", "x": 80, "y": 144 }
+  ],
+  "hazards": [],
+  "exits": [
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-05" }
+  ],
+  "decor": []
+}

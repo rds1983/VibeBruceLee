@@ -103,7 +103,8 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 - Every chamber defines required lanterns and may define optional ones. The exit opens only when the required set is collected.
 - The exit is visible at a screen edge, floor hatch or ceiling opening. Its opening is signaled clearly: the edge flashes, the hatch animates, or an arrow appears. The HUD also shows required lantern progress and `EXIT OPEN`.
 - Entering an open exit awards 2,000 points and starts the target chamber. The player keeps score and falls; the target chamber starts with fresh lanterns and enemies.
-- The entrance hub has three chambers. All required lanterns in all three must be collected before a hatch opens in the floor of the middle chamber. Lantern state in the hub persists while the player moves between its chambers (T-041).
+- The entrance hub has three chambers. All required lanterns in all three must be collected before the floor hatch in the middle chamber opens. Hub lantern state persists between the three rooms; dying in one room resets only that room's lanterns and enemies.
+- The hub HUD shows pooled `HUB x/y` progress, and `HATCH OPEN` once the hatch is available. Side doors between the hub rooms are always open.
 - Every other chamber is independent: leaving through an exit ends it.
 - Dying on a non-final fall resets the current chamber's lanterns and enemies but keeps score and falls. The exit closes again. Hazards reset with the hazard framework in T-042.
 

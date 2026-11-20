@@ -146,9 +146,12 @@ public sealed class ChamberLoaderTests : IDisposable
 
 		var chambers = ChamberLoader.LoadAll(directory);
 
-		Assert.Equal(2, chambers.Count);
+		Assert.Equal(5, chambers.Count);
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-01");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-02");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-03");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-04");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-05");
 	}
 
 	private string Write(string name, string json)
