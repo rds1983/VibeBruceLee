@@ -67,7 +67,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* the overlay is usable during normal play and cheats are disabled outside debug builds.
 
 - [x] **T-016 Initial asset set**
-  Produce a coherent first-pass asset set: Bruce (idle, run, jump, duck, chop, kick, flying kick, climb, hit, death), Ninja, Yamo, tiles, lantern, HUD elements, and a readable pixel font. Include source files and generation notes.
+  Produce a coherent first-pass asset set: Bruce (idle, run, jump, duck, chop, kick, climb, hit, death), Ninja, Yamo, tiles, lantern, HUD elements, and a readable pixel font. Include source files and generation notes.
   *Done when:* all entities and the HUD render from the asset pipeline with no placeholders.
 
 ---
@@ -78,9 +78,10 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Implement run acceleration, variable-height jump, ducking, climbing vines up, down and sideways, and safe drops, with matching animations.
   *Done when:* all movement states are unit-tested and a manual feel check passes.
 
-- [ ] **T-021 Combat moves**
-  Implement the context-sensitive attack: chop while standing, kick while running, and flying kick while airborne, with wind-up, active frames, recovery, hitboxes, hitstun, knockdown, and animation cancels. Cover both hitting and being hit.
+- [x] **T-021 Combat moves**
+  Implement the context-sensitive attack: chop while standing and kick while running (the move reviewers call the flying kick), with wind-up, active frames, recovery, hitboxes, hitstun, knockdown, and animation cancels. Cover both hitting and being hit.
   *Done when:* frame data is centralized, tested, and documented in `Design/gameplay.md`.
+  *Plan:* add centralized attack frame data, player attack/hitstun/knockdown states, active hitboxes with one-hit-per-attack, contextual attack selection, and tests for timing, facing, hit application and recovery.
 
 - [ ] **T-022 Health, lives, and respawn**
   Handle enemy blows (three per fall), deadly hazards, death animation, five starting falls, an extra fall every 30,000 points, respawn with brief invulnerability, and game over.
@@ -227,3 +228,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-015 | 2026-11-20 | Debug-only overlay/controller with FPS, boxes, slow motion, frame step, invincibility and skip flags; documented. |
 | T-016 | 2026-11-20 | First-pass Bruce/Ninja/Yamo sheets, tile and HUD atlases, animation frame maps, and title/chamber showcases. |
 | T-020 | 2026-11-20 | Player locomotion: run, variable jump, duck, vine climbing/detach, state animations, wired into the sample chamber. |
+| T-021 | 2026-11-20 | Grounded chop/running-kick combat with centralized frame data, one-hit hitboxes, hitstun/knockdown and corrected source research. |

@@ -75,7 +75,7 @@ Joysticks supported: Kempston, Protek, and Sinclair/Interface 2. The attack butt
 - Duck under attacks.
 - Climb vines up, down, and sideways.
 - Drop from ledges without injury.
-- Chop while standing; kick while running; flying kick while airborne.
+- Chop (punch) while standing; kick while running. Reviewers call the running kick the "flying kick"; the manual documents no separate airborne attack.
 - Landing on an enemy scores points and can knock them down.
 - Enemies cannot duck. The Yamo can take three blows; the ninja can take two.
 - Enemies can hurt each other when they collide or when one is in the other's way.
@@ -140,6 +140,7 @@ These points are not fully documented and must be settled while building the cha
 - Whether environmental hazards cost a whole fall or a single blow. The remake currently rules that traps cost a fall; revisit in T-055.
 - Two-player scoring details for the player controlling Yamo, and whether the larger two-player fall reserve is shared or per player.
 - Exact frame timings, hitboxes and AI reaction times. These are remake decisions recorded in `Design/tuning.md`.
+- The CRASH review calls the running kick a "flying kick"; the manual lists no airborne attack. The remake treats them as the same move. Revisit only if stronger evidence appears.
 - The "waves of particles" mentioned in the manual: confirm whether they are a moving platform, a hazard, or both.
 
 ## Remake interpretation

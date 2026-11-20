@@ -24,7 +24,7 @@ Default bindings. Remapping and the final table land in T-011.
 | Fullscreen | `F11` | — |
 
 - Movement keys mirror the Spectrum original; modern keys are aliases.
-- Attack is contextual, as in the original: standing = chop, running = kick, airborne = flying kick.
+- Attack is contextual, as in the original: standing = chop, running = kick. Attacks only start while grounded.
 - Up climbs vines; jumping is `X`/`Space`.
 - Jump and attack presses are buffered for 120 ms so a slightly early input still lands.
 - Fullscreen and integer scaling are presentation settings, not gameplay actions.
@@ -46,14 +46,28 @@ Default bindings. Remapping and the final table land in T-011.
 | Move | Input | Hits | Notes |
 | ---- | ----- | ---- | ----- |
 | Chop | Attack while standing (grounded) | 1 | High score value |
-| Kick | Attack while running | 1 | Longer reach, lower score |
-| Flying kick | Attack while airborne | 1 | Strongest knockback; scored as a kick |
+| Kick (flying kick) | Attack while running | 1 | Longer reach, lower score |
 | Land on enemy | Fall onto an enemy | — | 50 points and a knockdown; does not consume a hit point |
 
 - Each attack has wind-up, active and recovery frames. Hitboxes are active only during the active frames.
 - One attack can hit a given target at most once.
-- Attacks cannot be canceled into another attack before recovery ends.
+- Attacks cannot be canceled into another attack before recovery ends. Taking a hit cancels the current attack.
+- Attacks only start while grounded. Airborne attack presses are ignored.
 - Landing on an enemy causes a knockdown but no hit-point damage.
+
+### Attack frame data
+
+All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
+
+| Attack | Startup | Active | Recovery | Total | Hitbox (w x h, y offset) | Knockback | Hitstun | Knockdown | Animation frames | Score |
+| ------ | ------- | ------ | -------- | ----- | ------------------------- | --------- | ------- | --------- | ---------------- | ----- |
+| Chop | 1 | 2 | 3 | 6 | 10x8, +6 | 50, -15 | 8 | No | 8 / 9 / 8 | 100 |
+| Kick | 2 | 2 | 4 | 8 | 16x8, +10 | 90, -20 | 12 | No | 12 / 13 / 12 | 75 |
+
+- Attack selection is contextual: moving faster than 20 px/s = kick, otherwise chop.
+- The running kick is the move contemporary reviews call the flying kick.
+- The hitbox extends forward from the body edge and mirrors with facing.
+- These values are the tuning baseline and may be adjusted in T-055.
 
 ### Enemy durability and knockouts
 
@@ -130,7 +144,7 @@ Default bindings. Remapping and the final table land in T-011.
 | ----- | ------ |
 | Lantern | 125 |
 | Chop | 100 |
-| Kick or flying kick | 75 |
+| Kick | 75 |
 | Land on enemy | 50 |
 | Knock out Ninja | 200 |
 | Knock out Yamo | 450 |

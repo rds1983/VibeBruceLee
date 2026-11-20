@@ -6,7 +6,7 @@ using VibeBruceLee.Core.Physics;
 namespace VibeBruceLee.Core.Gameplay;
 
 /// <summary>
-/// Bruce's locomotion state machine on top of <see cref="PhysicsWorld"/>.
+/// Bruce's locomotion and combat state machine on top of <see cref="PhysicsWorld"/>.
 /// </summary>
 public sealed class Player
 {
@@ -18,12 +18,19 @@ public sealed class Player
 	public const float ClimbSpeed = 60f;
 	public const int BodyWidth = 10;
 	public const int BodyHeight = 22;
+	public const int KnockdownFrames = 24;
+	public const float RunAttackThreshold = 20f;
 
 	private readonly PhysicsWorld _world;
 	private readonly IReadOnlyList<Platform> _platforms;
 	private readonly IReadOnlyList<Vine> _vines;
 	private readonly AnimationPlayer _animation = new();
 	private bool _jumpHeld;
+	private AttackDefinition? _attack;
+	private int _attackFrame;
+	private bool _hasHitThisAttack;
+	private int _hitstunFrames;
+	private int _knockdownFrames;
 
 	public Player(
 		PhysicsWorld world,
@@ -48,16 +55,113 @@ public sealed class Player
 
 	public bool FacingLeft { get; private set; }
 
-	public int CurrentFrame => _animation.CurrentFrame;
+	public bool IsAttacking => _attack is not null;
+
+	public AttackType AttackType => _attack?.Type ?? AttackType.None;
+
+	public int AttackFrame => _attackFrame;
+
+	public bool IsHurt => _hitstunFrames > 0 || _knockdownFrames > 0;
+
+	public Aabb Hurtbox => Body.Bounds;
+
+	public int CurrentFrame
+	{
+		get
+		{
+			if (_knockdownFrames > 0)
+			{
+				return 17;
+			}
+
+			if (_hitstunFrames > 0)
+			{
+				return 16;
+			}
+
+			if (_attack is not null)
+			{
+				if (_attackFrame < _attack.ActiveStart)
+				{
+					return _attack.StartupAnimationFrame;
+				}
+
+				if (_attackFrame < _attack.ActiveEnd)
+				{
+					return _attack.ActiveAnimationFrame;
+				}
+
+				return _attack.RecoveryAnimationFrame;
+			}
+
+			return _animation.CurrentFrame;
+		}
+	}
 
 	public void Update(InputSystem input, float deltaSeconds)
 	{
 		ArgumentNullException.ThrowIfNull(input);
 		ArgumentOutOfRangeException.ThrowIfNegative(deltaSeconds);
 
+		if (_knockdownFrames > 0)
+		{
+			_knockdownFrames--;
+			ApplyHitDrag(deltaSeconds);
+			_world.Step(Body, deltaSeconds, _platforms, _vines);
+			UpdateState(input);
+			UpdateAnimation(deltaSeconds);
+			return;
+		}
+
+		if (_hitstunFrames > 0)
+		{
+			_hitstunFrames--;
+			ApplyHitDrag(deltaSeconds);
+			_world.Step(Body, deltaSeconds, _platforms, _vines);
+			UpdateState(input);
+			UpdateAnimation(deltaSeconds);
+			return;
+		}
+
+		if (_attack is not null)
+		{
+			_attackFrame++;
+			if (_attackFrame >= _attack.TotalFrames)
+			{
+				EndAttack();
+			}
+			else
+			{
+				ApplyHitDrag(deltaSeconds);
+			}
+
+			_world.Step(Body, deltaSeconds, _platforms, _vines);
+			UpdateState(input);
+			UpdateAnimation(deltaSeconds);
+			return;
+		}
+
 		var grounded = Body.IsGrounded;
 		var move = Direction(input.IsHeld(InputAction.MoveRight), input.IsHeld(InputAction.MoveLeft));
 		var down = input.IsHeld(InputAction.MoveDown);
+		var canAttack = grounded && Body.ClimbingVine is null && !down;
+		if (!canAttack && input.WasPressed(InputAction.Attack))
+		{
+			input.ConsumeBuffered(InputAction.Attack);
+		}
+
+		var attackPressed = canAttack &&
+			(input.WasPressed(InputAction.Attack) || input.ConsumeBuffered(InputAction.Attack));
+
+		if (attackPressed)
+		{
+			StartAttack(ChooseAttack());
+			input.ConsumeBuffered(InputAction.Attack);
+			_world.Step(Body, deltaSeconds, _platforms, _vines);
+			UpdateState(input);
+			UpdateAnimation(deltaSeconds);
+			return;
+		}
 
 		if (Body.ClimbingVine is Vine vine)
 		{
@@ -133,9 +237,107 @@ public sealed class Player
 		UpdateAnimation(deltaSeconds);
 	}
 
+	public bool TryGetAttackHitbox(out Aabb hitbox)
+	{
+		if (_attack is null || _hasHitThisAttack || !_attack.IsActive(_attackFrame))
+		{
+			hitbox = default;
+			return false;
+		}
+
+		var body = Body.Bounds;
+		var x = FacingLeft
+			? body.X - _attack.HitboxWidth
+			: body.Right;
+
+		hitbox = new Aabb(
+			x,
+			body.Y + _attack.HitboxOffsetY,
+			_attack.HitboxWidth,
+			_attack.HitboxHeight);
+
+		return true;
+	}
+
+	/// <summary>
+	/// Checks one target against the active hitbox. Each attack can hit a target
+	/// at most once; returns the attack data on a hit.
+	/// </summary>
+	public AttackDefinition? TryHit(Aabb target)
+	{
+		if (!TryGetAttackHitbox(out var hitbox) || !hitbox.Intersects(target))
+		{
+			return null;
+		}
+
+		_hasHitThisAttack = true;
+		return _attack;
+	}
+
+	public void ApplyHit(AttackDefinition hit, bool fromLeft)
+	{
+		ArgumentNullException.ThrowIfNull(hit);
+
+		_attack = null;
+		_attackFrame = 0;
+		_hasHitThisAttack = false;
+		_hitstunFrames = hit.KnocksDown ? 0 : hit.HitstunFrames;
+		_knockdownFrames = hit.KnocksDown ? KnockdownFrames : 0;
+		Body.Velocity = new Vector2(
+			(fromLeft ? 1 : -1) * hit.KnockbackX,
+			hit.KnockbackY);
+
+		State = hit.KnocksDown ? PlayerState.KnockedDown : PlayerState.Hit;
+	}
+
+	private AttackType ChooseAttack()
+	{
+		return MathF.Abs(Body.Velocity.X) > RunAttackThreshold
+			? AttackType.Kick
+			: AttackType.Chop;
+	}
+
+	private void StartAttack(AttackType type)
+	{
+		_attack = AttackDefinitions.Get(type);
+		_attackFrame = 0;
+		_hasHitThisAttack = false;
+
+		if (type == AttackType.Chop)
+		{
+			Body.Velocity = new Vector2(0, Body.Velocity.Y);
+		}
+	}
+
+	private void EndAttack()
+	{
+		_attack = null;
+		_attackFrame = 0;
+		_hasHitThisAttack = false;
+	}
+
+	private void ApplyHitDrag(float deltaSeconds)
+	{
+		Body.Velocity = new Vector2(
+			MoveTowards(Body.Velocity.X, 0, RunFriction * deltaSeconds),
+			Body.Velocity.Y);
+	}
+
 	private void UpdateState(InputSystem input)
 	{
-		if (Body.ClimbingVine is not null)
+		if (_knockdownFrames > 0)
+		{
+			State = PlayerState.KnockedDown;
+		}
+		else if (_hitstunFrames > 0)
+		{
+			State = PlayerState.Hit;
+		}
+		else if (_attack is not null)
+		{
+			State = PlayerState.Attack;
+		}
+		else if (Body.ClimbingVine is not null)
 		{
 			State = PlayerState.Climb;
 		}
@@ -158,6 +360,11 @@ public sealed class Player
 
 	private void UpdateAnimation(float deltaSeconds)
 	{
+		if (State is PlayerState.Attack or PlayerState.Hit or PlayerState.KnockedDown)
+		{
+			return;
+		}
+
 		var clip = State switch
 		{
 			PlayerState.Run => PlayerAnimations.Run,

@@ -104,7 +104,12 @@ public sealed class ChamberScreen : IGameScreen
 			}
 
 			var playerBounds = _player.Body.Bounds;
-			_context.Debug.AddHitbox(ToRectangle(playerBounds));
+			_context.Debug.AddHurtbox(ToRectangle(playerBounds));
+
+			if (_player.TryGetAttackHitbox(out var attackBox))
+			{
+				_context.Debug.AddHitbox(ToRectangle(attackBox));
+			}
 		}
 	}
 

@@ -83,7 +83,7 @@ Character art is procedural first-pass pixel art in `Tools/VibeBruceLee.AssetGen
 
 | Sheet | Frame size | Frames | Map |
 | ----- | ---------- | ------ | --- |
-| `art/bruce.png` | 16x24 | 20 | 0-1 idle, 2-5 run, 6 jump, 7 duck, 8-9 chop, 10-11 kick, 12-13 flying kick, 14-15 climb, 16 hit, 17-19 death |
+| `art/bruce.png` | 16x24 | 20 | 0-1 idle, 2-5 run, 6 jump, 7 duck, 8-9 chop, 10-13 kick variants (running kick uses 12-13), 14-15 climb, 16 hit, 17-19 death |
 | `art/ninja.png` | 16x24 | 10 | 0-1 idle, 2-5 run, 6-7 attack, 8 hit, 9 fall |
 | `art/yamo.png` | 24x28 | 10 | 0-1 idle, 2-5 run, 6-7 attack, 8 hit, 9 fall |
 

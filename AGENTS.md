@@ -112,7 +112,7 @@ Docs must match the code. If behavior and docs disagree, fix one of them in the 
 
 ## Git rules
 
-- One task per commit. Suggested message: `T-021: Add chop, kick and flying kick`.
+- One task per commit. Suggested message: `T-021: Add chop and running kick`.
 - Never commit before explicit confirmation.
 - Run the build and tests again immediately before committing.
 - Check `git status` and stage only files related to the task.
