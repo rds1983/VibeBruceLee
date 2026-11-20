@@ -147,7 +147,7 @@ The chamber HUD reads score, blows, falls and lantern progress from the player, 
 ## Chamber runtime
 
 - `ChamberCatalog` holds every loaded chamber in sorted file order. `First` is the start chamber, `Get(id)` resolves exit targets, and `TryGet` handles optional lookups.
-- `ScreenContext` carries the catalog instead of a single chamber. `TitleScreen` starts `Chambers.First`.
+- `ScreenContext` carries the chamber catalog, session, high scores, audio, backdrop texture, portrait sheet and wizard sheet. `TitleScreen` starts `Chambers.First`, `ChamberScreen` draws the 256x192 backdrop before geometry, and the boss room uses the two-frame wizard sheet for warning/firing.
 - `ChamberProgress` owns per-attempt lantern state. It collects a lantern when Bruce's hurtbox intersects its 16x16 box, computes required and optional counts from its set, opens exits when required lanterns are complete (`requiresLanterns: false` bypasses the gate), additionally checks the hub hatch flag for `requiresHub` exits, finds an open exit under Bruce, and resets on death.
 - Hub chambers (`hub: true`) pass the set owned by `HubProgress` (on `GameSession`) into `ChamberProgress`, so collected lanterns persist between the three rooms. The middle room's `requiresHub` floor hatch opens only when every required lantern across the hub is collected. Dying resets only the current room's set; a new run clears all hub progress.
 - The chamber HUD shows pooled `HUB x/y` progress in hub rooms and `HATCH OPEN` when the hub gate clears. Non-hub rooms show `EXIT OPEN` when their own required lanterns are complete.

@@ -24,6 +24,9 @@ public static class AssetGenerator
 		WritePng(Path.Combine(artDirectory, "tiles.png"), TileArt.CreateTiles());
 		WritePng(Path.Combine(artDirectory, "hud-life.png"), TileArt.CreateHudLife());
 		WritePng(Path.Combine(artDirectory, "hud-lantern.png"), TileArt.CreateHudLantern());
+		WritePng(Path.Combine(artDirectory, "backdrop.png"), StageArt.CreateBackdrop());
+		WritePng(Path.Combine(artDirectory, "portraits.png"), PortraitArt.CreatePortraits());
+		WritePng(Path.Combine(artDirectory, "wizard.png"), PortraitArt.CreateWizardSheet());
 
 		WavWriter.WritePickup(Path.Combine(audioDirectory, "pickup.wav"));
 		WriteWave(Path.Combine(audioDirectory, "jump.wav"), WavWriter.CreateJumpSamples());
@@ -58,6 +61,9 @@ public static class AssetGenerator
 		VerifyPng(Path.Combine(root, "art", "tiles.png"), TileArt.CreateTiles(), errors);
 		VerifyPng(Path.Combine(root, "art", "hud-life.png"), TileArt.CreateHudLife(), errors);
 		VerifyPng(Path.Combine(root, "art", "hud-lantern.png"), TileArt.CreateHudLantern(), errors);
+		VerifyPng(Path.Combine(root, "art", "backdrop.png"), StageArt.CreateBackdrop(), errors);
+		VerifyPng(Path.Combine(root, "art", "portraits.png"), PortraitArt.CreatePortraits(), errors);
+		VerifyPng(Path.Combine(root, "art", "wizard.png"), PortraitArt.CreateWizardSheet(), errors);
 		VerifyWave(Path.Combine(root, "audio", "pickup.wav"), WavWriter.CreatePickupSamples(), errors);
 		VerifyWave(Path.Combine(root, "audio", "jump.wav"), WavWriter.CreateJumpSamples(), errors);
 		VerifyWave(Path.Combine(root, "audio", "land.wav"), WavWriter.CreateLandSamples(), errors);

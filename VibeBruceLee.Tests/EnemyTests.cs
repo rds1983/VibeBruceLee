@@ -632,6 +632,18 @@ public class EnemyTests
 	}
 
 	[Fact]
+	public void EnemySheetsUseTypeSpecificHitAndFallenFrames()
+	{
+		Assert.Equal(8, EnemyDefinitions.Ninja.HitAnimationFrame);
+		Assert.Equal(9, EnemyDefinitions.Ninja.FallenAnimationFrame);
+		Assert.Equal(10, EnemyDefinitions.Ninja.JumpWindupAnimationFrame);
+		Assert.Equal(10, EnemyDefinitions.Yamo.HitAnimationFrame);
+		Assert.Equal(11, EnemyDefinitions.Yamo.FallenAnimationFrame);
+		Assert.Equal(8, EnemyDefinitions.YamoCrush.StartupAnimationFrame);
+		Assert.Equal(9, EnemyDefinitions.YamoCrush.ActiveAnimationFrame);
+	}
+
+	[Fact]
 	public void SeededRandomIsDeterministic()
 	{
 		var first = new SeededRandom(12345);

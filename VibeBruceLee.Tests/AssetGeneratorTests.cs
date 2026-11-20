@@ -17,6 +17,9 @@ public sealed class AssetGeneratorTests : IDisposable
 		"art/tiles.png",
 		"art/hud-life.png",
 		"art/hud-lantern.png",
+		"art/backdrop.png",
+		"art/portraits.png",
+		"art/wizard.png",
 		"audio/pickup.wav",
 		"audio/jump.wav",
 		"audio/land.wav",
@@ -54,11 +57,14 @@ public sealed class AssetGeneratorTests : IDisposable
 		AssertPngSize(Path.Combine(_root, "art/lantern.png"), 16, 16);
 		AssertPngSize(Path.Combine(_root, "art/lantern-sheet.png"), 64, 16);
 		AssertPngSize(Path.Combine(_root, "art/bruce.png"), 320, 24);
-		AssertPngSize(Path.Combine(_root, "art/ninja.png"), 160, 24);
-		AssertPngSize(Path.Combine(_root, "art/yamo.png"), 240, 28);
+		AssertPngSize(Path.Combine(_root, "art/ninja.png"), 224, 24);
+		AssertPngSize(Path.Combine(_root, "art/yamo.png"), 288, 28);
 		AssertPngSize(Path.Combine(_root, "art/tiles.png"), 32, 8);
 		AssertPngSize(Path.Combine(_root, "art/hud-life.png"), 8, 8);
 		AssertPngSize(Path.Combine(_root, "art/hud-lantern.png"), 8, 8);
+		AssertPngSize(Path.Combine(_root, "art/backdrop.png"), 256, 192);
+		AssertPngSize(Path.Combine(_root, "art/portraits.png"), 96, 32);
+		AssertPngSize(Path.Combine(_root, "art/wizard.png"), 64, 32);
 		foreach (var sound in GeneratedFiles.Where(file => file.EndsWith(".wav", StringComparison.Ordinal)))
 		{
 			AssertWave(Path.Combine(_root, sound));

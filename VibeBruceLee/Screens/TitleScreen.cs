@@ -16,7 +16,6 @@ public sealed class TitleScreen : IGameScreen
 	private readonly SpriteFontBase _logo;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
-	private readonly AnimationPlayer _brucePlayer = new();
 	private readonly AnimationPlayer _lanternPlayer = new();
 	private double _blinkTime;
 
@@ -30,7 +29,6 @@ public sealed class TitleScreen : IGameScreen
 		_logo = context.FontSystem.GetFont(24);
 		_font16 = context.FontSystem.GetFont(16);
 		_font8 = context.FontSystem.GetFont(8);
-		_brucePlayer.Play(ScreenAnimations.BruceIdle);
 		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
 
@@ -44,7 +42,6 @@ public sealed class TitleScreen : IGameScreen
 
 	public void Update(GameTime gameTime, InputSystem input)
 	{
-		_brucePlayer.Update(gameTime.ElapsedGameTime.TotalSeconds);
 		_lanternPlayer.Update(gameTime.ElapsedGameTime.TotalSeconds);
 		_blinkTime += gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -71,11 +68,11 @@ public sealed class TitleScreen : IGameScreen
 			SpriteEffects.None,
 			SpriteLayers.Background);
 
-		_context.Bruce.Draw(
+		_context.Portraits.Draw(
 			spriteBatch,
-			_brucePlayer.CurrentFrame,
-			new Vector2(8, 126),
-			2,
+			0,
+			new Vector2(8, 134),
+			1,
 			Color.White,
 			SpriteEffects.None,
 			SpriteLayers.World);

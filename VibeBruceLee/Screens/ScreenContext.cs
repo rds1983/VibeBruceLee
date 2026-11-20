@@ -23,6 +23,9 @@ public sealed class ScreenContext
 		SpriteSheet lanternSheet,
 		Texture2D hudLife,
 		Texture2D hudLantern,
+		Texture2D backdrop,
+		SpriteSheet portraits,
+		SpriteSheet wizard,
 		Texture2D pixel,
 		DebugState debug,
 		ChamberCatalog chambers,
@@ -38,6 +41,9 @@ public sealed class ScreenContext
 		ArgumentNullException.ThrowIfNull(lanternSheet);
 		ArgumentNullException.ThrowIfNull(hudLife);
 		ArgumentNullException.ThrowIfNull(hudLantern);
+		ArgumentNullException.ThrowIfNull(backdrop);
+		ArgumentNullException.ThrowIfNull(portraits);
+		ArgumentNullException.ThrowIfNull(wizard);
 		ArgumentNullException.ThrowIfNull(pixel);
 		ArgumentNullException.ThrowIfNull(debug);
 		ArgumentNullException.ThrowIfNull(chambers);
@@ -53,6 +59,9 @@ public sealed class ScreenContext
 		LanternSheet = lanternSheet;
 		HudLife = hudLife;
 		HudLantern = hudLantern;
+		Backdrop = backdrop;
+		Portraits = portraits;
+		Wizard = wizard;
 		Pixel = pixel;
 		Debug = debug;
 		Chambers = chambers;
@@ -76,6 +85,12 @@ public sealed class ScreenContext
 	public Texture2D HudLife { get; }
 
 	public Texture2D HudLantern { get; }
+
+	public Texture2D Backdrop { get; }
+
+	public SpriteSheet Portraits { get; }
+
+	public SpriteSheet Wizard { get; }
 
 	public Texture2D Pixel { get; }
 

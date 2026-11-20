@@ -3,8 +3,8 @@ using VibeBruceLee.Animation;
 namespace VibeBruceLee.Gameplay;
 
 /// <summary>
-/// Frame maps shared by the Ninja and Yamo sheets: 0-1 idle, 2-5 run,
-/// 6-7 attack, 8 hit, 9 fallen.
+/// Shared idle/run frame maps. Hit, fallen, jump and attack frames live on the
+/// enemy definition so the Ninja and Yamo sheets can use different poses.
 /// </summary>
 public static class EnemyAnimations
 {

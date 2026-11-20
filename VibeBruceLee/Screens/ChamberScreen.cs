@@ -195,10 +195,10 @@ public sealed class ChamberScreen : IGameScreen
 	public void Draw(SpriteBatch spriteBatch)
 	{
 		spriteBatch.Draw(
-			_context.Pixel,
+			_context.Backdrop,
 			new Rectangle(0, 0, GameInfo.VirtualWidth, GameInfo.VirtualHeight),
 			null,
-			Palette.Background,
+			Color.White,
 			0f,
 			Vector2.Zero,
 			SpriteEffects.None,
@@ -451,21 +451,15 @@ public sealed class ChamberScreen : IGameScreen
 			return;
 		}
 
-		var bounds = _wizard.Bounds;
-		var head = _wizard.IsDefeated ? new Color(220, 60, 60) : new Color(90, 30, 120);
-		var hat = new Color(40, 10, 60);
-		var eye = _wizard.IsWarning || _wizard.IsFiring ? Palette.Yellow : Palette.White;
-
-		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X - 4, (int)bounds.Y - 4, (int)bounds.Width + 8, 4), null, hat, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
-		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X + 6, (int)bounds.Y - 12, (int)bounds.Width - 12, 8), null, hat, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
-		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height), null, head, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
-
-		var leftEyeX = (int)(bounds.X + (bounds.Width * 0.32f)) - 2;
-		var rightEyeX = (int)(bounds.X + (bounds.Width * 0.68f)) - 2;
-		var eyeY = (int)(bounds.Y + (bounds.Height * 0.35f));
-		spriteBatch.Draw(_context.Pixel, new Rectangle(leftEyeX, eyeY, 4, 4), null, eye, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
-		spriteBatch.Draw(_context.Pixel, new Rectangle(rightEyeX, eyeY, 4, 4), null, eye, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
-		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X + 8, (int)bounds.Y + (int)(bounds.Height * 0.7f), (int)bounds.Width - 16, 3), null, hat, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+		var frame = _wizard.IsWarning || _wizard.IsFiring ? 1 : 0;
+		_context.Wizard.Draw(
+			spriteBatch,
+			frame,
+			new Vector2(_wizard.Bounds.X, _wizard.Bounds.Y),
+			1,
+			Color.White,
+			SpriteEffects.None,
+			SpriteLayers.World);
 
 		var button = _wizard.ButtonBounds;
 		var buttonColor = _wizard.IsDefeated ? new Color(80, 200, 80) : new Color(200, 40, 40);

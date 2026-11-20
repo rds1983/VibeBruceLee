@@ -33,6 +33,9 @@ public sealed class BruceLeeGame : Game
 	private SpriteSheet? _lanternSheet;
 	private Texture2D? _hudLife;
 	private Texture2D? _hudLantern;
+	private Texture2D? _backdrop;
+	private SpriteSheet? _portraits;
+	private SpriteSheet? _wizardSheet;
 	private Texture2D? _pixel;
 	private GameAudio? _audio;
 	private ScreenStack? _screens;
@@ -90,6 +93,9 @@ public sealed class BruceLeeGame : Game
 			16);
 		var hudLife = assets.LoadTexture2D(GraphicsDevice, "art/hud-life.png");
 		var hudLantern = assets.LoadTexture2D(GraphicsDevice, "art/hud-lantern.png");
+		var backdrop = assets.LoadTexture2D(GraphicsDevice, "art/backdrop.png");
+		var portraits = new SpriteSheet(assets.LoadTexture2D(GraphicsDevice, "art/portraits.png"), 32, 32);
+		var wizardSheet = new SpriteSheet(assets.LoadTexture2D(GraphicsDevice, "art/wizard.png"), 32, 32);
 		var chambers = new ChamberCatalog(ChamberLoader.LoadAll(Path.Combine(
 			AppContext.BaseDirectory,
 			"Assets",
@@ -110,6 +116,9 @@ public sealed class BruceLeeGame : Game
 		_lanternSheet = lanternSheet;
 		_hudLife = hudLife;
 		_hudLantern = hudLantern;
+		_backdrop = backdrop;
+		_portraits = portraits;
+		_wizardSheet = wizardSheet;
 		_pixel = pixel;
 		_audio = audio;
 
@@ -122,6 +131,9 @@ public sealed class BruceLeeGame : Game
 			lanternSheet,
 			hudLife,
 			hudLantern,
+			backdrop,
+			portraits,
+			wizardSheet,
 			pixel,
 			_debugState,
 			chambers,
@@ -151,6 +163,9 @@ public sealed class BruceLeeGame : Game
 		_audio?.Dispose();
 		_hudLife?.Dispose();
 		_hudLantern?.Dispose();
+		_backdrop?.Dispose();
+		_portraits?.Texture.Dispose();
+		_wizardSheet?.Texture.Dispose();
 		_lanternSheet?.Texture.Dispose();
 		_yamoSheet?.Texture.Dispose();
 		_tilesSheet?.Texture.Dispose();

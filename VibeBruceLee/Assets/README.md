@@ -19,9 +19,12 @@ dotnet run --project Tools/VibeBruceLee.AssetGen -- VibeBruceLee/Assets
 Current bootstrap assets:
 
 - `art/bruce.png` - 20-frame Bruce animation sheet.
-- `art/ninja.png` - 10-frame Ninja sheet.
-- `art/yamo.png` - 10-frame Yamo sheet.
+- `art/ninja.png` - 14-frame Ninja sheet.
+- `art/yamo.png` - 12-frame Yamo sheet.
 - `art/tiles.png` - 4-tile 8x8 atlas.
+- `art/backdrop.png` - 256x192 temple wall.
+- `art/portraits.png` - Bruce/Ninja/Yamo 32x32 portraits.
+- `art/wizard.png` - two 32x32 wizard frames.
 - `art/hud-life.png`, `art/hud-lantern.png` - HUD icons.
 - `art/test-card.png` - 64x48 pipeline/debug test card.
 - `art/lantern.png` - 16x16 lantern sample sprite.

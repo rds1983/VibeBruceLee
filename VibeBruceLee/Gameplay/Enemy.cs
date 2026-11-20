@@ -119,15 +119,15 @@ public sealed class Enemy
 			{
 				case EnemyState.KnockedDown:
 				case EnemyState.Respawning:
-					return 9;
+					return Definition.FallenAnimationFrame;
 				case EnemyState.Stunned:
-					return 8;
+					return Definition.HitAnimationFrame;
 				case EnemyState.Attack:
 					return GetAttackAnimationFrame(_attack ?? Definition.Attack, _attackFrame);
 				case EnemyState.Jumping:
 					if (_jumpFrame <= Definition.JumpWindupFrames)
 					{
-						return 0;
+						return Definition.JumpWindupAnimationFrame;
 					}
 
 					return GetAttackAnimationFrame(

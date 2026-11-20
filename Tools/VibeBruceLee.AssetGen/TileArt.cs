@@ -2,16 +2,18 @@ namespace VibeBruceLee.AssetGen;
 
 public static class TileArt
 {
-	private static readonly RgbaColor Brick = RgbaColor.FromHex(0x902020);
-	private static readonly RgbaColor BrickLight = RgbaColor.FromHex(0xD06040);
-	private static readonly RgbaColor Mortar = RgbaColor.FromHex(0x301010);
-	private static readonly RgbaColor Stone = RgbaColor.FromHex(0x707880);
-	private static readonly RgbaColor StoneLight = RgbaColor.FromHex(0xB0B8C0);
-	private static readonly RgbaColor StoneDark = RgbaColor.FromHex(0x404850);
-	private static readonly RgbaColor Dark = RgbaColor.FromHex(0x202030);
-	private static readonly RgbaColor DarkLight = RgbaColor.FromHex(0x383850);
-	private static readonly RgbaColor Green = RgbaColor.FromHex(0x30A040);
+	private static readonly RgbaColor Brick = RgbaColor.FromHex(0x8A1C1C);
+	private static readonly RgbaColor BrickLight = RgbaColor.FromHex(0xC85038);
+	private static readonly RgbaColor BrickShadow = RgbaColor.FromHex(0x541010);
+	private static readonly RgbaColor Mortar = RgbaColor.FromHex(0x2A0C0C);
+	private static readonly RgbaColor Stone = RgbaColor.FromHex(0x687078);
+	private static readonly RgbaColor StoneLight = RgbaColor.FromHex(0xA8B0B8);
+	private static readonly RgbaColor StoneDark = RgbaColor.FromHex(0x383F48);
+	private static readonly RgbaColor Dark = RgbaColor.FromHex(0x1C1C2C);
+	private static readonly RgbaColor DarkLight = RgbaColor.FromHex(0x303048);
+	private static readonly RgbaColor Green = RgbaColor.FromHex(0x2A9038);
 	private static readonly RgbaColor GreenLight = RgbaColor.FromHex(0x80E060);
+	private static readonly RgbaColor GreenDark = RgbaColor.FromHex(0x186028);
 	private static readonly RgbaColor Skin = RgbaColor.FromHex(0xE8B080);
 	private static readonly RgbaColor Hair = RgbaColor.FromHex(0x181818);
 	private static readonly RgbaColor Yellow = RgbaColor.FromHex(0xFFD800);
@@ -61,8 +63,12 @@ public static class TileArt
 		image.FillRect(x, 4, 8, 1, Mortar);
 		image.FillRect(x, 0, 1, 4, Mortar);
 		image.FillRect(x + 4, 4, 1, 4, Mortar);
-		image.FillRect(x + 1, 1, 2, 2, BrickLight);
-		image.FillRect(x + 5, 5, 2, 2, BrickLight);
+		image.FillRect(x + 1, 1, 2, 1, BrickLight);
+		image.FillRect(x + 1, 2, 1, 1, BrickLight);
+		image.FillRect(x + 5, 5, 2, 1, BrickLight);
+		image.FillRect(x + 5, 6, 1, 1, BrickLight);
+		image.FillRect(x + 6, 2, 1, 2, BrickShadow);
+		image.FillRect(x + 2, 6, 1, 2, BrickShadow);
 	}
 
 	private static void DrawStone(RgbaImage image, int x)
@@ -72,23 +78,31 @@ public static class TileArt
 		image.FillRect(x, 0, 1, 8, StoneLight);
 		image.FillRect(x, 7, 8, 1, StoneDark);
 		image.FillRect(x + 7, 0, 1, 8, StoneDark);
-		image.FillRect(x + 2, 2, 3, 2, StoneLight);
+		image.FillRect(x + 2, 2, 3, 1, StoneLight);
+		image.FillRect(x + 2, 3, 1, 2, StoneLight);
+		image.FillRect(x + 5, 4, 1, 2, StoneDark);
+		image.FillRect(x + 4, 5, 1, 1, StoneDark);
 	}
 
 	private static void DrawVine(RgbaImage image, int x)
 	{
 		image.FillRect(x + 3, 0, 2, 8, Green);
+		image.FillRect(x + 3, 0, 1, 8, GreenDark);
 		image.FillRect(x + 2, 1, 1, 1, GreenLight);
 		image.FillRect(x + 5, 2, 1, 1, GreenLight);
+		image.FillRect(x + 1, 3, 1, 1, GreenLight);
 		image.FillRect(x + 2, 4, 1, 1, GreenLight);
 		image.FillRect(x + 5, 5, 2, 1, GreenLight);
 		image.FillRect(x + 2, 6, 1, 1, GreenLight);
+		image.FillRect(x + 5, 7, 1, 1, GreenDark);
 	}
 
 	private static void DrawDark(RgbaImage image, int x)
 	{
 		image.FillRect(x, 0, 8, 8, Dark);
 		image.FillRect(x, 0, 8, 1, DarkLight);
+		image.FillRect(x, 0, 1, 8, DarkLight);
 		image.FillRect(x + 2, 3, 2, 2, DarkLight);
+		image.FillRect(x + 5, 5, 1, 2, RgbaColor.FromHex(0x101018));
 	}
 }

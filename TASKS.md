@@ -159,7 +159,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Create original chiptune-style sound effects for chops, kicks, jumps, hits, knockdowns, lantern pickups, death, exits, and the wizard. Add optional title music, volume control, sound toggle, and mute.
   *Done when:* every gameplay event is wired, audio failures never crash the game, and generated audio sources are committed.
 
-- [ ] **T-053 Art polish**
+- [x] **T-053 Art polish**
   Replace first-pass art with final tiles, backdrops, character animation, portraits, and the wizard. Give the Ninja a dedicated leap wind-up and airborne pose, and the Yamo distinct punch and kick poses. Document the palette and pixel grid in `Design/assets.md`.
   *Done when:* visuals are consistent across all chambers and every asset has a source file.
 
@@ -246,3 +246,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-050 | 2026-11-20 | Title logo/story/blinking start prompt, dedicated keyboard+gamepad controls screen bound to C/B, and controls input test. |
 | T-051 | 2026-11-20 | Persisted top-five high scores with fail-safe JSON load/save, initials entry, high-score and pause screens, and `TOP` on title/HUD. |
 | T-052 | 2026-11-20 | Twelve generated chiptune WAVs, failure-safe `GameAudio`, player/enemy/wizard/chamber event wiring, mute/volume bindings, asset verification and audio settings tests. |
+| T-053 | 2026-11-20 | Refined tiles and fighter shading, Ninja leap and Yamo punch/kick frames, temple backdrop, Bruce/Ninja/Yamo portraits, two-frame wizard sprite, updated palette/pixel-grid docs. |

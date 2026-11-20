@@ -18,17 +18,17 @@ public static class CharacterArt
 
 	private static readonly FighterStyle BruceStyle = new(
 		16, 24, 6, 5, 6, 2,
-		Skin, Hair, Yellow, Black, Black,
+		Skin, Hair, Yellow, RgbaColor.FromHex(0xB89000), Black, Black,
 		Bald: false, Mask: false, Headband: false, BareArms: false, SideStripe: true);
 
 	private static readonly FighterStyle NinjaStyle = new(
 		16, 24, 6, 5, 6, 2,
-		Skin, Hair, DarkBlue, Red, Black,
+		Skin, Hair, DarkBlue, RgbaColor.FromHex(0x101028), Red, Black,
 		Bald: false, Mask: true, Headband: true, BareArms: false, SideStripe: false);
 
 	private static readonly FighterStyle YamoStyle = new(
 		24, 28, 10, 8, 14, 3,
-		GreenSkin, GreenSkin, Green, Brown, Brown,
+		GreenSkin, GreenSkin, Green, RgbaColor.FromHex(0x1E5020), Brown, Brown,
 		Bald: true, Mask: false, Headband: false, BareArms: true, SideStripe: false);
 
 	public static RgbaImage CreateBruceSheet()
@@ -38,12 +38,12 @@ public static class CharacterArt
 
 	public static RgbaImage CreateNinjaSheet()
 	{
-		return BuildSheet(16, 24, 10, DrawNinjaFrame);
+		return BuildSheet(16, 24, 14, DrawNinjaFrame);
 	}
 
 	public static RgbaImage CreateYamoSheet()
 	{
-		return BuildSheet(24, 28, 10, DrawYamoFrame);
+		return BuildSheet(24, 28, 12, DrawYamoFrame);
 	}
 
 	private static void DrawBruceFrame(RgbaImage image, int frame)
@@ -149,6 +149,20 @@ public static class CharacterArt
 			case 9:
 				DrawFallen(image, NinjaStyle, 18);
 				break;
+			case 10:
+				DrawFighter(image, NinjaStyle, MakePose(5, 6, 3, 16, 12, 16, 5, 23, 10, 23, 18, 0));
+				break;
+			case 11:
+				DrawFighter(image, NinjaStyle, MakePose(5, 2, 4, 6, 12, 6, 6, 18, 10, 18, 12, 0));
+				image.DrawLine(12, 7, 15, 5, Brown);
+				break;
+			case 12:
+				DrawFighter(image, NinjaStyle, MakePose(5, 2, 14, 8, 3, 13, 6, 18, 10, 18, 12, 1));
+				image.DrawLine(13, 8, 15, 5, Brown);
+				break;
+			case 13:
+				DrawFighter(image, NinjaStyle, MakePose(5, 3, 4, 15, 12, 15, 5, 22, 10, 22, 16, 0));
+				break;
 		}
 	}
 
@@ -181,9 +195,15 @@ public static class CharacterArt
 				DrawFighter(image, YamoStyle, MakePose(7, 1, 21, 13, 2, 18, 6, 26, 18, 26, 19, 1));
 				break;
 			case 8:
-				DrawFighter(image, YamoStyle, MakePose(9, 2, 2, 9, 22, 10, 4, 26, 20, 26, 19, 0));
+				DrawFighter(image, YamoStyle, MakePose(7, 1, 2, 17, 21, 17, 6, 26, 18, 24, 19, 0));
 				break;
 			case 9:
+				DrawFighter(image, YamoStyle, MakePose(7, 1, 2, 17, 21, 17, 6, 26, 22, 18, 19, 1));
+				break;
+			case 10:
+				DrawFighter(image, YamoStyle, MakePose(9, 2, 2, 9, 22, 10, 4, 26, 20, 26, 19, 0));
+				break;
+			case 11:
 				DrawFallen(image, YamoStyle, 20);
 				break;
 		}
@@ -212,6 +232,7 @@ public static class CharacterArt
 		SafeFill(image, pose.RightFootX, pose.RightFootY, 2, 1, style.Shoes);
 
 		SafeFill(image, torsoX, torsoTop, style.TorsoWidth, torsoHeight, style.Outfit);
+		SafeFill(image, torsoX, torsoTop, 1, torsoHeight, style.Shade);
 		if (style.SideStripe)
 		{
 			SafeFill(image, torsoX + style.TorsoWidth - 1, torsoTop, 1, torsoHeight, style.Accent);
@@ -341,6 +362,7 @@ public static class CharacterArt
 		RgbaColor Skin,
 		RgbaColor Hair,
 		RgbaColor Outfit,
+		RgbaColor Shade,
 		RgbaColor Accent,
 		RgbaColor Shoes,
 		bool Bald,
