@@ -571,6 +571,13 @@ public sealed class ChamberScreen : IGameScreen
 				Palette.Cyan,
 				layerDepth: SpriteLayers.Hud);
 		}
+
+		spriteBatch.DrawString(
+			_font8,
+			"TOP " + _context.HighScores.TopScore.ToString("D6", CultureInfo.InvariantCulture),
+			new Vector2(160, 176),
+			Palette.Muted,
+			layerDepth: SpriteLayers.Hud);
 	}
 
 	private static Rectangle ToRectangle(Aabb bounds)

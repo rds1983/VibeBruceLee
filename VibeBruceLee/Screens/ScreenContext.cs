@@ -25,7 +25,8 @@ public sealed class ScreenContext
 		Texture2D pixel,
 		DebugState debug,
 		ChamberCatalog chambers,
-		GameSession session)
+		GameSession session,
+		HighScores highScores)
 	{
 		ArgumentNullException.ThrowIfNull(fontSystem);
 		ArgumentNullException.ThrowIfNull(bruce);
@@ -39,6 +40,7 @@ public sealed class ScreenContext
 		ArgumentNullException.ThrowIfNull(debug);
 		ArgumentNullException.ThrowIfNull(chambers);
 		ArgumentNullException.ThrowIfNull(session);
+		ArgumentNullException.ThrowIfNull(highScores);
 
 		FontSystem = fontSystem;
 		Bruce = bruce;
@@ -52,6 +54,7 @@ public sealed class ScreenContext
 		Debug = debug;
 		Chambers = chambers;
 		Session = session;
+		HighScores = highScores;
 	}
 
 	public FontSystem FontSystem { get; }
@@ -77,6 +80,8 @@ public sealed class ScreenContext
 	public ChamberCatalog Chambers { get; }
 
 	public GameSession Session { get; }
+
+	public HighScores HighScores { get; }
 }
 
 public static class Palette

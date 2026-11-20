@@ -93,6 +93,7 @@ public sealed class BruceLeeGame : Game
 			"Assets",
 			"levels")));
 		var session = new GameSession();
+		var highScores = new HighScores(HighScores.DefaultPath);
 
 		var pixel = new Texture2D(GraphicsDevice, 1, 1);
 		Color[] white = [Color.White];
@@ -120,7 +121,8 @@ public sealed class BruceLeeGame : Game
 			pixel,
 			_debugState,
 			chambers,
-			session);
+			session,
+			highScores);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
 		_input = new InputSystem(InputBindings.CreateDefault());

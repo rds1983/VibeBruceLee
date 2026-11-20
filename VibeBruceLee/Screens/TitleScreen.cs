@@ -104,6 +104,12 @@ public sealed class TitleScreen : IGameScreen
 
 		DrawCentered(spriteBatch, _font8, "ENTER / A: START", 114, Palette.Cyan);
 		DrawCentered(spriteBatch, _font8, "C / B: CONTROLS", 124, Palette.Cyan);
+		DrawCentered(
+			spriteBatch,
+			_font8,
+			"TOP " + _context.HighScores.TopScore.ToString("D6", System.Globalization.CultureInfo.InvariantCulture),
+			162,
+			Palette.White);
 		DrawCentered(spriteBatch, _font8, "F11: FULLSCREEN   ESC: QUIT", 180, Palette.Muted);
 	}
 

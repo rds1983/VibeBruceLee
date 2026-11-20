@@ -232,7 +232,9 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 | Extra fall | Every 30,000 points |
 
 - The HUD score updates immediately.
-- The session top score is shown during play; the all-time high score persists between runs (modern addition).
+- The all-time high score is shown as `TOP nnnnnn` at the bottom of the play area. The top bar keeps score, blows, lantern progress and falls readable.
+- High scores persist in a local JSON table. A qualifying run asks for three initials after game over; the table is shown on game over, after initials entry, and the top score is shown on the title screen.
+- Pause shows a dark overlay with resume, controls and quit hints. Controls help is available from the pause overlay.
 - Two-player versus scoring for the Yamo player is defined in T-054.
 
 ## HUD

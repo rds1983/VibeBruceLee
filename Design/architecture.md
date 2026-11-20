@@ -144,6 +144,15 @@ The chamber HUD reads score, blows, falls and lantern progress from the player, 
 - Hub chambers (`hub: true`) pass the set owned by `HubProgress` (on `GameSession`) into `ChamberProgress`, so collected lanterns persist between the three rooms. The middle room's `requiresHub` floor hatch opens only when every required lantern across the hub is collected. Dying resets only the current room's set; a new run clears all hub progress.
 - The chamber HUD shows pooled `HUB x/y` progress in hub rooms and `HATCH OPEN` when the hub gate clears. Non-hub rooms show `EXIT OPEN` when their own required lanterns are complete.
 - `ChamberScreen` awards 125 per lantern and 2,000 for entering an exit. On an exit it replaces itself with the target chamber from the catalog. On a non-final death it respawns Bruce, resets lanterns, enemies, encounter pressure and dust, and keeps score and falls.
+
+## High scores and pause
+
+- `HighScores` owns the all-time table (maximum five entries) and persists it to `%LOCALAPPDATA%/VibeBruceLee/highscores.json` (falling back to the app directory if LocalApplicationData is unavailable).
+- Load treats a missing file as empty and catches malformed JSON, I/O and access errors, so a bad save never crashes the game. Entries are sanitized to three letters and positive scores, sorted by score, loop and initials, then trimmed.
+- Saves write a temporary file and move it over the live file; write failures leave the in-memory table usable.
+- `ScreenContext.HighScores` is shared by the title, HUD, game over, initials and high-score screens. The chamber HUD shows `TOP nnnnnn` at the bottom; the title shows the same.
+- `GameOverScreen` shows the table and, when the run qualifies, prompts for initials. `InitialsScreen` uses Up/Down to change a letter, Left/Right to select a position and Confirm to save. `HighScoreScreen` then shows the updated table and returns to the title.
+- `PauseScreen` is an overlay with resume, controls and quit hints. Controls help opens as a normal screen on top of the pause overlay and pops back to it.
 - Lanterns disappear once collected and return on a chamber reset. The HUD shows required progress and displays `EXIT OPEN` when the gate clears.
 - Chamber-specific hazards remain inert until T-042, then T-043/T-044 use them in the mid- and late-game. Chambers 01-03 are the entrance hub, 04-19 form the two underworld chains, and chamber-20 is the Fire Wizard boss. T-046 adds looping.
 
@@ -161,4 +170,4 @@ Unit tests cover letterbox math, screen-stack lifecycle, input actions and buffe
 
 ## Decisions
 
-Architecture decision records live in `Design/decisions/`. ADR-0001 covers the engine, logical resolution and timestep; ADR-0002 the asset pipeline; ADR-0003 asset authoring; ADR-0004 enemy navigation and deterministic randomness; ADR-0005 the Ninja's committed leap; ADR-0006 Yamo move selection and body blocking; ADR-0007 enemy encounter pacing; ADR-0008 the chamber catalog and per-attempt progress; ADR-0009 hub progress and hatch gating; ADR-0010 the hazard framework; ADR-0011 the wizard boss and ending; ADR-0012 loop progression and scaled difficulty.
+Architecture decision records live in `Design/decisions/`. ADR-0001 covers the engine, logical resolution and timestep; ADR-0002 the asset pipeline; ADR-0003 asset authoring; ADR-0004 enemy navigation and deterministic randomness; ADR-0005 the Ninja's committed leap; ADR-0006 Yamo move selection and body blocking; ADR-0007 enemy encounter pacing; ADR-0008 the chamber catalog and per-attempt progress; ADR-0009 hub progress and hatch gating; ADR-0010 the hazard framework; ADR-0011 the wizard boss and ending; ADR-0012 loop progression and scaled difficulty; ADR-0013 high scores and persistence.

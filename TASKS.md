@@ -151,7 +151,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Add a title screen with logo, attract prompt, story intro, and a clear controls screen. Support keyboard and gamepad.
   *Done when:* a new player can start a game without reading the docs.
 
-- [ ] **T-051 HUD, pause, game over, and high scores**
+- [x] **T-051 HUD, pause, game over, and high scores**
   Show score, falls, and lantern progress. Add pause, game over, initials entry, and a persisted high-score table.
   *Done when:* scores survive restarts and malformed save files fail safely.
 
@@ -244,3 +244,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-045 | 2026-11-20 | Fire Wizard boss with aimed eye fireballs, warning flash, destruction button, 3,000-point win, defeat timer, ending screen and boss/wizard validation. |
 | T-046 | 2026-11-20 | Persistent loops with carried score/falls, enemy speed/cooldown/sight scaling, immediate respawns, chamber-16 loop hazards, `LOOP n` HUD and loop-continue ending. |
 | T-050 | 2026-11-20 | Title logo/story/blinking start prompt, dedicated keyboard+gamepad controls screen bound to C/B, and controls input test. |
+| T-051 | 2026-11-20 | Persisted top-five high scores with fail-safe JSON load/save, initials entry, high-score and pause screens, and `TOP` on title/HUD. |

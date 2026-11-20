@@ -36,7 +36,11 @@ public sealed class PauseScreen : IGameScreen
 
 	public void Update(GameTime gameTime, InputSystem input)
 	{
-		if (input.WasPressed(InputAction.Pause) || input.WasPressed(InputAction.Confirm))
+		if (input.WasPressed(InputAction.Controls))
+		{
+			_screens.Push(new ControlsScreen(_screens, _context));
+		}
+		else if (input.WasPressed(InputAction.Pause) || input.WasPressed(InputAction.Confirm))
 		{
 			_screens.Pop();
 		}
@@ -54,8 +58,10 @@ public sealed class PauseScreen : IGameScreen
 			SpriteEffects.None,
 			SpriteLayers.Overlay);
 
-		DrawCentered(spriteBatch, _font16, "PAUSED", 78, Palette.Yellow);
-		DrawCentered(spriteBatch, _font8, "P: resume", 112, Palette.White);
+		DrawCentered(spriteBatch, _font16, "PAUSED", 70, Palette.Yellow);
+		DrawCentered(spriteBatch, _font8, "ENTER: RESUME", 104, Palette.White);
+		DrawCentered(spriteBatch, _font8, "C: CONTROLS", 116, Palette.Cyan);
+		DrawCentered(spriteBatch, _font8, "ESC: QUIT", 128, Palette.Muted);
 	}
 
 	private static void DrawCentered(SpriteBatch spriteBatch, SpriteFontBase font, string text, float y, Color color)
