@@ -585,6 +585,22 @@ public class EnemyTests
 	}
 
 	[Fact]
+	public void CanBeHitOnlyOutsideInvulnerability()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 40, 176), [Floor(176)]);
+		Step(enemy, null, 5);
+		Assert.True(enemy.CanBeHit);
+
+		enemy.ApplyHit(AttackDefinitions.Chop, fromLeft: true);
+
+		Assert.False(enemy.CanBeHit);
+
+		Step(enemy, null, EnemyDefinitions.Ninja.HitInvulnerabilityFrames + 2);
+
+		Assert.True(enemy.CanBeHit);
+	}
+
+	[Fact]
 	public void SeededRandomIsDeterministic()
 	{
 		var first = new SeededRandom(12345);

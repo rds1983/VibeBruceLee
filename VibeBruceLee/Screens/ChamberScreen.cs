@@ -22,6 +22,7 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly ChamberGeometry _geometry;
 	private readonly PhysicsWorld _world;
 	private readonly Player _player;
+	private readonly EnemyEncounter _encounter;
 	private readonly Vector2 _spawn;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
@@ -68,6 +69,7 @@ public sealed class ChamberScreen : IGameScreen
 		}
 
 		_enemies = enemies;
+		_encounter = new EnemyEncounter(_player, _enemies, _context.Session);
 
 		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
@@ -84,28 +86,7 @@ public sealed class ChamberScreen : IGameScreen
 	{
 		var seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 		_player.Invincible = _context.Debug.Invincible;
-		_player.Update(input, seconds);
-
-		var targetFeet = _player.IsDead
-			? (Vector2?)null
-			: new Vector2(
-				_player.Body.Position.X + (_player.Body.Size.X * 0.5f),
-				_player.Body.Position.Y + _player.Body.Size.Y);
-
-		foreach (var enemy in _enemies)
-		{
-			if (enemy.IsVisible && enemy.BlocksMovement)
-			{
-				_player.ResolveBodyBlock(enemy.Body.Bounds);
-			}
-		}
-
-		foreach (var enemy in _enemies)
-		{
-			enemy.Update(targetFeet, seconds);
-		}
-
-		ResolveEnemyCombat();
+		_encounter.Update(input, seconds);
 
 		if (_player.ConsumeLanded())
 		{
@@ -263,41 +244,6 @@ public sealed class ChamberScreen : IGameScreen
 				tint,
 				effects,
 				SpriteLayers.World);
-		}
-	}
-
-	private void ResolveEnemyCombat()
-	{
-		foreach (var enemy in _enemies)
-		{
-			if (!enemy.IsVisible)
-			{
-				continue;
-			}
-
-			var hit = _player.TryHit(enemy.Hurtbox);
-			if (hit is not null)
-			{
-				var fromLeft = _player.Body.Bounds.Center.X <= enemy.Body.Bounds.Center.X;
-				var defeated = enemy.ApplyHit(hit, fromLeft);
-				_context.Session.AddScore(hit.Score);
-
-				if (defeated)
-				{
-					_context.Session.AddScore(enemy.Definition.KnockoutScore);
-				}
-			}
-
-			if (_player.IsDead || _player.IsInvulnerable)
-			{
-				continue;
-			}
-
-			var enemyHit = enemy.TryHit(_player.Hurtbox);
-			if (enemyHit is not null)
-			{
-				_player.ApplyHit(enemyHit, enemy.Body.Bounds.Center.X <= _player.Body.Bounds.Center.X);
-			}
 		}
 	}
 

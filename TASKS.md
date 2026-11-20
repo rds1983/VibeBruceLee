@@ -4,7 +4,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 **Legend:** `[ ]` todo - `[~]` in progress - `[x]` done - `[!]` blocked
 
-**Current milestone:** M3 - Enemies
+**Current milestone:** M4 - Chambers
 
 ## Guiding principles
 
@@ -107,8 +107,8 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Implement the slow, powerful wrestler: blocking presence, punches, crushing kicks, and return after defeat.
   *Done when:* he pressures the player without feeling unfair, and his timings are tested.
 
-- [ ] **T-033 Enemy interactions and pacing**
-  Let enemies take damage from hazards, fall, get knocked into mines, and recover. Stop enemies from stacking on each other. Tune aggression so two enemies create pressure without stun-locking the player.
+- [x] **T-033 Enemy interactions and pacing**
+  Let enemy attacks hit other enemies, keep enemies from stacking, and add a pressure gate so two enemies cannot attack simultaneously or chain hits. Hazard damage to enemies stays with T-042.
   *Done when:* difficulty values are documented and a scripted encounter test passes repeatedly.
 
 ---
@@ -234,3 +234,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-030 | 2026-11-20 | Shared enemy state machine, deterministic platform/vine navigation and xorshift RNG; Ninja/Yamo baseline stats, hit exchange, knockout scores, respawns and debug boxes. |
 | T-031 | 2026-11-20 | Ninja leap attack with a telegraphed fixed arc, gap crossing, air strike and jump cooldown; attack decisions documented and enemy stand-off added so pursuers no longer overlap Bruce. |
 | T-032 | 2026-11-20 | Yamo punch and knockdown crush kick with distance selection and per-attack cooldowns; solid body blocking, stand-off attacks, timings documented and tested. |
+| T-033 | 2026-11-20 | Headless enemy encounter with one attack token, 30-frame post-hit pressure gate, friendly fire, score validity gating and weighted enemy separation; deterministic scripted encounter tests. |

@@ -97,6 +97,10 @@ public sealed class Enemy
 
 	public bool IsVisible => State != EnemyState.Respawning;
 
+	public bool CanBeHit => IsVisible &&
+		State is not (EnemyState.KnockedDown or EnemyState.Respawning) &&
+		_invulnerableFrames <= 0;
+
 	public Vector2 Feet => new(Body.Position.X + (Body.Size.X * 0.5f), Body.Position.Y + Body.Size.Y);
 
 	public float StandoffDistance => MathF.Max(
@@ -135,9 +139,11 @@ public sealed class Enemy
 
 	/// <summary>
 	/// Advances the enemy. A null target keeps it patrolling, which also keeps
-	/// headless tests independent of the player type.
+	/// headless tests independent of the player type. <paramref name="canAttack"/>
+	/// lets the encounter pause new attacks while another enemy is attacking or
+	/// while Bruce has just been hit.
 	/// </summary>
-	public void Update(Vector2? targetFeet, float deltaSeconds)
+	public void Update(Vector2? targetFeet, float deltaSeconds, bool canAttack = true)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(deltaSeconds);
 
@@ -220,7 +226,7 @@ public sealed class Enemy
 			return;
 		}
 
-		UpdateChase(target, deltaSeconds);
+		UpdateChase(target, deltaSeconds, canAttack);
 	}
 
 	public bool TryGetAttackHitbox(out Aabb hitbox)
@@ -387,7 +393,7 @@ public sealed class Enemy
 		UpdateAnimation(deltaSeconds);
 	}
 
-	private void UpdateChase(Vector2 targetFeet, float deltaSeconds)
+	private void UpdateChase(Vector2 targetFeet, float deltaSeconds, bool canAttack)
 	{
 		if (Body.ClimbingVine is not null)
 		{
@@ -410,7 +416,8 @@ public sealed class Enemy
 
 		var surface = _navigator.FindSurface(feet);
 		var maxAttackRange = MathF.Max(Definition.AttackRange, Definition.SecondaryAttackRange);
-		if (surface is not null &&
+		if (canAttack &&
+			surface is not null &&
 			MathF.Abs(feet.Y - targetFeet.Y) <= 3f &&
 			MathF.Abs(targetFeet.X - feet.X) <= maxAttackRange &&
 			_attackCooldownFrames <= 0)
@@ -420,7 +427,7 @@ public sealed class Enemy
 		}
 
 		var targetSurface = _navigator.FindSurface(targetFeet);
-		if (surface is not null && ShouldJump(feet, targetFeet, surface.Value, targetSurface))
+		if (canAttack && surface is not null && ShouldJump(feet, targetFeet, surface.Value, targetSurface))
 		{
 			StartJump(targetFeet);
 			return;

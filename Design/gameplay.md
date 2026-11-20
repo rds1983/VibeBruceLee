@@ -80,7 +80,7 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 
 - The final hit awards both the hit score (chop or kick) and the knockout bonus.
 - A knocked-out enemy is removed for a short respawn delay in loop 1 and returns immediately from loop 2.
-- Enemies can damage each other with attacks, collisions and hazards. The player earns no points when a hazard knocks an enemy out.
+- Enemy attacks can hit other enemies. Body contact separates enemies without damage, and hazard damage arrives with T-042. The player earns no points for enemy-on-enemy or hazard knockouts.
 
 ### Taking damage
 
@@ -120,8 +120,16 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 - The Ninja is fast, attacks with a bokken, and jumps at Bruce. Two hits knock him out.
 - The Yamo is slower and heavier; he runs Bruce down with punches and crushing kicks. Three hits knock him out.
 - Neither can duck.
-- Enemies pursue relentlessly but respect fairness rules: no stun-locking, no attacks from off-screen, and a short grace period after Bruce respawns.
+- Enemies pursue relentlessly but respect fairness rules: only one enemy can start an attack or leap at a time, a short pressure gate follows a hit on Bruce, and he gets a grace period after respawning.
 - In two-player versus, the second player controls Yamo. If idle for a few seconds, the AI takes over until input resumes.
+
+### Enemy interactions and pacing (T-033)
+
+- `EnemyEncounter` grants a single attack token. If one enemy is attacking or leaping, the other keeps positioning but cannot start a new attack.
+- When an enemy hits Bruce, new enemy attacks and leaps are blocked for 30 frames. This complements Bruce's 20-frame hit invulnerability and prevents two enemies from trading hits through it.
+- Enemy attacks can hit the other enemy. Friendly fire is resolved before the player, awards no score, and can knock an enemy down; the victim recovers and respawns normally.
+- Overlapping enemies are pushed apart horizontally, weighted by body width. The heavier Yamo yields less than the Ninja. Climbing, stunned and knocked-down enemies are left alone so vines and hit reactions are not disturbed.
+- Enemies do not damage each other through body contact; body overlap only separates them. Hazard damage to enemies is implemented and tested with the hazard framework in T-042.
 
 ### Enemy framework (T-030)
 
@@ -138,7 +146,7 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 - Player hits stun or knock down enemies, and the final hit awards the knockout bonus. Enemies ignore further hits while down.
 - Enemies keep a stand-off: they stop just inside their attack range and back away if Bruce closes in, instead of walking into his position.
 - The framework currently ignores horizontal vines for enemy pathing; the sample chambers use vertical vines. Revisit when a chamber needs it.
-- Enemy type-specific moves, blocking and aggression are T-031/T-032; enemy hazards, overlap and pacing are T-033.
+- Enemy type-specific moves and blocking are T-031/T-032; overlap and pacing are T-033; hazard damage is T-042.
 
 ### The Ninja (T-031)
 
