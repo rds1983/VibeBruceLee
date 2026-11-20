@@ -14,6 +14,8 @@ public enum InputAction
 	ToggleFullscreen,
 	ToggleSound,
 	Controls,
+	VolumeUp,
+	VolumeDown,
 	DebugGameOver,
 	ToggleDebugOverlay,
 	DebugSlowMotion,

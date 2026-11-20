@@ -17,7 +17,18 @@ public sealed class AssetGeneratorTests : IDisposable
 		"art/tiles.png",
 		"art/hud-life.png",
 		"art/hud-lantern.png",
-		"audio/pickup.wav"
+		"audio/pickup.wav",
+		"audio/jump.wav",
+		"audio/land.wav",
+		"audio/chop.wav",
+		"audio/kick.wav",
+		"audio/hit.wav",
+		"audio/knockdown.wav",
+		"audio/death.wav",
+		"audio/respawn.wav",
+		"audio/exit.wav",
+		"audio/fireball.wav",
+		"audio/wizard-defeat.wav"
 	];
 
 	private readonly string _root;
@@ -48,7 +59,11 @@ public sealed class AssetGeneratorTests : IDisposable
 		AssertPngSize(Path.Combine(_root, "art/tiles.png"), 32, 8);
 		AssertPngSize(Path.Combine(_root, "art/hud-life.png"), 8, 8);
 		AssertPngSize(Path.Combine(_root, "art/hud-lantern.png"), 8, 8);
-		AssertPickupWave(Path.Combine(_root, "audio/pickup.wav"));
+		foreach (var sound in GeneratedFiles.Where(file => file.EndsWith(".wav", StringComparison.Ordinal)))
+		{
+			AssertWave(Path.Combine(_root, sound));
+		}
+
 		Assert.Empty(AssetGenerator.Verify(_root));
 	}
 
@@ -94,7 +109,7 @@ public sealed class AssetGeneratorTests : IDisposable
 		Assert.Equal((uint)height, BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(20, 4)));
 	}
 
-	private static void AssertPickupWave(string path)
+	private static void AssertWave(string path)
 	{
 		var bytes = File.ReadAllBytes(path);
 

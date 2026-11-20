@@ -155,7 +155,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Show score, falls, and lantern progress. Add pause, game over, initials entry, and a persisted high-score table.
   *Done when:* scores survive restarts and malformed save files fail safely.
 
-- [ ] **T-052 Audio**
+- [x] **T-052 Audio**
   Create original chiptune-style sound effects for chops, kicks, jumps, hits, knockdowns, lantern pickups, death, exits, and the wizard. Add optional title music, volume control, sound toggle, and mute.
   *Done when:* every gameplay event is wired, audio failures never crash the game, and generated audio sources are committed.
 
@@ -245,3 +245,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-046 | 2026-11-20 | Persistent loops with carried score/falls, enemy speed/cooldown/sight scaling, immediate respawns, chamber-16 loop hazards, `LOOP n` HUD and loop-continue ending. |
 | T-050 | 2026-11-20 | Title logo/story/blinking start prompt, dedicated keyboard+gamepad controls screen bound to C/B, and controls input test. |
 | T-051 | 2026-11-20 | Persisted top-five high scores with fail-safe JSON load/save, initials entry, high-score and pause screens, and `TOP` on title/HUD. |
+| T-052 | 2026-11-20 | Twelve generated chiptune WAVs, failure-safe `GameAudio`, player/enemy/wizard/chamber event wiring, mute/volume bindings, asset verification and audio settings tests. |

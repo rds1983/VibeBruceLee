@@ -110,7 +110,7 @@ public sealed class TitleScreen : IGameScreen
 			"TOP " + _context.HighScores.TopScore.ToString("D6", System.Globalization.CultureInfo.InvariantCulture),
 			162,
 			Palette.White);
-		DrawCentered(spriteBatch, _font8, "F11: FULLSCREEN   ESC: QUIT", 180, Palette.Muted);
+		DrawCentered(spriteBatch, _font8, "F2 SOUND  F11 FULL  ESC QUIT", 180, Palette.Muted);
 	}
 
 	private static void DrawCentered(SpriteBatch spriteBatch, SpriteFontBase font, string text, float y, Color color)

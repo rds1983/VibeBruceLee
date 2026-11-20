@@ -50,7 +50,6 @@ public sealed class ChamberScreen : IGameScreen
 			_chamber.Hub ? context.Session.Hub.GetLanternSet(_chamber.Id) : null);
 		_hub = context.Session.Hub;
 		_isHubChamber = _chamber.Hub;
-		_wizard = _chamber.Wizard is WizardDefinition wizard ? new WizardBoss(wizard) : null;
 		_title = _chamber.Name.ToUpperInvariant();
 		_geometry = ChamberGeometry.From(_chamber);
 		_world = new PhysicsWorld(GameInfo.VirtualWidth, GameInfo.VirtualHeight, 900, 600);
@@ -88,6 +87,18 @@ public sealed class ChamberScreen : IGameScreen
 		_encounter = new EnemyEncounter(_player, _enemies, _context.Session);
 		_hazards = new HazardSystem(_chamber.Hazards, _chamber.LoopHazards, _context.Session.Loop);
 
+		_player.SoundRequested += OnPlayerSound;
+		foreach (var enemy in _enemies)
+		{
+			SubscribeEnemy(enemy);
+		}
+
+		_wizard = _chamber.Wizard is WizardDefinition wizard ? new WizardBoss(wizard) : null;
+		if (_wizard is not null)
+		{
+			_wizard.FireballFired += OnWizardFireball;
+		}
+
 		_lanternPlayer.Play(ScreenAnimations.Lantern);
 	}
 
@@ -113,6 +124,7 @@ public sealed class ChamberScreen : IGameScreen
 				_wizard.TryPressButton(_player.Body.Bounds, input.WasPressed(InputAction.Attack)))
 			{
 				_context.Session.AddScore(WizardBoss.Score);
+				_context.Audio.Play("audio/wizard-defeat.wav");
 				_hazards.Clear();
 			}
 
@@ -129,12 +141,14 @@ public sealed class ChamberScreen : IGameScreen
 			if (collected > 0)
 			{
 				_context.Session.AddScore(collected * ChamberProgress.LanternScore);
+				_context.Audio.Play("audio/pickup.wav");
 			}
 
 			var hubHatchOpen = _hub.AllRequiredCollected(_context.Chambers);
 			if (_progress.TryFindOpenExit(_player.Body.Bounds, hubHatchOpen, out var exit))
 			{
 				_context.Session.AddScore(ChamberProgress.ExitScore);
+				_context.Audio.Play("audio/exit.wav");
 				_screens.Replace(new ChamberScreen(
 					_screens,
 					_context,
@@ -270,6 +284,57 @@ public sealed class ChamberScreen : IGameScreen
 				}
 			}
 		}
+	}
+
+	private void SubscribeEnemy(Enemy enemy)
+	{
+		var attackKey = enemy.Definition.Type == "yamo"
+			? "audio/kick.wav"
+			: "audio/chop.wav";
+		enemy.SoundRequested += sound => OnEnemySound(sound, attackKey);
+	}
+
+	private void OnPlayerSound(PlayerSound sound)
+	{
+		var key = sound switch
+		{
+			PlayerSound.Jump => "audio/jump.wav",
+			PlayerSound.Land => "audio/land.wav",
+			PlayerSound.Chop => "audio/chop.wav",
+			PlayerSound.Kick => "audio/kick.wav",
+			PlayerSound.Hit => "audio/hit.wav",
+			PlayerSound.Knockdown => "audio/knockdown.wav",
+			PlayerSound.Death => "audio/death.wav",
+			PlayerSound.Respawn => "audio/respawn.wav",
+			_ => null
+		};
+
+		if (key is not null)
+		{
+			_context.Audio.Play(key);
+		}
+	}
+
+	private void OnEnemySound(EnemySound sound, string attackKey)
+	{
+		var key = sound switch
+		{
+			EnemySound.Attack => attackKey,
+			EnemySound.Jump => "audio/jump.wav",
+			EnemySound.Hit => "audio/hit.wav",
+			EnemySound.Knockdown => "audio/knockdown.wav",
+			_ => null
+		};
+
+		if (key is not null)
+		{
+			_context.Audio.Play(key);
+		}
+	}
+
+	private void OnWizardFireball()
+	{
+		_context.Audio.Play("audio/fireball.wav");
 	}
 
 	private void ResetChamber()

@@ -40,6 +40,8 @@ public sealed class InputBindings
 				[InputAction.ToggleFullscreen] = [Keys.F11],
 				[InputAction.ToggleSound] = [Keys.F2],
 				[InputAction.Controls] = [Keys.C],
+				[InputAction.VolumeUp] = [Keys.OemCloseBrackets],
+				[InputAction.VolumeDown] = [Keys.OemOpenBrackets],
 				[InputAction.DebugGameOver] = [Keys.G],
 				[InputAction.ToggleDebugOverlay] = [Keys.F1],
 				[InputAction.DebugSlowMotion] = [Keys.F3],
@@ -60,7 +62,9 @@ public sealed class InputBindings
 				[InputAction.Confirm] = [Buttons.A],
 				[InputAction.Cancel] = [Buttons.Back],
 				[InputAction.ToggleSound] = [Buttons.Y],
-				[InputAction.Controls] = [Buttons.B]
+				[InputAction.Controls] = [Buttons.B],
+				[InputAction.VolumeUp] = [Buttons.RightShoulder],
+				[InputAction.VolumeDown] = [Buttons.LeftShoulder]
 			});
 	}
 

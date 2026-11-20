@@ -21,6 +21,7 @@ Default bindings. Remapping and the final table land in T-011.
 | Confirm | `Enter` | A |
 | Cancel / quit | `Esc` | Back |
 | Sound toggle | `F2` | Y |
+| Volume | `[` / `]` | LB / RB |
 | Controls help | `C` | B |
 | Fullscreen | `F11` | — |
 
@@ -264,8 +265,9 @@ Title screen and mode select -> chamber intro card -> play -> chamber clear tran
 
 - 256x192 logical resolution, integer-scaled, nearest-neighbor filtering.
 - ZX-inspired palette and original pixel art, not traced from the original.
-- Original chiptune-style title music and sound effects. The 1984 tune is not reproduced.
-- Sound toggle available at any time; volume and mute belong in settings.
+- Original chiptune-style sound effects generated in code: jump, land, chop, kick, hit, knockdown, death, respawn, lantern pickup, chamber exit, wizard fireball and wizard defeat.
+- `F2`/Y toggles mute. `[`/`]` or the gamepad shoulder buttons adjust master volume.
+- Audio is optional: missing files, absent hardware or playback limits leave the game silent without crashing. Title music is deferred.
 
 ## Modern additions
 

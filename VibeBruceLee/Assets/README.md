@@ -26,8 +26,9 @@ Current bootstrap assets:
 - `art/test-card.png` - 64x48 pipeline/debug test card.
 - `art/lantern.png` - 16x16 lantern sample sprite.
 - `art/lantern-sheet.png` - 64x16 four-frame lantern animation.
-- `audio/pickup.wav` - 0.12 s pickup beep.
-- `levels/chamber-01.json`, `levels/chamber-02.json` - sample chamber data.
+- `audio/pickup.wav` - lantern pickup beep.
+- `audio/jump.wav`, `land.wav`, `chop.wav`, `kick.wav`, `hit.wav`, `knockdown.wav`, `death.wav`, `respawn.wav`, `exit.wav`, `fireball.wav`, `wizard-defeat.wav` - generated effects.
+- `levels/chamber-01.json` to `chamber-20.json` - chamber data.
 - `fonts/press-start-2p-regular.ttf` - Press Start 2P by CodeMan38, SIL Open Font License 1.1.
 - `licenses/press-start-2p-OFL.txt` - the font license.
 

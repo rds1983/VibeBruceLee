@@ -101,6 +101,8 @@ public sealed class Enemy
 		State is not (EnemyState.KnockedDown or EnemyState.Respawning) &&
 		_invulnerableFrames <= 0;
 
+	public event Action<EnemySound>? SoundRequested;
+
 	public Vector2 Feet => new(Body.Position.X + (Body.Size.X * 0.5f), Body.Position.Y + Body.Size.Y);
 
 	public float StandoffDistance => MathF.Max(
@@ -299,16 +301,19 @@ public sealed class Enemy
 
 		if (HitsRemaining <= 0)
 		{
+			RaiseSound(EnemySound.Knockdown);
 			EnterKnockdown();
 			return true;
 		}
 
 		if (hit.KnocksDown)
 		{
+			RaiseSound(EnemySound.Knockdown);
 			EnterKnockdown();
 		}
 		else
 		{
+			RaiseSound(EnemySound.Hit);
 			State = EnemyState.Stunned;
 			_hitstunFrames = hit.HitstunFrames;
 		}
@@ -341,6 +346,7 @@ public sealed class Enemy
 		_jumpFrame = 0;
 		_jumpCooldownFrames = Definition.JumpCooldownFrames;
 		ClearRoute();
+		RaiseSound(EnemySound.Knockdown);
 		EnterKnockdown();
 		return true;
 	}
@@ -529,6 +535,7 @@ public sealed class Enemy
 		FacingLeft = targetFeet.X < Feet.X;
 		Body.Velocity = Vector2.Zero;
 		ClearRoute();
+		RaiseSound(EnemySound.Jump);
 	}
 
 	private void TickJump(float deltaSeconds)
@@ -765,6 +772,7 @@ public sealed class Enemy
 			cooldown = Definition.SecondaryAttackCooldownFrames;
 		}
 
+		RaiseSound(EnemySound.Attack);
 		State = EnemyState.Attack;
 		_attack = attack;
 		_attackCooldownAfter = cooldown;
@@ -926,5 +934,10 @@ public sealed class Enemy
 		}
 
 		return current + (MathF.Sign(difference) * maxDelta);
+	}
+
+	private void RaiseSound(EnemySound sound)
+	{
+		SoundRequested?.Invoke(sound);
 	}
 }

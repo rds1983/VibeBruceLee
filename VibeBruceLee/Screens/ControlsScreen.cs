@@ -20,6 +20,7 @@ public sealed class ControlsScreen : IGameScreen
 		"PAUSE     ENTER OR START",
 		"CONTROLS  C OR B",
 		"SOUND     F2 OR Y",
+		"VOLUME    [ / ] OR LB/RB",
 		"FULLSCREEN F11"
 	];
 

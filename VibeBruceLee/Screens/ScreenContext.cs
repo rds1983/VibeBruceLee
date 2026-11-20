@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using VibeBruceLee.Debugging;
 using VibeBruceLee.Gameplay;
 using VibeBruceLee.Graphics;
+using VibeBruceLee.Audio;
 using VibeBruceLee.Levels;
 
 namespace VibeBruceLee.Screens;
@@ -26,7 +27,8 @@ public sealed class ScreenContext
 		DebugState debug,
 		ChamberCatalog chambers,
 		GameSession session,
-		HighScores highScores)
+		HighScores highScores,
+		GameAudio audio)
 	{
 		ArgumentNullException.ThrowIfNull(fontSystem);
 		ArgumentNullException.ThrowIfNull(bruce);
@@ -41,6 +43,7 @@ public sealed class ScreenContext
 		ArgumentNullException.ThrowIfNull(chambers);
 		ArgumentNullException.ThrowIfNull(session);
 		ArgumentNullException.ThrowIfNull(highScores);
+		ArgumentNullException.ThrowIfNull(audio);
 
 		FontSystem = fontSystem;
 		Bruce = bruce;
@@ -55,6 +58,7 @@ public sealed class ScreenContext
 		Chambers = chambers;
 		Session = session;
 		HighScores = highScores;
+		Audio = audio;
 	}
 
 	public FontSystem FontSystem { get; }
@@ -82,6 +86,8 @@ public sealed class ScreenContext
 	public GameSession Session { get; }
 
 	public HighScores HighScores { get; }
+
+	public GameAudio Audio { get; }
 }
 
 public static class Palette

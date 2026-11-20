@@ -3,6 +3,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using VibeBruceLee.Audio;
 using VibeBruceLee.Debugging;
 using VibeBruceLee.Gameplay;
 using VibeBruceLee.Graphics;
@@ -33,6 +34,7 @@ public sealed class BruceLeeGame : Game
 	private Texture2D? _hudLife;
 	private Texture2D? _hudLantern;
 	private Texture2D? _pixel;
+	private GameAudio? _audio;
 	private ScreenStack? _screens;
 	private InputSystem? _input;
 	private readonly DebugState _debugState = new();
@@ -94,6 +96,7 @@ public sealed class BruceLeeGame : Game
 			"levels")));
 		var session = new GameSession();
 		var highScores = new HighScores(HighScores.DefaultPath);
+		var audio = new GameAudio(assets);
 
 		var pixel = new Texture2D(GraphicsDevice, 1, 1);
 		Color[] white = [Color.White];
@@ -108,6 +111,7 @@ public sealed class BruceLeeGame : Game
 		_hudLife = hudLife;
 		_hudLantern = hudLantern;
 		_pixel = pixel;
+		_audio = audio;
 
 		var context = new ScreenContext(
 			fontSystem,
@@ -122,7 +126,8 @@ public sealed class BruceLeeGame : Game
 			_debugState,
 			chambers,
 			session,
-			highScores);
+			highScores,
+			audio);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
 		_input = new InputSystem(InputBindings.CreateDefault());
@@ -143,6 +148,7 @@ public sealed class BruceLeeGame : Game
 
 		_screens = null;
 		_pixel?.Dispose();
+		_audio?.Dispose();
 		_hudLife?.Dispose();
 		_hudLantern?.Dispose();
 		_lanternSheet?.Texture.Dispose();
@@ -180,6 +186,21 @@ public sealed class BruceLeeGame : Game
 		{
 			_graphics.HardwareModeSwitch = false;
 			_graphics.ToggleFullScreen();
+		}
+
+		if (_input.WasPressed(InputAction.ToggleSound))
+		{
+			_audio?.Settings.ToggleMute();
+		}
+
+		if (_input.WasPressed(InputAction.VolumeUp))
+		{
+			_audio?.Settings.AdjustVolume(AudioSettings.VolumeStep);
+		}
+
+		if (_input.WasPressed(InputAction.VolumeDown))
+		{
+			_audio?.Settings.AdjustVolume(-AudioSettings.VolumeStep);
 		}
 
 		if (_input.WasPressed(InputAction.Cancel))

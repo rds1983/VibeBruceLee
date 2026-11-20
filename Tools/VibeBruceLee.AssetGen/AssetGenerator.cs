@@ -26,6 +26,17 @@ public static class AssetGenerator
 		WritePng(Path.Combine(artDirectory, "hud-lantern.png"), TileArt.CreateHudLantern());
 
 		WavWriter.WritePickup(Path.Combine(audioDirectory, "pickup.wav"));
+		WriteWave(Path.Combine(audioDirectory, "jump.wav"), WavWriter.CreateJumpSamples());
+		WriteWave(Path.Combine(audioDirectory, "land.wav"), WavWriter.CreateLandSamples());
+		WriteWave(Path.Combine(audioDirectory, "chop.wav"), WavWriter.CreateChopSamples());
+		WriteWave(Path.Combine(audioDirectory, "kick.wav"), WavWriter.CreateKickSamples());
+		WriteWave(Path.Combine(audioDirectory, "hit.wav"), WavWriter.CreateHitSamples());
+		WriteWave(Path.Combine(audioDirectory, "knockdown.wav"), WavWriter.CreateKnockdownSamples());
+		WriteWave(Path.Combine(audioDirectory, "death.wav"), WavWriter.CreateDeathSamples());
+		WriteWave(Path.Combine(audioDirectory, "respawn.wav"), WavWriter.CreateRespawnSamples());
+		WriteWave(Path.Combine(audioDirectory, "exit.wav"), WavWriter.CreateExitSamples());
+		WriteWave(Path.Combine(audioDirectory, "fireball.wav"), WavWriter.CreateFireballSamples());
+		WriteWave(Path.Combine(audioDirectory, "wizard-defeat.wav"), WavWriter.CreateWizardDefeatSamples());
 	}
 
 	/// <summary>
@@ -47,7 +58,18 @@ public static class AssetGenerator
 		VerifyPng(Path.Combine(root, "art", "tiles.png"), TileArt.CreateTiles(), errors);
 		VerifyPng(Path.Combine(root, "art", "hud-life.png"), TileArt.CreateHudLife(), errors);
 		VerifyPng(Path.Combine(root, "art", "hud-lantern.png"), TileArt.CreateHudLantern(), errors);
-		VerifyWave(Path.Combine(root, "audio", "pickup.wav"), errors);
+		VerifyWave(Path.Combine(root, "audio", "pickup.wav"), WavWriter.CreatePickupSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "jump.wav"), WavWriter.CreateJumpSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "land.wav"), WavWriter.CreateLandSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "chop.wav"), WavWriter.CreateChopSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "kick.wav"), WavWriter.CreateKickSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "hit.wav"), WavWriter.CreateHitSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "knockdown.wav"), WavWriter.CreateKnockdownSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "death.wav"), WavWriter.CreateDeathSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "respawn.wav"), WavWriter.CreateRespawnSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "exit.wav"), WavWriter.CreateExitSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "fireball.wav"), WavWriter.CreateFireballSamples(), errors);
+		VerifyWave(Path.Combine(root, "audio", "wizard-defeat.wav"), WavWriter.CreateWizardDefeatSamples(), errors);
 
 		return errors;
 	}
@@ -93,7 +115,12 @@ public static class AssetGenerator
 		}
 	}
 
-	private static void VerifyWave(string path, List<string> errors)
+	private static void WriteWave(string path, short[] samples)
+	{
+		WavWriter.Write(path, samples);
+	}
+
+	private static void VerifyWave(string path, short[] expected, List<string> errors)
 	{
 		if (!File.Exists(path))
 		{
@@ -102,7 +129,7 @@ public static class AssetGenerator
 		}
 
 		using var expectedStream = new MemoryStream();
-		WavWriter.Write(expectedStream, WavWriter.CreatePickupSamples());
+		WavWriter.Write(expectedStream, expected);
 
 		if (!File.ReadAllBytes(path).AsSpan().SequenceEqual(expectedStream.ToArray()))
 		{

@@ -616,6 +616,22 @@ public class EnemyTests
 	}
 
 	[Fact]
+	public void EnemyRaisesSoundEventsForHitsAndKnockdowns()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 40, 176), [Floor(176)]);
+		var sounds = new List<EnemySound>();
+		enemy.SoundRequested += sounds.Add;
+		Step(enemy, null, 5);
+
+		enemy.ApplyHit(AttackDefinitions.Chop, fromLeft: true);
+		Assert.Contains(EnemySound.Hit, sounds);
+
+		Step(enemy, null, EnemyDefinitions.Ninja.HitInvulnerabilityFrames + 3);
+		enemy.ApplyHazard(fromLeft: true);
+		Assert.Contains(EnemySound.Knockdown, sounds);
+	}
+
+	[Fact]
 	public void SeededRandomIsDeterministic()
 	{
 		var first = new SeededRandom(12345);

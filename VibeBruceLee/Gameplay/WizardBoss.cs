@@ -49,6 +49,8 @@ public sealed class WizardBoss
 
 	public bool IsDefeatFinished => IsDefeated && _defeatTimer <= 0f;
 
+	public event Action? FireballFired;
+
 	public bool PlayerAtButton(Aabb playerBounds)
 	{
 		return !IsDefeated && playerBounds.Intersects(ButtonBounds);
@@ -122,6 +124,7 @@ public sealed class WizardBoss
 
 		_fireFlash = FireFlashSeconds;
 		_eyeIndex ^= 1;
+		FireballFired?.Invoke();
 	}
 
 	private Vector2 LeftEye => new(
