@@ -46,6 +46,7 @@ public sealed class TitleScreen : IGameScreen
 
 		if (input.WasPressed(InputAction.Confirm))
 		{
+			_context.Session.StartNewRun();
 			_screens.Push(new ChamberScreen(_screens, _context));
 		}
 	}

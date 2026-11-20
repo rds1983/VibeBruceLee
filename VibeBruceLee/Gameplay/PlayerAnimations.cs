@@ -12,7 +12,8 @@ public enum PlayerState
 	Climb,
 	Attack,
 	Hit,
-	KnockedDown
+	KnockedDown,
+	Dead
 }
 
 public static class PlayerAnimations
@@ -30,4 +31,6 @@ public static class PlayerAnimations
 	public static readonly AnimationClip Hit = new("player-hit", [16], 1.0, loop: false);
 
 	public static readonly AnimationClip Knockdown = new("player-knockdown", [17], 1.0, loop: false);
+
+	public static readonly AnimationClip Death = new("player-death", [18, 19], 0.2, loop: false);
 }

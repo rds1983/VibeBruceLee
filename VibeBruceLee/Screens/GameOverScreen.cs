@@ -1,6 +1,7 @@
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Globalization;
 using VibeBruceLee.Input;
 using VibeBruceLee.Presentation;
 
@@ -54,7 +55,8 @@ public sealed class GameOverScreen : IGameScreen
 			SpriteEffects.None,
 			SpriteLayers.Background);
 
-		DrawCentered(spriteBatch, _font16, "GAME OVER", 72, Palette.Yellow);
+		DrawCentered(spriteBatch, _font16, "GAME OVER", 64, Palette.Yellow);
+		DrawCentered(spriteBatch, _font8, "SCORE " + _context.Session.Score.ToString("D6", CultureInfo.InvariantCulture), 92, Palette.White);
 		DrawCentered(spriteBatch, _font8, "Enter: title", 112, Palette.White);
 		DrawCentered(spriteBatch, _font8, "Esc: quit", 128, Palette.Muted);
 	}

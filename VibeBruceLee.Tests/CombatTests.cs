@@ -49,11 +49,12 @@ public class CombatTests
 		Assert.True(AttackDefinitions.Chop.IsActive(1));
 		Assert.False(AttackDefinitions.Chop.IsActive(0));
 
-		Assert.Equal(2, AttackDefinitions.Kick.ActiveStart);
-		Assert.Equal(4, AttackDefinitions.Kick.ActiveEnd);
-		Assert.Equal(8, AttackDefinitions.Kick.TotalFrames);
+		Assert.Equal(3, AttackDefinitions.Kick.ActiveStart);
+		Assert.Equal(8, AttackDefinitions.Kick.ActiveEnd);
+		Assert.Equal(18, AttackDefinitions.Kick.TotalFrames);
 		Assert.Equal(75, AttackDefinitions.Kick.Score);
-		Assert.True(AttackDefinitions.Kick.IsActive(2));
+		Assert.Equal(100f, AttackDefinitions.Kick.ForwardSpeed, 2);
+		Assert.True(AttackDefinitions.Kick.IsActive(3));
 	}
 
 	[Fact]
@@ -213,6 +214,29 @@ public class CombatTests
 		}
 
 		Assert.Equal(PlayerState.Idle, player.State);
+	}
+
+	[Fact]
+	public void KickKeepsMovingDuringAttack()
+	{
+		var (player, input) = CreatePlayer();
+		for (var frame = 0; frame < 30; frame++)
+		{
+			Step(player, input, Keys.P);
+		}
+
+		Step(player, input, Keys.P, Keys.Z);
+		Assert.Equal(AttackType.Kick, player.AttackType);
+		var startX = player.Body.Position.X;
+
+		for (var frame = 0; frame < 10; frame++)
+		{
+			Step(player, input);
+		}
+
+		Assert.Equal(PlayerState.Attack, player.State);
+		Assert.True(player.Body.Position.X > startX);
+		Assert.True(player.Body.Velocity.X > 0);
 	}
 
 	[Fact]

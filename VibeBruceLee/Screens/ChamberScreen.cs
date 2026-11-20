@@ -1,3 +1,4 @@
+using System.Globalization;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +21,7 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly ChamberGeometry _geometry;
 	private readonly PhysicsWorld _world;
 	private readonly Player _player;
+	private readonly Vector2 _spawn;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
 	private readonly AnimationPlayer _ninjaPlayer = new();
@@ -40,9 +42,10 @@ public sealed class ChamberScreen : IGameScreen
 		_font8 = context.FontSystem.GetFont(8);
 
 		var spawn = _chamber.PlayerSpawn ?? new PointDefinition { X = 32, Y = 144 };
+		_spawn = new Vector2(spawn.X, spawn.Y);
 		_player = new Player(
 			_world,
-			new Vector2(spawn.X, spawn.Y),
+			_spawn,
 			_geometry.Platforms,
 			_geometry.Vines);
 
@@ -62,7 +65,21 @@ public sealed class ChamberScreen : IGameScreen
 	public void Update(GameTime gameTime, InputSystem input)
 	{
 		var seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+		_player.Invincible = _context.Debug.Invincible;
 		_player.Update(input, seconds);
+
+		if (_player.ConsumeDeathFinished())
+		{
+			if (_context.Session.LoseFall())
+			{
+				_screens.Push(new GameOverScreen(_screens, _context));
+			}
+			else
+			{
+				_player.Respawn(_spawn);
+			}
+		}
+
 		_ninjaPlayer.Update(seconds);
 		_yamoPlayer.Update(seconds);
 		_lanternPlayer.Update(seconds);
@@ -220,8 +237,9 @@ public sealed class ChamberScreen : IGameScreen
 
 		spriteBatch.Draw(_context.HudLife, new Rectangle(4, 2, 8, 8), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.Hud);
 		spriteBatch.Draw(_context.HudLantern, new Rectangle(16, 2, 8, 8), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, "000000", new Vector2(30, 2), Palette.White, layerDepth: SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, "FALLS 5", new Vector2(196, 2), Palette.White, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(_font8, _context.Session.Score.ToString("D6", CultureInfo.InvariantCulture), new Vector2(30, 2), Palette.White, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(_font8, "BLOWS " + _player.BlowsRemaining.ToString(CultureInfo.InvariantCulture), new Vector2(96, 2), Palette.White, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(_font8, "FALLS " + _context.Session.Falls.ToString(CultureInfo.InvariantCulture), new Vector2(184, 2), Palette.White, layerDepth: SpriteLayers.Hud);
 
 		spriteBatch.DrawString(_font16, "CHAMBER 1", new Vector2(8, 16), Palette.Yellow, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, $"{_player.State}", new Vector2(8, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);

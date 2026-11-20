@@ -20,6 +20,10 @@ public sealed class Player
 	public const int BodyHeight = 22;
 	public const int KnockdownFrames = 24;
 	public const float RunAttackThreshold = 20f;
+	public const int BlowsPerFall = 3;
+	public const int HitInvulnerabilityFrames = 20;
+	public const int RespawnInvulnerabilityFrames = 90;
+	public const int DeathFrames = 60;
 
 	private readonly PhysicsWorld _world;
 	private readonly IReadOnlyList<Platform> _platforms;
@@ -31,6 +35,11 @@ public sealed class Player
 	private bool _hasHitThisAttack;
 	private int _hitstunFrames;
 	private int _knockdownFrames;
+	private int _blowsRemaining = BlowsPerFall;
+	private int _invulnerableFrames;
+	private bool _isDead;
+	private bool _deathFinished;
+	private int _deathFrames;
 
 	public Player(
 		PhysicsWorld world,
@@ -63,12 +72,25 @@ public sealed class Player
 
 	public bool IsHurt => _hitstunFrames > 0 || _knockdownFrames > 0;
 
+	public bool IsDead => _isDead;
+
+	public bool IsInvulnerable => _invulnerableFrames > 0;
+
+	public bool Invincible { get; set; }
+
+	public int BlowsRemaining => _blowsRemaining;
+
 	public Aabb Hurtbox => Body.Bounds;
 
 	public int CurrentFrame
 	{
 		get
 		{
+			if (_isDead)
+			{
+				return _deathFrames < 20 ? 18 : 19;
+			}
+
 			if (_knockdownFrames > 0)
 			{
 				return 17;
@@ -103,6 +125,26 @@ public sealed class Player
 		ArgumentNullException.ThrowIfNull(input);
 		ArgumentOutOfRangeException.ThrowIfNegative(deltaSeconds);
 
+		if (_invulnerableFrames > 0)
+		{
+			_invulnerableFrames--;
+		}
+
+		if (_isDead)
+		{
+			_deathFrames++;
+			ApplyHitDrag(deltaSeconds);
+			_world.Step(Body, deltaSeconds, _platforms, _vines);
+			State = PlayerState.Dead;
+
+			if (_deathFrames >= DeathFrames)
+			{
+				_deathFinished = true;
+			}
+
+			return;
+		}
+
 		if (_knockdownFrames > 0)
 		{
 			_knockdownFrames--;
@@ -132,7 +174,10 @@ public sealed class Player
 			}
 			else
 			{
-				ApplyHitDrag(deltaSeconds);
+				if (_attack.ForwardSpeed <= 0)
+				{
+					ApplyHitDrag(deltaSeconds);
+				}
 			}
 
 			_world.Step(Body, deltaSeconds, _platforms, _vines);
@@ -278,16 +323,104 @@ public sealed class Player
 	{
 		ArgumentNullException.ThrowIfNull(hit);
 
+		if (_isDead || Invincible || _invulnerableFrames > 0)
+		{
+			return;
+		}
+
 		_attack = null;
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
-		_hitstunFrames = hit.KnocksDown ? 0 : hit.HitstunFrames;
-		_knockdownFrames = hit.KnocksDown ? KnockdownFrames : 0;
+		_hitstunFrames = 0;
+		_knockdownFrames = 0;
 		Body.Velocity = new Vector2(
 			(fromLeft ? 1 : -1) * hit.KnockbackX,
 			hit.KnockbackY);
 
-		State = hit.KnocksDown ? PlayerState.KnockedDown : PlayerState.Hit;
+		if (_blowsRemaining > 0)
+		{
+			_blowsRemaining--;
+		}
+
+		if (_blowsRemaining <= 0)
+		{
+			Die();
+			return;
+		}
+
+		if (hit.KnocksDown)
+		{
+			_knockdownFrames = KnockdownFrames;
+			State = PlayerState.KnockedDown;
+		}
+		else
+		{
+			_hitstunFrames = hit.HitstunFrames;
+			State = PlayerState.Hit;
+		}
+
+		_invulnerableFrames = HitInvulnerabilityFrames;
+	}
+
+	/// <summary>
+	/// Kills Bruce immediately, used by deadly hazards.
+	/// </summary>
+	public void Kill()
+	{
+		if (_isDead || Invincible || _invulnerableFrames > 0)
+		{
+			return;
+		}
+
+		_blowsRemaining = 0;
+		Body.Velocity = new Vector2(0, -40);
+		Die();
+	}
+
+	public bool ConsumeDeathFinished()
+	{
+		if (!_deathFinished)
+		{
+			return false;
+		}
+
+		_deathFinished = false;
+		return true;
+	}
+
+	public void Respawn(Vector2 spawn)
+	{
+		Body.Position = spawn;
+		Body.Velocity = Vector2.Zero;
+		Body.ClimbingVine = null;
+		Body.IsGrounded = false;
+		_jumpHeld = false;
+		_attack = null;
+		_attackFrame = 0;
+		_hasHitThisAttack = false;
+		_hitstunFrames = 0;
+		_knockdownFrames = 0;
+		_blowsRemaining = BlowsPerFall;
+		_invulnerableFrames = RespawnInvulnerabilityFrames;
+		_isDead = false;
+		_deathFinished = false;
+		_deathFrames = 0;
+		FacingLeft = false;
+		State = PlayerState.Idle;
+		_animation.Play(PlayerAnimations.Idle);
+	}
+
+	private void Die()
+	{
+		_attack = null;
+		_attackFrame = 0;
+		_hasHitThisAttack = false;
+		_hitstunFrames = 0;
+		_knockdownFrames = 0;
+		_isDead = true;
+		_deathFinished = false;
+		_deathFrames = 0;
+		State = PlayerState.Dead;
 	}
 
 	private AttackType ChooseAttack()
@@ -303,7 +436,13 @@ public sealed class Player
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
 
-		if (type == AttackType.Chop)
+		if (_attack.ForwardSpeed > 0)
+		{
+			Body.Velocity = new Vector2(
+				(FacingLeft ? -1 : 1) * _attack.ForwardSpeed,
+				Body.Velocity.Y);
+		}
+		else if (type == AttackType.Chop)
 		{
 			Body.Velocity = new Vector2(0, Body.Velocity.Y);
 		}
@@ -325,7 +464,11 @@ public sealed class Player
 
 	private void UpdateState(InputSystem input)
 	{
-		if (_knockdownFrames > 0)
+		if (_isDead)
+		{
+			State = PlayerState.Dead;
+		}
+		else if (_knockdownFrames > 0)
 		{
 			State = PlayerState.KnockedDown;
 		}
@@ -360,7 +503,7 @@ public sealed class Player
 
 	private void UpdateAnimation(float deltaSeconds)
 	{
-		if (State is PlayerState.Attack or PlayerState.Hit or PlayerState.KnockedDown)
+		if (State is PlayerState.Attack or PlayerState.Hit or PlayerState.KnockedDown or PlayerState.Dead)
 		{
 			return;
 		}

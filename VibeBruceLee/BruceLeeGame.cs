@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using VibeBruceLee.Debugging;
+using VibeBruceLee.Gameplay;
 using VibeBruceLee.Graphics;
 using VibeBruceLee.Input;
 using VibeBruceLee.Levels;
@@ -92,6 +93,7 @@ public sealed class BruceLeeGame : Game
 			"Assets",
 			"levels",
 			"chamber-01.json"));
+		var session = new GameSession();
 
 		var pixel = new Texture2D(GraphicsDevice, 1, 1);
 		Color[] white = [Color.White];
@@ -118,7 +120,8 @@ public sealed class BruceLeeGame : Game
 			hudLantern,
 			pixel,
 			_debugState,
-			chamber);
+			chamber,
+			session);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));
 		_input = new InputSystem(InputBindings.CreateDefault());

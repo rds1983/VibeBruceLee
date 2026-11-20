@@ -2,6 +2,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VibeBruceLee.Debugging;
+using VibeBruceLee.Gameplay;
 using VibeBruceLee.Graphics;
 using VibeBruceLee.Levels;
 
@@ -23,7 +24,8 @@ public sealed class ScreenContext
 		Texture2D hudLantern,
 		Texture2D pixel,
 		DebugState debug,
-		ChamberDefinition chamber)
+		ChamberDefinition chamber,
+		GameSession session)
 	{
 		ArgumentNullException.ThrowIfNull(fontSystem);
 		ArgumentNullException.ThrowIfNull(bruce);
@@ -36,6 +38,7 @@ public sealed class ScreenContext
 		ArgumentNullException.ThrowIfNull(pixel);
 		ArgumentNullException.ThrowIfNull(debug);
 		ArgumentNullException.ThrowIfNull(chamber);
+		ArgumentNullException.ThrowIfNull(session);
 
 		FontSystem = fontSystem;
 		Bruce = bruce;
@@ -48,6 +51,7 @@ public sealed class ScreenContext
 		Pixel = pixel;
 		Debug = debug;
 		Chamber = chamber;
+		Session = session;
 	}
 
 	public FontSystem FontSystem { get; }
@@ -71,6 +75,8 @@ public sealed class ScreenContext
 	public DebugState Debug { get; }
 
 	public ChamberDefinition Chamber { get; }
+
+	public GameSession Session { get; }
 }
 
 public static class Palette

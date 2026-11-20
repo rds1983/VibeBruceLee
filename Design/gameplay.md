@@ -62,10 +62,10 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 | Attack | Startup | Active | Recovery | Total | Hitbox (w x h, y offset) | Knockback | Hitstun | Knockdown | Animation frames | Score |
 | ------ | ------- | ------ | -------- | ----- | ------------------------- | --------- | ------- | --------- | ---------------- | ----- |
 | Chop | 1 | 2 | 3 | 6 | 10x8, +6 | 50, -15 | 8 | No | 8 / 9 / 8 | 100 |
-| Kick | 2 | 2 | 4 | 8 | 16x8, +10 | 90, -20 | 12 | No | 12 / 13 / 12 | 75 |
+| Kick | 3 | 5 | 10 | 18 | 16x8, +10 | 90, -20 | 12 | No | 12 / 13 / 12 | 75 |
 
 - Attack selection is contextual: moving faster than 20 px/s = kick, otherwise chop.
-- The running kick is the move contemporary reviews call the flying kick.
+- The running kick is the move contemporary reviews call the flying kick. It carries Bruce forward at 100 px/s for the whole animation; the chop stops him.
 - The hitbox extends forward from the body edge and mirrors with facing.
 - These values are the tuning baseline and may be adjusted in T-055.
 
@@ -85,7 +85,7 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 - Bruce has three blows per fall. Each blow causes hitstun, knockback and brief invulnerability; the third blow causes a fall.
 - Enemy attacks and enemy body contact during an attack deal one blow.
 - Environmental traps cost a whole fall immediately. This is a remake ruling; revisit in T-055 if it feels unfair.
-- After a fall, Bruce respawns at the chamber entrance with full blows and brief invulnerability. The current chamber resets: lanterns, enemies and hazards return to their initial state. Score and remaining falls are kept.
+- After a fall, Bruce respawns at the chamber entrance with full blows and brief invulnerability. The current chamber resets: lanterns, enemies and hazards return to their initial state. Score and remaining falls are kept. Chamber reset is completed with the chamber runtime in T-040; the sample currently respawns Bruce only.
 
 ## Falls, game over and extra falls
 

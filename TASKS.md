@@ -83,7 +83,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* frame data is centralized, tested, and documented in `Design/gameplay.md`.
   *Plan:* add centralized attack frame data, player attack/hitstun/knockdown states, active hitboxes with one-hit-per-attack, contextual attack selection, and tests for timing, facing, hit application and recovery.
 
-- [ ] **T-022 Health, lives, and respawn**
+- [x] **T-022 Health, lives, and respawn**
   Handle enemy blows (three per fall), deadly hazards, death animation, five starting falls, an extra fall every 30,000 points, respawn with brief invulnerability, and game over.
   *Done when:* life-loss transitions and invulnerability windows are tested.
 
@@ -229,3 +229,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-016 | 2026-11-20 | First-pass Bruce/Ninja/Yamo sheets, tile and HUD atlases, animation frame maps, and title/chamber showcases. |
 | T-020 | 2026-11-20 | Player locomotion: run, variable jump, duck, vine climbing/detach, state animations, wired into the sample chamber. |
 | T-021 | 2026-11-20 | Grounded chop/running-kick combat with centralized frame data, one-hit hitboxes, hitstun/knockdown and corrected source research. |
+| T-022 | 2026-11-20 | Health/falls/respawn: three blows, hit i-frames, death, five falls, extra falls per 30k, HUD/game over; longer momentum-carrying kick. |

@@ -27,7 +27,8 @@ public sealed record AttackDefinition(
 	float KnockbackY,
 	int HitstunFrames,
 	bool KnocksDown,
-	int Score)
+	int Score,
+	float ForwardSpeed)
 {
 	public int ActiveStart => StartupFrames;
 
@@ -60,7 +61,8 @@ public static class AttackDefinitions
 		KnockbackY: -15f,
 		HitstunFrames: 8,
 		KnocksDown: false,
-		Score: 100);
+		Score: 100,
+		ForwardSpeed: 0f);
 
 	/// <summary>
 	/// Running kick. Reviewers call this the flying kick; the original manual
@@ -69,9 +71,9 @@ public static class AttackDefinitions
 	public static readonly AttackDefinition Kick = new(
 		AttackType.Kick,
 		"Kick",
-		StartupFrames: 2,
-		ActiveFrames: 2,
-		RecoveryFrames: 4,
+		StartupFrames: 3,
+		ActiveFrames: 5,
+		RecoveryFrames: 10,
 		StartupAnimationFrame: 12,
 		ActiveAnimationFrame: 13,
 		RecoveryAnimationFrame: 12,
@@ -83,7 +85,8 @@ public static class AttackDefinitions
 		KnockbackY: -20f,
 		HitstunFrames: 12,
 		KnocksDown: false,
-		Score: 75);
+		Score: 75,
+		ForwardSpeed: 100f);
 
 	public static AttackDefinition Get(AttackType type)
 	{
