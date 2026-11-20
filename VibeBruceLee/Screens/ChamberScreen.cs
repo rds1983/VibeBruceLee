@@ -25,6 +25,7 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly EnemyEncounter _encounter;
 	private readonly ChamberProgress _progress;
 	private readonly HubProgress _hub;
+	private readonly WizardBoss? _wizard;
 	private readonly bool _isHubChamber;
 	private readonly string _title;
 	private readonly Vector2 _spawn;
@@ -49,6 +50,7 @@ public sealed class ChamberScreen : IGameScreen
 			_chamber.Hub ? context.Session.Hub.GetLanternSet(_chamber.Id) : null);
 		_hub = context.Session.Hub;
 		_isHubChamber = _chamber.Hub;
+		_wizard = _chamber.Wizard is WizardDefinition wizard ? new WizardBoss(wizard) : null;
 		_title = _chamber.Name.ToUpperInvariant();
 		_geometry = ChamberGeometry.From(_chamber);
 		_world = new PhysicsWorld(GameInfo.VirtualWidth, GameInfo.VirtualHeight, 900, 600);
@@ -100,7 +102,24 @@ public sealed class ChamberScreen : IGameScreen
 		var seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 		_player.Invincible = _context.Debug.Invincible;
 		_encounter.Update(input, seconds);
+		_wizard?.Update(seconds, _player.Body.Bounds, _hazards);
 		_hazards.Update(seconds, _player, _enemies);
+
+		if (_wizard is not null)
+		{
+			if (!_player.IsDead &&
+				_wizard.TryPressButton(_player.Body.Bounds, input.WasPressed(InputAction.Attack)))
+			{
+				_context.Session.AddScore(WizardBoss.Score);
+				_hazards.Clear();
+			}
+
+			if (_wizard.IsDefeatFinished)
+			{
+				_screens.Push(new EndingScreen(_screens, _context));
+				return;
+			}
+		}
 
 		if (!_player.IsDead)
 		{
@@ -172,6 +191,7 @@ public sealed class ChamberScreen : IGameScreen
 		DrawGeometry(spriteBatch);
 		DrawExits(spriteBatch);
 		DrawHazards(spriteBatch);
+		DrawWizard(spriteBatch);
 		DrawLanterns(spriteBatch);
 		DrawEnemies(spriteBatch);
 		DrawPlayer(spriteBatch);
@@ -261,6 +281,7 @@ public sealed class ChamberScreen : IGameScreen
 
 		_encounter.Reset();
 		_hazards.Reset();
+		_wizard?.Reset();
 		_dust.Clear();
 	}
 
@@ -354,6 +375,35 @@ public sealed class ChamberScreen : IGameScreen
 			HazardKind.Fireball => new Color(255, 90, 20),
 			_ => Palette.White
 		};
+	}
+
+	private void DrawWizard(SpriteBatch spriteBatch)
+	{
+		if (_wizard is null)
+		{
+			return;
+		}
+
+		var bounds = _wizard.Bounds;
+		var head = _wizard.IsDefeated ? new Color(220, 60, 60) : new Color(90, 30, 120);
+		var hat = new Color(40, 10, 60);
+		var eye = _wizard.IsWarning || _wizard.IsFiring ? Palette.Yellow : Palette.White;
+
+		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X - 4, (int)bounds.Y - 4, (int)bounds.Width + 8, 4), null, hat, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X + 6, (int)bounds.Y - 12, (int)bounds.Width - 12, 8), null, hat, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X, (int)bounds.Y, (int)bounds.Width, (int)bounds.Height), null, head, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+
+		var leftEyeX = (int)(bounds.X + (bounds.Width * 0.32f)) - 2;
+		var rightEyeX = (int)(bounds.X + (bounds.Width * 0.68f)) - 2;
+		var eyeY = (int)(bounds.Y + (bounds.Height * 0.35f));
+		spriteBatch.Draw(_context.Pixel, new Rectangle(leftEyeX, eyeY, 4, 4), null, eye, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+		spriteBatch.Draw(_context.Pixel, new Rectangle(rightEyeX, eyeY, 4, 4), null, eye, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+		spriteBatch.Draw(_context.Pixel, new Rectangle((int)bounds.X + 8, (int)bounds.Y + (int)(bounds.Height * 0.7f), (int)bounds.Width - 16, 3), null, hat, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+
+		var button = _wizard.ButtonBounds;
+		var buttonColor = _wizard.IsDefeated ? new Color(80, 200, 80) : new Color(200, 40, 40);
+		spriteBatch.Draw(_context.Pixel, new Rectangle((int)button.X, (int)button.Y, (int)button.Width, (int)button.Height), null, buttonColor, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
+		spriteBatch.Draw(_context.Pixel, new Rectangle((int)button.X + 2, (int)button.Y + 2, Math.Max(1, (int)button.Width - 4), Math.Max(1, (int)button.Height - 4)), null, _wizard.IsDefeated ? Palette.Yellow : Palette.White, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.World);
 	}
 
 	private void DrawLanterns(SpriteBatch spriteBatch)
@@ -457,7 +507,9 @@ public sealed class ChamberScreen : IGameScreen
 		spriteBatch.DrawString(_font8, "HP " + _player.BlowsRemaining.ToString(CultureInfo.InvariantCulture), new Vector2(96, 2), Palette.White, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(
 			_font8,
-			"L " + _progress.RequiredCollected.ToString(CultureInfo.InvariantCulture) + "/" + _progress.RequiredTotal.ToString(CultureInfo.InvariantCulture),
+			_chamber.Boss
+				? "BOSS"
+				: "L " + _progress.RequiredCollected.ToString(CultureInfo.InvariantCulture) + "/" + _progress.RequiredTotal.ToString(CultureInfo.InvariantCulture),
 			new Vector2(136, 2),
 			Palette.White,
 			layerDepth: SpriteLayers.Hud);
@@ -465,7 +517,22 @@ public sealed class ChamberScreen : IGameScreen
 
 		spriteBatch.DrawString(_font16, _title, new Vector2(8, 16), Palette.Yellow, layerDepth: SpriteLayers.Hud);
 
-		if (_isHubChamber)
+		if (_wizard is not null)
+		{
+			if (_wizard.IsDefeated)
+			{
+				spriteBatch.DrawString(_font8, "WIZARD DESTROYED", new Vector2(8, 36), Palette.Yellow, layerDepth: SpriteLayers.Hud);
+			}
+			else if (_wizard.PlayerAtButton(_player.Body.Bounds))
+			{
+				spriteBatch.DrawString(_font8, "PRESS ATTACK", new Vector2(8, 36), Palette.Yellow, layerDepth: SpriteLayers.Hud);
+			}
+			else
+			{
+				spriteBatch.DrawString(_font8, "ATTACK THE BUTTON", new Vector2(8, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);
+			}
+		}
+		else if (_isHubChamber)
 		{
 			if (_hub.AllRequiredCollected(_context.Chambers))
 			{

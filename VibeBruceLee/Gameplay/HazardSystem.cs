@@ -21,6 +21,17 @@ public sealed class HazardSystem
 
 	public IReadOnlyList<Hazard> Hazards => _hazards;
 
+	public void Add(Hazard hazard)
+	{
+		ArgumentNullException.ThrowIfNull(hazard);
+		_hazards.Add(hazard);
+	}
+
+	public void Clear()
+	{
+		_hazards.Clear();
+	}
+
 	public void Update(float deltaSeconds, Player player, IReadOnlyList<Enemy> enemies)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(deltaSeconds);

@@ -158,7 +158,7 @@ public sealed class ChamberLoaderTests : IDisposable
 
 		var chambers = ChamberLoader.LoadAll(directory);
 
-		Assert.Equal(19, chambers.Count);
+		Assert.Equal(20, chambers.Count);
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-01");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-02");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-03");
@@ -178,6 +178,7 @@ public sealed class ChamberLoaderTests : IDisposable
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-17");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-18");
 		Assert.Contains(chambers, chamber => chamber.Id == "chamber-19");
+		Assert.Contains(chambers, chamber => chamber.Id == "chamber-20");
 	}
 
 	[Fact]
@@ -201,7 +202,64 @@ public sealed class ChamberLoaderTests : IDisposable
 		Assert.Equal("chamber-17", chambers["chamber-16"].Exits.MaxBy(exit => exit.X)!.Target);
 		Assert.Equal("chamber-18", chambers["chamber-17"].Exits.MaxBy(exit => exit.X)!.Target);
 		Assert.Equal("chamber-19", chambers["chamber-18"].Exits.MaxBy(exit => exit.X)!.Target);
-		Assert.Equal("chamber-01", chambers["chamber-19"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.Equal("chamber-20", chambers["chamber-19"].Exits.MaxBy(exit => exit.X)!.Target);
+		Assert.True(chambers["chamber-20"].Boss);
+		Assert.NotNull(chambers["chamber-20"].Wizard);
+		Assert.Empty(chambers["chamber-20"].Exits);
+	}
+
+	[Fact]
+	public void BossChamberWithoutExitsLoads()
+	{
+		var path = Write("boss.json", BossChamber());
+
+		var chamber = ChamberLoader.Load(path);
+
+		Assert.True(chamber.Boss);
+		Assert.NotNull(chamber.Wizard);
+		Assert.Empty(chamber.Exits);
+	}
+
+	[Fact]
+	public void NonBossChamberWithoutExitsIsRejected()
+	{
+		var path = Write("no-exit.json", ValidChamber.Replace(
+			"\"exits\": [ { \"x\": 120, \"y\": 184, \"width\": 16, \"height\": 8, \"target\": \"test-chamber\" } ],",
+			"\"exits\": [],"));
+
+		var exception = Assert.Throws<InvalidDataException>(() => ChamberLoader.Load(path));
+
+		Assert.Contains("exit", exception.Message, StringComparison.OrdinalIgnoreCase);
+	}
+
+	[Fact]
+	public void BossWithoutWizardIsRejected()
+	{
+		var path = Write("boss-no-wizard.json", BossChamber(includeWizard: false));
+
+		var exception = Assert.Throws<InvalidDataException>(() => ChamberLoader.Load(path));
+
+		Assert.Contains("wizard", exception.Message, StringComparison.OrdinalIgnoreCase);
+	}
+
+	private static string BossChamber(bool includeWizard = true)
+	{
+		var json = ValidChamber
+			.Replace(
+				"\"id\": \"test-chamber\",",
+				"\"id\": \"test-chamber\", \"boss\": true,")
+			.Replace(
+				"\"exits\": [ { \"x\": 120, \"y\": 184, \"width\": 16, \"height\": 8, \"target\": \"test-chamber\" } ],",
+				"\"exits\": [],");
+
+		if (includeWizard)
+		{
+			json = json.Replace(
+				"\"exits\": [],",
+				"\"exits\": [], \"wizard\": { \"x\": 96, \"y\": 16, \"width\": 32, \"height\": 32, \"buttonX\": 24, \"buttonY\": 112, \"buttonWidth\": 16, \"buttonHeight\": 8 },");
+		}
+
+		return json;
 	}
 
 	private string Write(string name, string json)

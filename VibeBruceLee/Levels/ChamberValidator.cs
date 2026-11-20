@@ -192,7 +192,10 @@ public static class ChamberValidator
 		{
 			if (chamber.Exits.Count == 0)
 			{
-				errors.Add("at least one exit is required.");
+				if (!chamber.Boss)
+				{
+					errors.Add("at least one exit is required unless the chamber is a boss room.");
+				}
 			}
 
 			for (var i = 0; i < chamber.Exits.Count; i++)
@@ -240,6 +243,33 @@ public static class ChamberValidator
 
 				ValidatePoint(errors, $"decor[{i}]", decor.X, decor.Y, chamber);
 			}
+		}
+
+		if (chamber.Wizard is WizardDefinition wizard)
+		{
+			ValidateRect(errors, "wizard", wizard.X, wizard.Y, wizard.Width, wizard.Height, chamber);
+			ValidateRect(
+				errors,
+				"wizard.button",
+				wizard.ButtonX,
+				wizard.ButtonY,
+				wizard.ButtonWidth,
+				wizard.ButtonHeight,
+				chamber);
+
+			if (wizard.FireballPeriodSeconds <= 0)
+			{
+				errors.Add("wizard.fireballPeriodSeconds must be positive.");
+			}
+		}
+		else if (chamber.Boss)
+		{
+			errors.Add("wizard is required for a boss chamber.");
+		}
+
+		if (chamber.Wizard is not null && !chamber.Boss)
+		{
+			errors.Add("wizard is only allowed when boss is true.");
 		}
 
 		return errors;

@@ -112,7 +112,7 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 
 - Chambers form a data-defined graph, matching the original fortress. The first three chambers form the entrance hub; the hatch in the middle chamber leads into the underworld.
 - Each exit names its destination chamber. The CRASH reference map is the source for room numbering and connections.
-- Chamber 20 is the Fire Wizard's lair. Avoiding his fireballs and pressing the destruction button awards 3,000 points and plays the ending.
+- Chamber 20 is the Fire Wizard's lair. The wizard has no lantern gate: he fires aimed fireballs from alternating eyes every 1.4 s with a 0.3 s warning flash. Avoiding them and pressing the destruction button on the left platform awards 3,000 points and plays the ending. A two-second defeat flash precedes the ending screen; Confirm returns to the title.
 - Completing chamber 20 starts the next loop at chamber 1.
 - Loops increase difficulty: faster and more aggressive enemies, immediate enemy respawns, and removed safe spots in the electrified-comb chamber. Score and falls carry into the next loop.
 

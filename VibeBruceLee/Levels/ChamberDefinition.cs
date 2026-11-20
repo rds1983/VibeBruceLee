@@ -14,6 +14,10 @@ public sealed class ChamberDefinition
 
 	public bool Hub { get; set; }
 
+	public bool Boss { get; set; }
+
+	public WizardDefinition? Wizard { get; set; }
+
 	public List<PlatformDefinition> Platforms { get; set; } = [];
 
 	public List<VineDefinition> Vines { get; set; } = [];
@@ -127,4 +131,25 @@ public sealed class DecorDefinition
 	public int Y { get; set; }
 
 	public int Scale { get; set; } = 1;
+}
+
+public sealed class WizardDefinition
+{
+	public int X { get; set; }
+
+	public int Y { get; set; }
+
+	public int Width { get; set; }
+
+	public int Height { get; set; }
+
+	public int ButtonX { get; set; }
+
+	public int ButtonY { get; set; }
+
+	public int ButtonWidth { get; set; }
+
+	public int ButtonHeight { get; set; }
+
+	public double FireballPeriodSeconds { get; set; } = 1.4;
 }

@@ -52,6 +52,8 @@ Each chamber is a single 256x192 screen defined by a JSON file in `VibeBruceLee/
 | `width`, `height` | Must be 256x192. Defaults to those values. |
 | `playerSpawn` | Required point inside the chamber. |
 | `hub` | Optional boolean; true for the three entrance-hub chambers. Hub lantern state persists between rooms. |
+| `boss` | Optional boolean; true for the final boss chamber. Boss rooms may have no exits. |
+| `wizard` | Boss-only object: `x`, `y`, `width`, `height`, `buttonX`, `buttonY`, `buttonWidth`, `buttonHeight`, `fireballPeriodSeconds`. |
 | `platforms` | Rectangles. `oneWay` is optional and defaults to `false`. |
 | `vines` | Rectangles with `orientation` `vertical` or `horizontal`. |
 | `lanterns` | `id` unique per chamber; point position; `required` defaults to `true`. |
@@ -67,7 +69,9 @@ Allowed hazard types: `electric`, `mine`, `moving-wall`, `floor-light`, `dagger`
 - JSON is strict: unknown fields are rejected. Comments and trailing commas are allowed.
 - Every rectangle must have positive size and fit inside the chamber.
 - Every point must be inside the chamber.
-- At least one exit is required.
+- At least one exit is required unless `boss` is true.
+- A boss chamber requires a `wizard` object; wizard and button rectangles must fit inside the chamber.
+- A non-boss chamber must not define a wizard.
 - Lantern ids are unique per chamber.
 - Chamber ids are unique across the set.
 - Every exit target must exist in the set.
@@ -80,7 +84,7 @@ var levelsDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels")
 var chambers = ChamberLoader.LoadAll(levelsDirectory);
 ```
 
-`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. Nineteen chambers are committed: the three-room entrance hub (01-03), the first two underworld rooms (04-05), the mid-game chain (06-12), and the late-game chain (13-19).
+`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. Twenty chambers are committed: the three-room entrance hub (01-03), the first two underworld rooms (04-05), the mid-game chain (06-12), the late-game chain (13-19), and the Fire Wizard's chamber (20).
 
 ## Entrance hub and hatch (T-041)
 
@@ -144,7 +148,7 @@ The chain runs 05 → 06 → 07 → 08 → 09 → 10 → 11 → 12 → 01. Every
 
 ## Late-game chambers (T-044)
 
-The chain runs 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 01. Back doors and lantern-gated forward doors follow the same rule as the mid-game.
+The chain runs 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 20. Back doors and lantern-gated forward doors follow the same rule as the mid-game.
 
 | Chamber | Name | Layout | Hazards | Enemies |
 | ------- | ---- | ------ | ------- | ------- |
@@ -158,7 +162,16 @@ The chain runs 12 → 13 → 14 → 15 → 16 → 17 → 18 → 19 → 01. Back 
 
 - All seven chambers have safe spawn areas and at least one safe waiting spot before every hazard band.
 - Beam and projectile timings stay at T-042 values; no jump or hazard requires frame-perfect input.
-- Chamber-19 currently loops to chamber-01; T-045 replaces that forward exit with the Fire Wizard chamber.
+- Chamber-19's right exit opens after its lanterns and leads to chamber-20.
+
+## Chamber-20: Fire Wizard
+
+- Boss chamber: no lanterns, enemies or static hazards; `"boss": true`.
+- The wizard sits above the centre platform at `(112, 56, 32, 32)`. He fires aimed fireballs from alternating eyes every 1.4 s, with a 0.3 s warning flash.
+- The destruction button is on the left platform at `(24, 112, 16, 8)`. The player climbs the left vine, stands at the button and presses Attack.
+- Pressing the button awards 3,000 points, clears all fireballs and starts a two-second defeat flash.
+- After the defeat timer, the ending screen appears. Confirm returns to the title screen.
+- The chamber has no exits; `ChamberValidator` allows this only for a boss room with a valid wizard definition.
 
 ## Progress and transitions
 

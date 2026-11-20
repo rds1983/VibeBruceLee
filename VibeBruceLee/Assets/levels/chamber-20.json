@@ -1,0 +1,38 @@
+{
+  "id": "chamber-20",
+  "name": "Fire Wizard",
+  "width": 256,
+  "height": 192,
+  "boss": true,
+  "playerSpawn": {
+    "x": 32,
+    "y": 144
+  },
+  "platforms": [
+    { "x": 0, "y": 176, "width": 256, "height": 16 },
+    { "x": 16, "y": 128, "width": 80, "height": 8 },
+    { "x": 160, "y": 128, "width": 80, "height": 8 },
+    { "x": 96, "y": 88, "width": 64, "height": 8 }
+  ],
+  "vines": [
+    { "x": 48, "y": 128, "width": 8, "height": 48, "orientation": "vertical" },
+    { "x": 124, "y": 88, "width": 8, "height": 88, "orientation": "vertical" },
+    { "x": 208, "y": 128, "width": 8, "height": 48, "orientation": "vertical" }
+  ],
+  "lanterns": [],
+  "enemySpawns": [],
+  "hazards": [],
+  "exits": [],
+  "decor": [],
+  "wizard": {
+    "x": 112,
+    "y": 56,
+    "width": 32,
+    "height": 32,
+    "buttonX": 24,
+    "buttonY": 112,
+    "buttonWidth": 16,
+    "buttonHeight": 8,
+    "fireballPeriodSeconds": 1.4
+  }
+}
