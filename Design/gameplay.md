@@ -136,8 +136,24 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 | Yamo | 3 | 45 / 24 px/s | 150 px | 28 px | 6 startup, 3 active, 10 recovery | 450 | 4 s |
 
 - Player hits stun or knock down enemies, and the final hit awards the knockout bonus. Enemies ignore further hits while down.
+- Enemies keep a stand-off: they stop just inside their attack range and back away if Bruce closes in, instead of walking into his position.
 - The framework currently ignores horizontal vines for enemy pathing; the sample chambers use vertical vines. Revisit when a chamber needs it.
 - Enemy type-specific moves, blocking and aggression are T-031/T-032; enemy hazards, overlap and pacing are T-033.
+
+### The Ninja (T-031)
+
+| Move | Trigger | Startup | Active | Recovery | Hitbox | Effect |
+| ---- | ------- | ------- | ------ | -------- | ------ | ------ |
+| Bokken strike | Same surface within 22 px; 45-frame cooldown | 4 | 3 | 8 | 12x8, +6 | 10 hitstun, no knockdown |
+| Leap strike | 23-80 px away at a similar height; 90-frame cooldown | 12 windup + 8 | 14 | 12 | 14x10, +4 | 14 hitstun, no knockdown |
+
+- The leap is a committed arc: 300 px/s upward and 110 px/s toward the target. It covers about 73 px horizontally and stays airborne for about 40 frames.
+- The 12-frame windup uses the idle pose as a tell. The arc and direction are fixed when the windup ends, so Bruce can move out of the landing zone; the Ninja does not home in mid-air.
+- The airborne strike hitbox is active for 14 frames, starting 8 attack frames after launch.
+- The Ninja leaps at Bruce on the same platform when the gap is between 23 and 80 px. It also leaps across a gap or onto a disconnected platform at a similar height when no walking or vine route exists.
+- It will not attempt to leap onto a target more than 24 px above it; higher routes stay with the vines.
+- Jump cooldown is 90 frames (1.5 s) after landing. Bokken cooldown is 45 frames (0.75 s) after recovery.
+- The Ninja still takes two hits to defeat, stays down for 50 frames and returns after 180 frames (3 s). Immediate respawns in later loops are T-046.
 
 ## Hazards
 

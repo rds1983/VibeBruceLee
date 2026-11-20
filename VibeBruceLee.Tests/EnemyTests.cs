@@ -98,7 +98,7 @@ public class EnemyTests
 	public void AttackHitboxIsActiveOnceAndFlipsWithFacing()
 	{
 		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 40, 176), [Floor(176)]);
-		var target = new Vector2(80, 176);
+		var target = new Vector2(60, 176);
 		var frames = 0;
 
 		while (enemy.State != EnemyState.Attack || enemy.AttackFrame < EnemyDefinitions.NinjaStrike.ActiveStart)
@@ -180,7 +180,8 @@ public class EnemyTests
 		Assert.True(climbed);
 		Assert.True(enemy.Body.IsGrounded);
 		Assert.Equal(64f, enemy.Feet.Y, 1);
-		Assert.InRange(enemy.Feet.X, 100f, 140f);
+		Assert.InRange(enemy.Feet.X, 96f, 160f);
+		Assert.False(enemy.Body.Bounds.Intersects(new Aabb(target.X - 5f, target.Y - 22f, 10f, 22f)));
 	}
 
 	[Fact]
@@ -268,6 +269,230 @@ public class EnemyTests
 
 		Assert.False(defeated);
 		Assert.Equal(hitsAfterKnockout, enemy.HitsRemaining);
+	}
+
+	[Fact]
+	public void NinjaLeapsAtMediumRangeAfterWindup()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 200, 176), [Floor(176)]);
+		var target = new Vector2(150, 176);
+		var sawWindup = false;
+		var launched = false;
+		var landed = false;
+		var landedFrame = -1;
+
+		for (var frame = 0; frame < 240; frame++)
+		{
+			enemy.Update(target, Frame);
+
+			if (enemy.State == EnemyState.Jumping)
+			{
+				if (enemy.Body.Velocity.Y == 0)
+				{
+					sawWindup = true;
+				}
+
+				if (enemy.Body.Velocity.Y < -100f)
+				{
+					launched = true;
+				}
+			}
+			else if (launched)
+			{
+				landed = true;
+				landedFrame = frame;
+				break;
+			}
+		}
+
+		Assert.True(sawWindup);
+		Assert.True(launched);
+		Assert.True(landed);
+		Assert.True(landedFrame > 0);
+		Assert.Equal(EnemyDefinitions.Ninja.JumpCooldownFrames, enemy.JumpCooldownRemaining);
+	}
+
+	[Fact]
+	public void NinjaJumpStrikeIsActiveOnlyInTheAir()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 200, 176), [Floor(176)]);
+		var target = new Vector2(150, 176);
+
+		for (var frame = 0; frame < 120 && enemy.State != EnemyState.Jumping; frame++)
+		{
+			enemy.Update(target, Frame);
+		}
+
+		Assert.Equal(EnemyState.Jumping, enemy.State);
+
+		var windupFrames = 0;
+		while (enemy.Body.Velocity.Y >= 0 && windupFrames < EnemyDefinitions.Ninja.JumpWindupFrames + 5)
+		{
+			Assert.False(enemy.TryGetAttackHitbox(out _));
+			enemy.Update(target, Frame);
+			windupFrames++;
+		}
+
+		Assert.True(enemy.Body.Velocity.Y < 0);
+
+		var framesToActive = 0;
+		Aabb hitbox = default;
+		while (!enemy.TryGetAttackHitbox(out hitbox) && framesToActive < 60)
+		{
+			enemy.Update(target, Frame);
+			framesToActive++;
+		}
+
+		Assert.True(framesToActive < 60);
+		Assert.False(enemy.Body.IsGrounded);
+		Assert.Equal(EnemyDefinitions.NinjaJumpAttack.HitboxWidth, hitbox.Width);
+
+		var hit = enemy.TryHit(hitbox);
+		Assert.NotNull(hit);
+		Assert.Equal("Ninja leap strike", hit.Name);
+		Assert.Null(enemy.TryHit(hitbox));
+	}
+
+	[Fact]
+	public void NinjaLeapDirectionIsCommittedAtLaunch()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 200, 176), [Floor(176)]);
+		var target = new Vector2(150, 176);
+
+		for (var frame = 0; frame < 120; frame++)
+		{
+			enemy.Update(target, Frame);
+			if (enemy.State == EnemyState.Jumping && enemy.Body.Velocity.Y < -100f)
+			{
+				break;
+			}
+		}
+
+		Assert.Equal(EnemyState.Jumping, enemy.State);
+		var launchVelocityX = enemy.Body.Velocity.X;
+		var launchedLeft = enemy.FacingLeft;
+		Assert.True(launchVelocityX < 0f);
+		Assert.True(launchedLeft);
+
+		enemy.Update(new Vector2(260, 176), Frame);
+
+		Assert.Equal(launchVelocityX, enemy.Body.Velocity.X, 3);
+		Assert.Equal(launchedLeft, enemy.FacingLeft);
+	}
+
+	[Fact]
+	public void NinjaJumpsAcrossAGapWhenNoRouteExists()
+	{
+		var platforms = new[]
+		{
+			new Platform(new Aabb(0, 160, 96, 8)),
+			new Platform(new Aabb(160, 160, 96, 8))
+		};
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 40, 160), platforms);
+		var target = new Vector2(170, 160);
+		var sawJump = false;
+		var crossed = false;
+
+		for (var frame = 0; frame < 480; frame++)
+		{
+			enemy.Update(target, Frame);
+			sawJump |= enemy.State == EnemyState.Jumping;
+
+			if (sawJump && enemy.Body.IsGrounded && enemy.Feet.X > 160f)
+			{
+				crossed = true;
+				break;
+			}
+		}
+
+		Assert.True(sawJump);
+		Assert.True(crossed);
+		Assert.InRange(enemy.Feet.Y, 159f, 161f);
+	}
+
+	[Fact]
+	public void NinjaDoesNotJumpAtTargetsFarAboveOrOutOfRange()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 40, 176), [Floor(176)]);
+		var target = new Vector2(120, 100);
+
+		for (var frame = 0; frame < 240; frame++)
+		{
+			enemy.Update(target, Frame);
+			Assert.NotEqual(EnemyState.Jumping, enemy.State);
+		}
+	}
+
+	[Fact]
+	public void EnemyStopsAtStandoffRangeInsteadOfOverlapping()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Yamo, OnFloor(EnemyDefinitions.Yamo, 40, 176), [Floor(176)]);
+		var target = new Vector2(160, 176);
+
+		for (var frame = 0; frame < 500; frame++)
+		{
+			enemy.Update(target, Frame);
+		}
+
+		var distance = MathF.Abs(enemy.Feet.X - target.X);
+		var playerBounds = new Aabb(target.X - 5f, target.Y - 22f, 10f, 22f);
+		Assert.InRange(distance, 12f, enemy.StandoffDistance + 8f);
+		Assert.True(enemy.Feet.X < target.X);
+		Assert.False(enemy.Body.Bounds.Intersects(playerBounds));
+	}
+
+	[Fact]
+	public void EnemyBacksAwayWhenTargetIsTooClose()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Yamo, OnFloor(EnemyDefinitions.Yamo, 120, 176), [Floor(176)]);
+		var target = new Vector2(125, 176);
+		var startDistance = MathF.Abs(enemy.Feet.X - target.X);
+
+		for (var frame = 0; frame < 200; frame++)
+		{
+			enemy.Update(target, Frame);
+		}
+
+		var distance = MathF.Abs(enemy.Feet.X - target.X);
+		Assert.True(distance > startDistance);
+		Assert.True(distance >= 12f);
+	}
+
+	[Fact]
+	public void YamoNeverJumps()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Yamo, OnFloor(EnemyDefinitions.Yamo, 40, 176), [Floor(176)]);
+		var target = new Vector2(100, 176);
+
+		for (var frame = 0; frame < 300; frame++)
+		{
+			enemy.Update(target, Frame);
+			Assert.NotEqual(EnemyState.Jumping, enemy.State);
+		}
+	}
+
+	[Fact]
+	public void BokkenCooldownGatesRepeatedStrikes()
+	{
+		var enemy = CreateEnemy(EnemyDefinitions.Ninja, OnFloor(EnemyDefinitions.Ninja, 80, 176), [Floor(176)]);
+		var attackStarts = new List<int>();
+		var wasAttacking = false;
+
+		for (var frame = 0; frame < 300; frame++)
+		{
+			enemy.Update(enemy.Feet, Frame);
+			var attacking = enemy.State == EnemyState.Attack;
+			if (attacking && !wasAttacking)
+			{
+				attackStarts.Add(frame);
+			}
+
+			wasAttacking = attacking;
+		}
+
+		Assert.True(attackStarts.Count >= 2);
+		var minimumSpacing = EnemyDefinitions.NinjaStrike.TotalFrames + EnemyDefinitions.Ninja.AttackCooldownFrames - 1;
+		Assert.True(attackStarts[1] - attackStarts[0] >= minimumSpacing);
 	}
 
 	[Fact]

@@ -6,6 +6,7 @@ public enum EnemyState
 	Patrol,
 	Chase,
 	Attack,
+	Jumping,
 	Stunned,
 	KnockedDown,
 	Respawning
@@ -32,7 +33,14 @@ public sealed record EnemyDefinition(
 	int HitFlashFrames,
 	int HitInvulnerabilityFrames,
 	int KnockoutScore,
-	AttackDefinition Attack);
+	AttackDefinition Attack,
+	bool CanJump,
+	float JumpSpeed,
+	float JumpForwardSpeed,
+	int JumpWindupFrames,
+	float JumpRange,
+	int JumpCooldownFrames,
+	AttackDefinition? JumpAttack);
 
 public static class EnemyDefinitions
 {
@@ -58,6 +66,30 @@ public static class EnemyDefinitions
 		KnocksDown: false,
 		Score: 0,
 		ForwardSpeed: 20f);
+
+	/// <summary>
+	/// Airborne bokken strike. Active frames happen during the middle of the
+	/// fixed jump arc, so the whole leap is readable and jumpable.
+	/// </summary>
+	public static readonly AttackDefinition NinjaJumpAttack = new(
+		AttackType.Kick,
+		"Ninja leap strike",
+		StartupFrames: 8,
+		ActiveFrames: 14,
+		RecoveryFrames: 12,
+		StartupAnimationFrame: 4,
+		ActiveAnimationFrame: 7,
+		RecoveryAnimationFrame: 4,
+		HitboxWidth: 14,
+		HitboxHeight: 10,
+		HitboxOffsetY: 4,
+		HitPoints: 1,
+		KnockbackX: 80f,
+		KnockbackY: -25f,
+		HitstunFrames: 14,
+		KnocksDown: false,
+		Score: 0,
+		ForwardSpeed: 0f);
 
 	/// <summary>
 	/// Heavy wrestler blow. T-032 adds his crushing kick and blocking.
@@ -99,7 +131,14 @@ public static class EnemyDefinitions
 		HitFlashFrames: 8,
 		HitInvulnerabilityFrames: 10,
 		KnockoutScore: 200,
-		Attack: NinjaStrike);
+		Attack: NinjaStrike,
+		CanJump: true,
+		JumpSpeed: 300f,
+		JumpForwardSpeed: 110f,
+		JumpWindupFrames: 12,
+		JumpRange: 80f,
+		JumpCooldownFrames: 90,
+		JumpAttack: NinjaJumpAttack);
 
 	public static readonly EnemyDefinition Yamo = new(
 		Type: "yamo",
@@ -118,7 +157,14 @@ public static class EnemyDefinitions
 		HitFlashFrames: 8,
 		HitInvulnerabilityFrames: 10,
 		KnockoutScore: 450,
-		Attack: YamoCrush);
+		Attack: YamoCrush,
+		CanJump: false,
+		JumpSpeed: 0f,
+		JumpForwardSpeed: 0f,
+		JumpWindupFrames: 0,
+		JumpRange: 0f,
+		JumpCooldownFrames: 0,
+		JumpAttack: null);
 
 	public static EnemyDefinition Get(string type)
 	{

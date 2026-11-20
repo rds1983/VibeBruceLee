@@ -12,6 +12,8 @@ public sealed class Enemy
 {
 	public const float EdgeMargin = 2f;
 	public const float Drag = 600f;
+	public const float StandoffMargin = 2f;
+	public const float StandoffTolerance = 4f;
 
 	private readonly PhysicsWorld _world;
 	private readonly IReadOnlyList<Platform> _platforms;
@@ -29,6 +31,9 @@ public sealed class Enemy
 	private int _attackFrame;
 	private int _attackCooldownFrames;
 	private bool _hasHitThisAttack;
+	private int _jumpFrame;
+	private int _jumpCooldownFrames;
+	private float _jumpTargetX;
 	private int _hitstunFrames;
 	private int _knockdownFrames;
 	private int _respawnFrames;
@@ -72,15 +77,23 @@ public sealed class Enemy
 
 	public int HitsRemaining { get; private set; }
 
-	public bool IsAttacking => State == EnemyState.Attack;
+	public bool IsAttacking => State is EnemyState.Attack or EnemyState.Jumping;
+
+	public bool IsJumping => State == EnemyState.Jumping;
 
 	public int AttackFrame => _attackFrame;
+
+	public int AttackCooldownRemaining => _attackCooldownFrames;
+
+	public int JumpCooldownRemaining => _jumpCooldownFrames;
 
 	public bool IsFlashing => _hitFlashFrames > 0;
 
 	public bool IsVisible => State != EnemyState.Respawning;
 
 	public Vector2 Feet => new(Body.Position.X + (Body.Size.X * 0.5f), Body.Position.Y + Body.Size.Y);
+
+	public float StandoffDistance => MathF.Max(8f, Definition.AttackRange - StandoffMargin);
 
 	public Aabb Hurtbox => Body.Bounds;
 
@@ -96,15 +109,16 @@ public sealed class Enemy
 				case EnemyState.Stunned:
 					return 8;
 				case EnemyState.Attack:
-					var attack = Definition.Attack;
-					if (_attackFrame < attack.ActiveStart)
+					return GetAttackAnimationFrame(Definition.Attack, _attackFrame);
+				case EnemyState.Jumping:
+					if (_jumpFrame <= Definition.JumpWindupFrames)
 					{
-						return attack.StartupAnimationFrame;
+						return 0;
 					}
 
-					return _attackFrame < attack.ActiveEnd
-						? attack.ActiveAnimationFrame
-						: attack.RecoveryAnimationFrame;
+					return GetAttackAnimationFrame(
+						Definition.JumpAttack ?? Definition.Attack,
+						Math.Max(0, _jumpFrame - Definition.JumpWindupFrames - 1));
 				default:
 					return _animation.CurrentFrame;
 			}
@@ -143,11 +157,19 @@ public sealed class Enemy
 			case EnemyState.Attack:
 				TickAttack(deltaSeconds);
 				return;
+			case EnemyState.Jumping:
+				TickJump(deltaSeconds);
+				return;
 		}
 
 		if (_attackCooldownFrames > 0)
 		{
 			_attackCooldownFrames--;
+		}
+
+		if (_jumpCooldownFrames > 0)
+		{
+			_jumpCooldownFrames--;
 		}
 
 		if (targetFeet is null)
@@ -195,7 +217,8 @@ public sealed class Enemy
 
 	public bool TryGetAttackHitbox(out Aabb hitbox)
 	{
-		if (State != EnemyState.Attack || _hasHitThisAttack || !Definition.Attack.IsActive(_attackFrame))
+		var attack = GetCurrentAttack();
+		if (attack is null || _hasHitThisAttack || !attack.IsActive(GetCurrentAttackFrame()))
 		{
 			hitbox = default;
 			return false;
@@ -203,14 +226,14 @@ public sealed class Enemy
 
 		var body = Body.Bounds;
 		var x = FacingLeft
-			? body.X - Definition.Attack.HitboxWidth
+			? body.X - attack.HitboxWidth
 			: body.Right;
 
 		hitbox = new Aabb(
 			x,
-			body.Y + Definition.Attack.HitboxOffsetY,
-			Definition.Attack.HitboxWidth,
-			Definition.Attack.HitboxHeight);
+			body.Y + attack.HitboxOffsetY,
+			attack.HitboxWidth,
+			attack.HitboxHeight);
 
 		return true;
 	}
@@ -226,7 +249,7 @@ public sealed class Enemy
 		}
 
 		_hasHitThisAttack = true;
-		return Definition.Attack;
+		return GetCurrentAttack();
 	}
 
 	/// <summary>
@@ -253,6 +276,8 @@ public sealed class Enemy
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
 		_attackCooldownFrames = 0;
+		_jumpFrame = 0;
+		_jumpCooldownFrames = Definition.JumpCooldownFrames;
 		ClearRoute();
 
 		if (HitsRemaining <= 0)
@@ -291,6 +316,9 @@ public sealed class Enemy
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
 		_attackCooldownFrames = 0;
+		_jumpFrame = 0;
+		_jumpCooldownFrames = 0;
+		_jumpTargetX = 0;
 		_idleFrames = Definition.IdleFrames;
 		_patrolDirection = _random.NextBool() ? 1 : -1;
 		ClearRoute();
@@ -379,12 +407,18 @@ public sealed class Enemy
 		}
 
 		var targetSurface = _navigator.FindSurface(targetFeet);
+		if (surface is not null && ShouldJump(feet, targetFeet, surface.Value, targetSurface))
+		{
+			StartJump(targetFeet);
+			return;
+		}
+
 		var sameSurface = surface is not null &&
 			targetSurface is not null &&
 			surface.Value.Index == targetSurface.Value.Index;
 		if (sameSurface || (surface is not null && MathF.Abs(feet.Y - targetFeet.Y) <= 3f))
 		{
-			WalkToward(targetFeet.X, deltaSeconds);
+			KeepTargetDistance(targetFeet, deltaSeconds);
 			return;
 		}
 
@@ -405,11 +439,127 @@ public sealed class Enemy
 		FollowRoute(targetFeet, deltaSeconds);
 	}
 
+	private bool ShouldJump(
+		Vector2 feet,
+		Vector2 targetFeet,
+		EnemySurface surface,
+		EnemySurface? targetSurface)
+	{
+		if (!Definition.CanJump || Definition.JumpAttack is null || _jumpCooldownFrames > 0)
+		{
+			return false;
+		}
+
+		var distanceX = MathF.Abs(targetFeet.X - feet.X);
+		if (distanceX <= Definition.AttackRange + 1f || distanceX > Definition.JumpRange)
+		{
+			return false;
+		}
+
+		var heightGain = feet.Y - targetFeet.Y;
+		if (heightGain > 24f || heightGain < -96f)
+		{
+			return false;
+		}
+
+		if (targetSurface is not null && targetSurface.Value.Index == surface.Index)
+		{
+			return true;
+		}
+
+		return _navigator.Plan(feet, targetFeet).Count == 0;
+	}
+
+	private void StartJump(Vector2 targetFeet)
+	{
+		State = EnemyState.Jumping;
+		_jumpFrame = 0;
+		_jumpTargetX = targetFeet.X;
+		_hasHitThisAttack = false;
+		FacingLeft = targetFeet.X < Feet.X;
+		Body.Velocity = Vector2.Zero;
+		ClearRoute();
+	}
+
+	private void TickJump(float deltaSeconds)
+	{
+		var windup = Definition.JumpWindupFrames;
+		_jumpFrame++;
+
+		if (_jumpFrame <= windup)
+		{
+			Body.Velocity = new Vector2(0, Body.Velocity.Y);
+			StepPhysics(deltaSeconds);
+			return;
+		}
+
+		if (_jumpFrame == windup + 1)
+		{
+			var direction = MathF.Sign(_jumpTargetX - Feet.X);
+			if (direction == 0)
+			{
+				direction = FacingLeft ? -1 : 1;
+			}
+
+			FacingLeft = direction < 0;
+			Body.Velocity = new Vector2(
+				direction * Definition.JumpForwardSpeed,
+				-Definition.JumpSpeed);
+		}
+
+		StepPhysics(deltaSeconds);
+
+		var attack = Definition.JumpAttack ?? Definition.Attack;
+		if ((_jumpFrame > windup + 2 && Body.IsGrounded) ||
+			_jumpFrame > windup + attack.TotalFrames + 20)
+		{
+			EndJump();
+		}
+	}
+
+	private void EndJump()
+	{
+		State = EnemyState.Chase;
+		_jumpCooldownFrames = Definition.JumpCooldownFrames;
+		_jumpFrame = 0;
+		_hasHitThisAttack = false;
+		ClearRoute();
+	}
+
+	private AttackDefinition? GetCurrentAttack()
+	{
+		return State switch
+		{
+			EnemyState.Attack => Definition.Attack,
+			EnemyState.Jumping => Definition.JumpAttack,
+			_ => null
+		};
+	}
+
+	private int GetCurrentAttackFrame()
+	{
+		return State == EnemyState.Jumping
+			? Math.Max(0, _jumpFrame - Definition.JumpWindupFrames - 1)
+			: _attackFrame;
+	}
+
+	private static int GetAttackAnimationFrame(AttackDefinition attack, int frame)
+	{
+		if (frame < attack.ActiveStart)
+		{
+			return attack.StartupAnimationFrame;
+		}
+
+		return frame < attack.ActiveEnd
+			? attack.ActiveAnimationFrame
+			: attack.RecoveryAnimationFrame;
+	}
+
 	private void FollowRoute(Vector2 targetFeet, float deltaSeconds)
 	{
 		if (_routeIndex >= _route.Count)
 		{
-			WalkToward(targetFeet.X, deltaSeconds);
+			KeepTargetDistance(targetFeet, deltaSeconds);
 			return;
 		}
 
@@ -426,13 +576,19 @@ public sealed class Enemy
 			return;
 		}
 
+		if (_routeIndex == _route.Count - 1 && waypoint.Kind == EnemyWaypointKind.Walk)
+		{
+			KeepTargetDistance(targetFeet, deltaSeconds);
+			return;
+		}
+
 		var difference = waypoint.X - Feet.X;
 		if (MathF.Abs(difference) <= 1f)
 		{
 			_routeIndex++;
 			if (_routeIndex >= _route.Count)
 			{
-				WalkToward(targetFeet.X, deltaSeconds);
+				KeepTargetDistance(targetFeet, deltaSeconds);
 				return;
 			}
 
@@ -446,6 +602,46 @@ public sealed class Enemy
 		}
 
 		Body.Velocity = new Vector2(direction * Definition.RunSpeed, Body.Velocity.Y);
+		StepPhysics(deltaSeconds);
+		UpdateAnimation(deltaSeconds);
+	}
+
+	private void KeepTargetDistance(Vector2 targetFeet, float deltaSeconds)
+	{
+		var delta = targetFeet.X - Feet.X;
+		var distance = MathF.Abs(delta);
+		var standoff = StandoffDistance;
+
+		if (distance > standoff)
+		{
+			WalkToward(targetFeet.X, deltaSeconds);
+			return;
+		}
+
+		if (distance < standoff - StandoffTolerance)
+		{
+			var targetDirection = delta > 0f
+				? 1
+				: delta < 0f
+					? -1
+					: FacingLeft ? -1 : 1;
+			var retreatDirection = -targetDirection;
+
+			FacingLeft = targetDirection < 0;
+			Body.Velocity = new Vector2(retreatDirection * Definition.RunSpeed, Body.Velocity.Y);
+			StepPhysics(deltaSeconds);
+			UpdateAnimation(deltaSeconds);
+			return;
+		}
+
+		if (delta != 0f)
+		{
+			FacingLeft = delta < 0f;
+		}
+
+		Body.Velocity = new Vector2(
+			MoveTowards(Body.Velocity.X, 0, Drag * deltaSeconds),
+			Body.Velocity.Y);
 		StepPhysics(deltaSeconds);
 		UpdateAnimation(deltaSeconds);
 	}

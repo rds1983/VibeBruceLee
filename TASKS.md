@@ -99,7 +99,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Build a shared enemy state machine (idle, patrol, chase, attack, stunned, knocked down, respawn), platform-aware pathing, and a seeded random source for determinism.
   *Done when:* the state machine is tested with a fake world and enemies navigate vines correctly.
 
-- [ ] **T-031 The Ninja**
+- [x] **T-031 The Ninja**
   Implement the fast pursuer: chase behavior, bokken strike, jump attacks, and return after being defeated. Keep him threatening but dodgeable.
   *Done when:* attack patterns are documented and balanced, with tests for decisions and cooldowns.
 
@@ -108,7 +108,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* he pressures the player without feeling unfair, and his timings are tested.
 
 - [ ] **T-033 Enemy interactions and pacing**
-  Let enemies take damage from hazards, fall, get knocked into mines, and recover. Stop enemies from stacking on the same spot. Tune aggression so two enemies create pressure without stun-locking the player.
+  Let enemies take damage from hazards, fall, get knocked into mines, and recover. Stop enemies from stacking on each other. Tune aggression so two enemies create pressure without stun-locking the player.
   *Done when:* difficulty values are documented and a scripted encounter test passes repeatedly.
 
 ---
@@ -160,7 +160,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   *Done when:* every gameplay event is wired, audio failures never crash the game, and generated audio sources are committed.
 
 - [ ] **T-053 Art polish**
-  Replace first-pass art with final tiles, backdrops, character animation, portraits, and the wizard. Document the palette and pixel grid in `Design/assets.md`.
+  Replace first-pass art with final tiles, backdrops, character animation, portraits, and the wizard. Give the Ninja a dedicated leap wind-up and airborne pose. Document the palette and pixel grid in `Design/assets.md`.
   *Done when:* visuals are consistent across all chambers and every asset has a source file.
 
 - [ ] **T-054 Local two-player mode**
@@ -232,3 +232,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-022 | 2026-11-20 | Health/falls/respawn: three blows, hit i-frames, death, five falls, extra falls per 30k, HUD/game over; longer momentum-carrying kick. |
 | T-023 | 2026-11-20 | Hitstop, flash, landing dust, sound hooks; vine-top platform transition and feet-anchored sprite alignment. |
 | T-030 | 2026-11-20 | Shared enemy state machine, deterministic platform/vine navigation and xorshift RNG; Ninja/Yamo baseline stats, hit exchange, knockout scores, respawns and debug boxes. |
+| T-031 | 2026-11-20 | Ninja leap attack with a telegraphed fixed arc, gap crossing, air strike and jump cooldown; attack decisions documented and enemy stand-off added so pursuers no longer overlap Bruce. |
