@@ -29,6 +29,12 @@ public sealed class EnemyEncounter
 
 	public int PlayerHitsTaken { get; private set; }
 
+	public void Reset()
+	{
+		_pressureFrames = 0;
+		PlayerHitsTaken = 0;
+	}
+
 	public void Update(InputSystem input, float deltaSeconds)
 	{
 		ArgumentNullException.ThrowIfNull(input);

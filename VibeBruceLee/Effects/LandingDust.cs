@@ -14,6 +14,11 @@ public sealed class LandingDust
 
 	public int ParticleCount => _particles.Count;
 
+	public void Clear()
+	{
+		_particles.Clear();
+	}
+
 	public void Spawn(Vector2 feet)
 	{
 		foreach (var offset in DustOffsets)

@@ -4,8 +4,8 @@
   "width": 256,
   "height": 192,
   "playerSpawn": {
-    "x": 128,
-    "y": 24
+    "x": 32,
+    "y": 144
   },
   "platforms": [
     { "x": 0, "y": 176, "width": 256, "height": 16 },
@@ -15,14 +15,14 @@
     { "x": 124, "y": 24, "width": 8, "height": 152, "orientation": "vertical" }
   ],
   "lanterns": [
-    { "id": "lantern-1", "x": 56, "y": 48, "required": true }
+    { "id": "lantern-1", "x": 40, "y": 120, "required": true }
   ],
   "enemySpawns": [
     { "type": "ninja", "x": 220, "y": 144 }
   ],
   "hazards": [],
   "exits": [
-    { "x": 0, "y": 80, "width": 8, "height": 24, "target": "chamber-01" }
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-01" }
   ],
   "decor": []
 }

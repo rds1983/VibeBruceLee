@@ -115,7 +115,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 ## M4 - Chambers
 
-- [ ] **T-040 Chamber 1 vertical slice**
+- [x] **T-040 Chamber 1 vertical slice**
   Recreate the first entrance chamber from reference. Implement lantern collection, the exit opening only after the required lanterns are taken, scoring, death and restart, and a complete playable loop.
   *Done when:* the chamber is beatable and losing all falls returns to game over.
 
@@ -206,7 +206,8 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
 
 New discoveries and follow-ups land here, then get promoted into a milestone.
 
-- _(empty)_
+- Gate `DebugGameOver` (`G`) behind `DEBUG`; it is currently an accessible cheat in release builds.
+- Investigate occasional missing glyphs in HUD text (seen once each in `HP` and `FALLS`); likely a FontStashSharp atlas/batching issue.
 
 ---
 
@@ -235,3 +236,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-031 | 2026-11-20 | Ninja leap attack with a telegraphed fixed arc, gap crossing, air strike and jump cooldown; attack decisions documented and enemy stand-off added so pursuers no longer overlap Bruce. |
 | T-032 | 2026-11-20 | Yamo punch and knockdown crush kick with distance selection and per-attack cooldowns; solid body blocking, stand-off attacks, timings documented and tested. |
 | T-033 | 2026-11-20 | Headless enemy encounter with one attack token, 30-frame post-hit pressure gate, friendly fire, score validity gating and weighted enemy separation; deterministic scripted encounter tests. |
+| T-040 | 2026-11-20 | Chamber catalog and per-attempt progress; playable entrance hall with lantern collection, exit gating, 125/2,000 scoring, chamber transition, death reset and HUD progress. |

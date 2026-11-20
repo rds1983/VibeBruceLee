@@ -29,7 +29,7 @@
     { "type": "electric", "x": 96, "y": 168, "width": 64, "height": 8, "periodSeconds": 2.0 }
   ],
   "exits": [
-    { "x": 120, "y": 184, "width": 16, "height": 8, "target": "chamber-02" }
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-02" }
   ],
   "decor": [
     { "sprite": "art/lantern.png", "x": 8, "y": 8, "scale": 1 }

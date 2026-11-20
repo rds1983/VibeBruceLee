@@ -24,7 +24,7 @@ public sealed class ScreenContext
 		Texture2D hudLantern,
 		Texture2D pixel,
 		DebugState debug,
-		ChamberDefinition chamber,
+		ChamberCatalog chambers,
 		GameSession session)
 	{
 		ArgumentNullException.ThrowIfNull(fontSystem);
@@ -37,7 +37,7 @@ public sealed class ScreenContext
 		ArgumentNullException.ThrowIfNull(hudLantern);
 		ArgumentNullException.ThrowIfNull(pixel);
 		ArgumentNullException.ThrowIfNull(debug);
-		ArgumentNullException.ThrowIfNull(chamber);
+		ArgumentNullException.ThrowIfNull(chambers);
 		ArgumentNullException.ThrowIfNull(session);
 
 		FontSystem = fontSystem;
@@ -50,7 +50,7 @@ public sealed class ScreenContext
 		HudLantern = hudLantern;
 		Pixel = pixel;
 		Debug = debug;
-		Chamber = chamber;
+		Chambers = chambers;
 		Session = session;
 	}
 
@@ -74,7 +74,7 @@ public sealed class ScreenContext
 
 	public DebugState Debug { get; }
 
-	public ChamberDefinition Chamber { get; }
+	public ChamberCatalog Chambers { get; }
 
 	public GameSession Session { get; }
 }

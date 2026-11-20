@@ -87,7 +87,7 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 - Bruce has three blows per fall. Each blow causes hitstun, knockback and brief invulnerability; the third blow causes a fall.
 - Enemy attacks and enemy body contact during an attack deal one blow.
 - Environmental traps cost a whole fall immediately. This is a remake ruling; revisit in T-055 if it feels unfair.
-- After a fall, Bruce respawns at the chamber entrance with full blows and brief invulnerability. The current chamber resets: lanterns, enemies and hazards return to their initial state. Score and remaining falls are kept. Chamber reset is completed with the chamber runtime in T-040; the sample currently respawns Bruce only.
+- After a fall, Bruce respawns at the chamber entrance with full blows and brief invulnerability. The current chamber resets: lanterns and enemies return to their initial state. Hazards join the reset when the hazard framework lands in T-042. Score and remaining falls are kept.
 
 ## Falls, game over and extra falls
 
@@ -99,12 +99,13 @@ All values are at the fixed 60 Hz step and live in `AttackDefinitions`.
 
 ## Lanterns and exits
 
-- Lanterns hang from the ceiling and are collected by jumping into them. Each awards 125 points.
+- Lanterns hang from the ceiling and are collected by touching them. Each awards 125 points and disappears for the rest of the attempt. Required lanterns gate the exit; optional lanterns only add score.
 - Every chamber defines required lanterns and may define optional ones. The exit opens only when the required set is collected.
-- The exit is visible at a screen edge, floor hatch or ceiling opening. Its opening is signaled clearly: the edge flashes, the hatch animates, or an arrow appears.
-- Entering an exit awards 2,000 points and starts the next chamber.
-- The entrance hub has three chambers. All required lanterns in all three must be collected before a hatch opens in the floor of the middle chamber. Lantern state in the hub persists while the player moves between its chambers.
+- The exit is visible at a screen edge, floor hatch or ceiling opening. Its opening is signaled clearly: the edge flashes, the hatch animates, or an arrow appears. The HUD also shows required lantern progress and `EXIT OPEN`.
+- Entering an open exit awards 2,000 points and starts the target chamber. The player keeps score and falls; the target chamber starts with fresh lanterns and enemies.
+- The entrance hub has three chambers. All required lanterns in all three must be collected before a hatch opens in the floor of the middle chamber. Lantern state in the hub persists while the player moves between its chambers (T-041).
 - Every other chamber is independent: leaving through an exit ends it.
+- Dying on a non-final fall resets the current chamber's lanterns and enemies but keeps score and falls. The exit closes again. Hazards reset with the hazard framework in T-042.
 
 ## Chamber progression
 
@@ -220,6 +221,7 @@ Top bar, following the original order:
 3. Top score.
 4. Falls remaining.
 5. Lantern progress for the current chamber (modern addition).
+6. `EXIT OPEN` when the required lantern set is complete (modern addition).
 
 ## Game modes
 

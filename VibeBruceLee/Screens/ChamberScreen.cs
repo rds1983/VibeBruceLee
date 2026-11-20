@@ -23,6 +23,8 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly PhysicsWorld _world;
 	private readonly Player _player;
 	private readonly EnemyEncounter _encounter;
+	private readonly ChamberProgress _progress;
+	private readonly string _title;
 	private readonly Vector2 _spawn;
 	private readonly SpriteFontBase _font16;
 	private readonly SpriteFontBase _font8;
@@ -30,14 +32,17 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly AnimationPlayer _lanternPlayer = new();
 	private readonly LandingDust _dust = new();
 
-	public ChamberScreen(ScreenStack screens, ScreenContext context)
+	public ChamberScreen(ScreenStack screens, ScreenContext context, ChamberDefinition chamber)
 	{
 		ArgumentNullException.ThrowIfNull(screens);
 		ArgumentNullException.ThrowIfNull(context);
+		ArgumentNullException.ThrowIfNull(chamber);
 
 		_screens = screens;
 		_context = context;
-		_chamber = context.Chamber;
+		_chamber = chamber;
+		_progress = new ChamberProgress(_chamber);
+		_title = _chamber.Name.ToUpperInvariant();
 		_geometry = ChamberGeometry.From(_chamber);
 		_world = new PhysicsWorld(GameInfo.VirtualWidth, GameInfo.VirtualHeight, 900, 600);
 		_font16 = context.FontSystem.GetFont(16);
@@ -88,6 +93,25 @@ public sealed class ChamberScreen : IGameScreen
 		_player.Invincible = _context.Debug.Invincible;
 		_encounter.Update(input, seconds);
 
+		if (!_player.IsDead)
+		{
+			var collected = _progress.Collect(_player.Body.Bounds);
+			if (collected > 0)
+			{
+				_context.Session.AddScore(collected * ChamberProgress.LanternScore);
+			}
+
+			if (_progress.TryFindOpenExit(_player.Body.Bounds, out var exit))
+			{
+				_context.Session.AddScore(ChamberProgress.ExitScore);
+				_screens.Replace(new ChamberScreen(
+					_screens,
+					_context,
+					_context.Chambers.Get(exit!.Target)));
+				return;
+			}
+		}
+
 		if (_player.ConsumeLanded())
 		{
 			var feet = new Vector2(
@@ -107,6 +131,7 @@ public sealed class ChamberScreen : IGameScreen
 			else
 			{
 				_player.Respawn(_spawn);
+				ResetChamber();
 			}
 		}
 
@@ -135,6 +160,7 @@ public sealed class ChamberScreen : IGameScreen
 			SpriteLayers.Background);
 
 		DrawGeometry(spriteBatch);
+		DrawExits(spriteBatch);
 		DrawLanterns(spriteBatch);
 		DrawEnemies(spriteBatch);
 		DrawPlayer(spriteBatch);
@@ -205,10 +231,60 @@ public sealed class ChamberScreen : IGameScreen
 		}
 	}
 
+	private void ResetChamber()
+	{
+		_progress.Reset();
+
+		foreach (var enemy in _enemies)
+		{
+			enemy.Respawn();
+		}
+
+		_encounter.Reset();
+		_dust.Clear();
+	}
+
+	private void DrawExits(SpriteBatch spriteBatch)
+	{
+		foreach (var exit in _chamber.Exits)
+		{
+			var open = _progress.IsExitOpen(exit);
+			var color = open ? Palette.Yellow : new Color(80, 60, 40);
+
+			spriteBatch.Draw(
+				_context.Pixel,
+				new Rectangle(exit.X, exit.Y, exit.Width, exit.Height),
+				null,
+				color,
+				0f,
+				Vector2.Zero,
+				SpriteEffects.None,
+				SpriteLayers.World);
+
+			if (open && exit.Width >= 4)
+			{
+				spriteBatch.Draw(
+					_context.Pixel,
+					new Rectangle(exit.X + 2, exit.Y + 2, Math.Max(1, exit.Width - 4), Math.Max(1, exit.Height - 4)),
+					null,
+					Palette.Cyan,
+					0f,
+					Vector2.Zero,
+					SpriteEffects.None,
+					SpriteLayers.World);
+			}
+		}
+	}
+
 	private void DrawLanterns(SpriteBatch spriteBatch)
 	{
 		foreach (var lantern in _chamber.Lanterns)
 		{
+			if (_progress.IsCollected(lantern))
+			{
+				continue;
+			}
+
 			_context.LanternSheet.Draw(
 				spriteBatch,
 				_lanternPlayer.CurrentFrame,
@@ -299,11 +375,26 @@ public sealed class ChamberScreen : IGameScreen
 		spriteBatch.Draw(_context.HudLantern, new Rectangle(16, 2, 8, 8), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, _context.Session.Score.ToString("D6", CultureInfo.InvariantCulture), new Vector2(30, 2), Palette.White, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, "HP " + _player.BlowsRemaining.ToString(CultureInfo.InvariantCulture), new Vector2(96, 2), Palette.White, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(
+			_font8,
+			"L " + _progress.RequiredCollected.ToString(CultureInfo.InvariantCulture) + "/" + _progress.RequiredTotal.ToString(CultureInfo.InvariantCulture),
+			new Vector2(136, 2),
+			Palette.White,
+			layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, "FALLS " + _context.Session.Falls.ToString(CultureInfo.InvariantCulture), new Vector2(184, 2), Palette.White, layerDepth: SpriteLayers.Hud);
 
-		spriteBatch.DrawString(_font16, "CHAMBER 1", new Vector2(8, 16), Palette.Yellow, layerDepth: SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, $"{_player.State}", new Vector2(8, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, "P: pause   G: game over", new Vector2(8, 176), Palette.Muted, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(_font16, _title, new Vector2(8, 16), Palette.Yellow, layerDepth: SpriteLayers.Hud);
+
+		if (_progress.RequiredComplete)
+		{
+			spriteBatch.DrawString(_font8, "EXIT OPEN", new Vector2(8, 36), Palette.Yellow, layerDepth: SpriteLayers.Hud);
+		}
+		else
+		{
+			spriteBatch.DrawString(_font8, $"{_player.State}", new Vector2(8, 36), Palette.Cyan, layerDepth: SpriteLayers.Hud);
+		}
+
+		spriteBatch.DrawString(_font8, "P: pause", new Vector2(8, 176), Palette.Muted, layerDepth: SpriteLayers.Hud);
 	}
 
 	private static Rectangle ToRectangle(Aabb bounds)

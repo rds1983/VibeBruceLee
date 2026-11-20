@@ -129,6 +129,18 @@ public class PlayerFeelTests
 	}
 
 	[Fact]
+	public void LandingDustCanBeCleared()
+	{
+		var dust = new LandingDust();
+		dust.Spawn(new Vector2(50, 100));
+		Assert.Equal(6, dust.ParticleCount);
+
+		dust.Clear();
+
+		Assert.Equal(0, dust.ParticleCount);
+	}
+
+	[Fact]
 	public void LandingDustLivesAndFades()
 	{
 		var dust = new LandingDust();

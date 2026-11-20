@@ -2,7 +2,7 @@
 
 A from-scratch remake of the 1984 classic **Bruce Lee**, as released for the ZX Spectrum: one martial artist, twenty trap-filled chambers, two relentless enemies, and a wizard waiting at the top of the tower. Built with modern C# tooling and original, hand-made assets.
 
-> Status: early development. The game shell, screen flow, asset pipeline and core design documentation are in place.
+> Status: early development. A playable first chamber is in place: movement, combat, the Ninja and Yamo, lanterns, exit gating, falls and game over.
 
 ## Tech stack
 

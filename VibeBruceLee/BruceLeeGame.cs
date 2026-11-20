@@ -88,11 +88,10 @@ public sealed class BruceLeeGame : Game
 			16);
 		var hudLife = assets.LoadTexture2D(GraphicsDevice, "art/hud-life.png");
 		var hudLantern = assets.LoadTexture2D(GraphicsDevice, "art/hud-lantern.png");
-		var chamber = ChamberLoader.Load(Path.Combine(
+		var chambers = new ChamberCatalog(ChamberLoader.LoadAll(Path.Combine(
 			AppContext.BaseDirectory,
 			"Assets",
-			"levels",
-			"chamber-01.json"));
+			"levels")));
 		var session = new GameSession();
 
 		var pixel = new Texture2D(GraphicsDevice, 1, 1);
@@ -120,7 +119,7 @@ public sealed class BruceLeeGame : Game
 			hudLantern,
 			pixel,
 			_debugState,
-			chamber,
+			chambers,
 			session);
 		_screens = new ScreenStack();
 		_screens.Push(new TitleScreen(_screens, context));

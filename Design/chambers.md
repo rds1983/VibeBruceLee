@@ -34,7 +34,7 @@ Each chamber is a single 256x192 screen defined by a JSON file in `VibeBruceLee/
     { "type": "electric", "x": 96, "y": 168, "width": 64, "height": 8, "periodSeconds": 2.0 }
   ],
   "exits": [
-    { "x": 120, "y": 184, "width": 16, "height": 8, "target": "chamber-02" }
+    { "x": 248, "y": 152, "width": 8, "height": 24, "target": "chamber-02" }
   ],
   "decor": [
     { "sprite": "art/lantern.png", "x": 8, "y": 8, "scale": 1 }
@@ -78,4 +78,31 @@ var levelsDirectory = Path.Combine(AppContext.BaseDirectory, "Assets", "levels")
 var chambers = ChamberLoader.LoadAll(levelsDirectory);
 ```
 
-`LoadAll` returns chambers sorted by file name. The two committed files are placeholders that prove the format; M4 replaces them with the real 20-chamber layouts.
+`LoadAll` returns chambers sorted by file name. `ChamberCatalog` keeps that order, exposes `First`, and resolves exit targets by id. The two committed files are a first pass; chamber-01 is the T-040 playable entrance slice, and chamber-02 is a temporary one-lantern return room until T-041 replaces it with the real entrance hub.
+
+## Chamber-01: Entrance Hall (T-040)
+
+- Three required lanterns: one above each mid ledge and one above the top platform.
+- The exit is a door on the right wall at `(248, 152, 8, 24)`, reachable from the ground floor. It stays locked until all three required lanterns are collected.
+- The central vine connects the ground to the top platform. The mid ledges are reached by dropping from the top; the player can return to the ground and climb again.
+- The electric hazard entry is present in the data but inert until T-042.
+- On a fall, lanterns and enemies reset and the exit closes again. Score and falls are kept. Losing the last fall opens the game-over screen.
+
+## Chamber-02: Vine Shaft (temporary)
+
+- A one-lantern return room used to exercise the chamber transition before T-041.
+- The lantern is above the left side of the ground; the vine and mid ledge remain from the format sample.
+- The right-wall exit returns to chamber-01, producing a two-chamber loop.
+- T-041 replaces this with the real second entrance chamber and the three-room hub.
+
+## Progress and transitions
+
+`ChamberProgress` owns the attempt state:
+
+- collects any uncollected lantern whose 16x16 box intersects Bruce,
+- tracks required and optional counts separately,
+- opens an exit when its required lanterns are complete, or immediately when `requiresLanterns` is false,
+- finds an open exit whose rectangle intersects Bruce,
+- resets all lantern state on death.
+
+`ChamberScreen` awards 125 per lantern and 2,000 when entering an exit, then replaces itself with the target chamber from `ChamberCatalog`. Score and falls live in `GameSession` and survive chamber changes and non-final deaths.
