@@ -24,6 +24,8 @@ public sealed class Player
 	public const int HitInvulnerabilityFrames = 20;
 	public const int RespawnInvulnerabilityFrames = 90;
 	public const int DeathFrames = 60;
+	public const int HitstopFrames = 4;
+	public const int HitFlashFrames = 8;
 
 	private readonly PhysicsWorld _world;
 	private readonly IReadOnlyList<Platform> _platforms;
@@ -40,6 +42,10 @@ public sealed class Player
 	private bool _isDead;
 	private bool _deathFinished;
 	private int _deathFrames;
+	private int _hitstopFrames;
+	private int _hitFlashFrames;
+	private bool _landedThisFrame;
+	private bool _wasGroundedLastFrame;
 
 	public Player(
 		PhysicsWorld world,
@@ -76,7 +82,11 @@ public sealed class Player
 
 	public bool IsInvulnerable => _invulnerableFrames > 0;
 
+	public bool IsFlashing => _hitFlashFrames > 0;
+
 	public bool Invincible { get; set; }
+
+	public event Action<PlayerSound>? SoundRequested;
 
 	public int BlowsRemaining => _blowsRemaining;
 
@@ -124,6 +134,24 @@ public sealed class Player
 	{
 		ArgumentNullException.ThrowIfNull(input);
 		ArgumentOutOfRangeException.ThrowIfNegative(deltaSeconds);
+
+		_landedThisFrame = !_isDead && Body.IsGrounded && !_wasGroundedLastFrame;
+		_wasGroundedLastFrame = Body.IsGrounded;
+		if (_landedThisFrame)
+		{
+			RaiseSound(PlayerSound.Land);
+		}
+
+		if (_hitFlashFrames > 0)
+		{
+			_hitFlashFrames--;
+		}
+
+		if (_hitstopFrames > 0)
+		{
+			_hitstopFrames--;
+			return;
+		}
 
 		if (_invulnerableFrames > 0)
 		{
@@ -217,10 +245,37 @@ public sealed class Player
 				Body.Velocity = new Vector2(move * RunSpeed * 0.5f, -JumpSpeed);
 				_jumpHeld = true;
 				input.ConsumeBuffered(InputAction.Jump);
+				RaiseSound(PlayerSound.Jump);
 			}
 			else
 			{
 				var vertical = Direction(input.IsHeld(InputAction.MoveUp), input.IsHeld(InputAction.MoveDown));
+				if (vine.Orientation == VineOrientation.Vertical && vertical > 0)
+				{
+					var topPlatform = FindVineTopPlatform(vine);
+					if (topPlatform is Platform platform)
+					{
+						var targetY = platform.Bounds.Y - BodyHeight;
+						var step = ClimbSpeed * deltaSeconds;
+						if (Body.Position.Y - step <= targetY)
+						{
+							Body.Position = new Vector2(Body.Position.X, targetY);
+							Body.ClimbingVine = null;
+							Body.Velocity = Vector2.Zero;
+							Body.IsGrounded = true;
+						}
+						else
+						{
+							Body.Position = new Vector2(Body.Position.X, Body.Position.Y - step);
+							Body.Velocity = new Vector2(0, -ClimbSpeed);
+						}
+
+						UpdateState(input);
+						UpdateAnimation(deltaSeconds);
+						return;
+					}
+				}
+
 				Body.Velocity = vine.Orientation == VineOrientation.Vertical
 					? new Vector2(0, -vertical * ClimbSpeed)
 					: new Vector2(move * ClimbSpeed, 0);
@@ -259,6 +314,7 @@ public sealed class Player
 					Body.Velocity = new Vector2(Body.Velocity.X, -JumpSpeed);
 					_jumpHeld = true;
 					input.ConsumeBuffered(InputAction.Jump);
+					RaiseSound(PlayerSound.Jump);
 				}
 				else if (_jumpHeld && !input.IsHeld(InputAction.Jump) && Body.Velocity.Y < 0)
 				{
@@ -316,6 +372,7 @@ public sealed class Player
 		}
 
 		_hasHitThisAttack = true;
+		_hitstopFrames = Math.Max(_hitstopFrames, 2);
 		return _attack;
 	}
 
@@ -333,6 +390,8 @@ public sealed class Player
 		_hasHitThisAttack = false;
 		_hitstunFrames = 0;
 		_knockdownFrames = 0;
+		_hitstopFrames = HitstopFrames;
+		_hitFlashFrames = HitFlashFrames;
 		Body.Velocity = new Vector2(
 			(fromLeft ? 1 : -1) * hit.KnockbackX,
 			hit.KnockbackY);
@@ -352,11 +411,13 @@ public sealed class Player
 		{
 			_knockdownFrames = KnockdownFrames;
 			State = PlayerState.KnockedDown;
+			RaiseSound(PlayerSound.Knockdown);
 		}
 		else
 		{
 			_hitstunFrames = hit.HitstunFrames;
 			State = PlayerState.Hit;
+			RaiseSound(PlayerSound.Hit);
 		}
 
 		_invulnerableFrames = HitInvulnerabilityFrames;
@@ -374,6 +435,8 @@ public sealed class Player
 
 		_blowsRemaining = 0;
 		Body.Velocity = new Vector2(0, -40);
+		_hitstopFrames = HitstopFrames;
+		_hitFlashFrames = HitFlashFrames;
 		Die();
 	}
 
@@ -385,6 +448,17 @@ public sealed class Player
 		}
 
 		_deathFinished = false;
+		return true;
+	}
+
+	public bool ConsumeLanded()
+	{
+		if (!_landedThisFrame)
+		{
+			return false;
+		}
+
+		_landedThisFrame = false;
 		return true;
 	}
 
@@ -405,9 +479,14 @@ public sealed class Player
 		_isDead = false;
 		_deathFinished = false;
 		_deathFrames = 0;
+		_hitstopFrames = 0;
+		_hitFlashFrames = 0;
+		_landedThisFrame = false;
+		_wasGroundedLastFrame = false;
 		FacingLeft = false;
 		State = PlayerState.Idle;
 		_animation.Play(PlayerAnimations.Idle);
+		RaiseSound(PlayerSound.Respawn);
 	}
 
 	private void Die()
@@ -421,6 +500,7 @@ public sealed class Player
 		_deathFinished = false;
 		_deathFrames = 0;
 		State = PlayerState.Dead;
+		RaiseSound(PlayerSound.Death);
 	}
 
 	private AttackType ChooseAttack()
@@ -430,11 +510,29 @@ public sealed class Player
 			: AttackType.Chop;
 	}
 
+	private Platform? FindVineTopPlatform(Vine vine)
+	{
+		var x = Body.Bounds.Center.X;
+
+		foreach (var platform in _platforms)
+		{
+			if (MathF.Abs(platform.Bounds.Y - vine.Bounds.Y) <= 1f &&
+				x >= platform.Bounds.X &&
+				x <= platform.Bounds.Right)
+			{
+				return platform;
+			}
+		}
+
+		return null;
+	}
+
 	private void StartAttack(AttackType type)
 	{
 		_attack = AttackDefinitions.Get(type);
 		_attackFrame = 0;
 		_hasHitThisAttack = false;
+		RaiseSound(type == AttackType.Chop ? PlayerSound.Chop : PlayerSound.Kick);
 
 		if (_attack.ForwardSpeed > 0)
 		{
@@ -539,5 +637,10 @@ public sealed class Player
 		}
 
 		return current + (MathF.Sign(difference) * maxDelta);
+	}
+
+	private void RaiseSound(PlayerSound sound)
+	{
+		SoundRequested?.Invoke(sound);
 	}
 }

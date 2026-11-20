@@ -87,7 +87,7 @@ This is a living document. The agent owns it and may split, reorder, rewrite, or
   Handle enemy blows (three per fall), deadly hazards, death animation, five starting falls, an extra fall every 30,000 points, respawn with brief invulnerability, and game over.
   *Done when:* life-loss transitions and invulnerability windows are tested.
 
-- [ ] **T-023 Player animation and feel pass**
+- [x] **T-023 Player animation and feel pass**
   Refine timings, add hitstop, hit flash, and landing dust, and wire sound hooks. Record final values later in `Design/tuning.md`.
   *Done when:* the character feels responsive and every action has clear visual feedback.
 
@@ -230,3 +230,4 @@ New discoveries and follow-ups land here, then get promoted into a milestone.
 | T-020 | 2026-11-20 | Player locomotion: run, variable jump, duck, vine climbing/detach, state animations, wired into the sample chamber. |
 | T-021 | 2026-11-20 | Grounded chop/running-kick combat with centralized frame data, one-hit hitboxes, hitstun/knockdown and corrected source research. |
 | T-022 | 2026-11-20 | Health/falls/respawn: three blows, hit i-frames, death, five falls, extra falls per 30k, HUD/game over; longer momentum-carrying kick. |
+| T-023 | 2026-11-20 | Hitstop, flash, landing dust, sound hooks; vine-top platform transition and feet-anchored sprite alignment. |

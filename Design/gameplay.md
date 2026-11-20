@@ -51,6 +51,8 @@ Default bindings. Remapping and the final table land in T-011.
 
 - Each attack has wind-up, active and recovery frames. Hitboxes are active only during the active frames.
 - One attack can hit a given target at most once.
+- Hits briefly freeze the action (four frames of hitstop) and flash the victim red for eight frames.
+- Landings kick up a short dust burst.
 - Attacks cannot be canceled into another attack before recovery ends. Taking a hit cancels the current attack.
 - Attacks only start while grounded. Airborne attack presses are ignored.
 - Landing on an enemy causes a knockdown but no hit-point damage.

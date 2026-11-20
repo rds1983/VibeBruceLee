@@ -3,7 +3,9 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using VibeBruceLee.Animation;
+using VibeBruceLee.Effects;
 using VibeBruceLee.Gameplay;
+using VibeBruceLee.Graphics;
 using VibeBruceLee.Input;
 using VibeBruceLee.Levels;
 using VibeBruceLee.Physics;
@@ -27,6 +29,7 @@ public sealed class ChamberScreen : IGameScreen
 	private readonly AnimationPlayer _ninjaPlayer = new();
 	private readonly AnimationPlayer _yamoPlayer = new();
 	private readonly AnimationPlayer _lanternPlayer = new();
+	private readonly LandingDust _dust = new();
 
 	public ChamberScreen(ScreenStack screens, ScreenContext context)
 	{
@@ -67,6 +70,16 @@ public sealed class ChamberScreen : IGameScreen
 		var seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 		_player.Invincible = _context.Debug.Invincible;
 		_player.Update(input, seconds);
+
+		if (_player.ConsumeLanded())
+		{
+			var feet = new Vector2(
+				_player.Body.Position.X + (_player.Body.Size.X / 2f),
+				_player.Body.Position.Y + _player.Body.Size.Y);
+			_dust.Spawn(feet);
+		}
+
+		_dust.Update(seconds);
 
 		if (_player.ConsumeDeathFinished())
 		{
@@ -110,6 +123,7 @@ public sealed class ChamberScreen : IGameScreen
 		DrawLanterns(spriteBatch);
 		DrawEnemies(spriteBatch);
 		DrawPlayer(spriteBatch);
+		_dust.Draw(spriteBatch, _context.Pixel, SpriteLayers.World);
 		DrawHud(spriteBatch);
 
 		if (_context.Debug.OverlayVisible)
@@ -183,42 +197,63 @@ public sealed class ChamberScreen : IGameScreen
 		{
 			if (spawn.Type == "ninja")
 			{
-				_context.Ninja.Draw(
-					spriteBatch,
-					_ninjaPlayer.CurrentFrame,
-					new Vector2(spawn.X, spawn.Y),
-					1,
-					Color.White,
-					SpriteEffects.None,
-					SpriteLayers.World);
+				DrawEnemy(spriteBatch, _context.Ninja, _ninjaPlayer.CurrentFrame, spawn.X, spawn.Y, 22);
 			}
 			else
 			{
-				_context.Yamo.Draw(
-					spriteBatch,
-					_yamoPlayer.CurrentFrame,
-					new Vector2(spawn.X, spawn.Y),
-					1,
-					Color.White,
-					SpriteEffects.None,
-					SpriteLayers.World);
+				DrawEnemy(spriteBatch, _context.Yamo, _yamoPlayer.CurrentFrame, spawn.X, spawn.Y, 26);
 			}
 		}
+	}
+
+	private void DrawEnemy(SpriteBatch spriteBatch, SpriteSheet sheet, int frame, int x, int y, int footOffset)
+	{
+		var centerX = x + (sheet.Layout.FrameWidth / 2f);
+		var groundY = FindGroundBelow(centerX, y);
+		var drawY = groundY - footOffset;
+
+		sheet.Draw(
+			spriteBatch,
+			frame,
+			new Vector2(x, drawY),
+			1,
+			Color.White,
+			SpriteEffects.None,
+			SpriteLayers.World);
+	}
+
+	private float FindGroundBelow(float x, float fromY)
+	{
+		var ground = (float)GameInfo.VirtualHeight;
+
+		foreach (var platform in _geometry.Platforms)
+		{
+			if (x >= platform.Bounds.X &&
+				x <= platform.Bounds.Right &&
+				platform.Bounds.Y >= fromY &&
+				platform.Bounds.Y < ground)
+			{
+				ground = platform.Bounds.Y;
+			}
+		}
+
+		return ground;
 	}
 
 	private void DrawPlayer(SpriteBatch spriteBatch)
 	{
 		var position = new Vector2(
 			_player.Body.Position.X - 3,
-			_player.Body.Position.Y - 2);
+			_player.Body.Position.Y);
 		var effects = _player.FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		var tint = _player.IsFlashing ? new Color(255, 140, 140) : Color.White;
 
 		_context.Bruce.Draw(
 			spriteBatch,
 			_player.CurrentFrame,
 			position,
 			1,
-			Color.White,
+			tint,
 			effects,
 			SpriteLayers.World);
 	}
@@ -238,7 +273,7 @@ public sealed class ChamberScreen : IGameScreen
 		spriteBatch.Draw(_context.HudLife, new Rectangle(4, 2, 8, 8), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.Hud);
 		spriteBatch.Draw(_context.HudLantern, new Rectangle(16, 2, 8, 8), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, _context.Session.Score.ToString("D6", CultureInfo.InvariantCulture), new Vector2(30, 2), Palette.White, layerDepth: SpriteLayers.Hud);
-		spriteBatch.DrawString(_font8, "BLOWS " + _player.BlowsRemaining.ToString(CultureInfo.InvariantCulture), new Vector2(96, 2), Palette.White, layerDepth: SpriteLayers.Hud);
+		spriteBatch.DrawString(_font8, "HP " + _player.BlowsRemaining.ToString(CultureInfo.InvariantCulture), new Vector2(96, 2), Palette.White, layerDepth: SpriteLayers.Hud);
 		spriteBatch.DrawString(_font8, "FALLS " + _context.Session.Falls.ToString(CultureInfo.InvariantCulture), new Vector2(184, 2), Palette.White, layerDepth: SpriteLayers.Hud);
 
 		spriteBatch.DrawString(_font16, "CHAMBER 1", new Vector2(8, 16), Palette.Yellow, layerDepth: SpriteLayers.Hud);

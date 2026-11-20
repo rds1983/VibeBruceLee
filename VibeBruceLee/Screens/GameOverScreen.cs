@@ -56,7 +56,7 @@ public sealed class GameOverScreen : IGameScreen
 			SpriteLayers.Background);
 
 		DrawCentered(spriteBatch, _font16, "GAME OVER", 64, Palette.Yellow);
-		DrawCentered(spriteBatch, _font8, "SCORE " + _context.Session.Score.ToString("D6", CultureInfo.InvariantCulture), 92, Palette.White);
+		DrawCentered(spriteBatch, _font8, "PTS " + _context.Session.Score.ToString("D6", CultureInfo.InvariantCulture), 92, Palette.White);
 		DrawCentered(spriteBatch, _font8, "Enter: title", 112, Palette.White);
 		DrawCentered(spriteBatch, _font8, "Esc: quit", 128, Palette.Muted);
 	}

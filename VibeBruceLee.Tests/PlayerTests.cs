@@ -188,6 +188,27 @@ public class PlayerTests
 	}
 
 	[Fact]
+	public void ClimbsOntoPlatformAtVineTop()
+	{
+		var vine = new Vine(new Aabb(40, 60, 8, 80), VineOrientation.Vertical);
+		var platforms = new[] { new Platform(new Aabb(0, 60, 256, 8)) };
+		var (player, input) = CreatePlayer(new Vector2(40, 80), platforms, [vine]);
+
+		Step(player, input, Keys.Q);
+		Assert.Equal(PlayerState.Climb, player.State);
+
+		for (var frame = 0; frame < 60; frame++)
+		{
+			Step(player, input, Keys.Q);
+		}
+
+		Assert.Null(player.Body.ClimbingVine);
+		Assert.True(player.Body.IsGrounded);
+		Assert.Equal(38f, player.Body.Position.Y, 1);
+		Assert.Equal(PlayerState.Idle, player.State);
+	}
+
+	[Fact]
 	public void HorizontalVineMovesSideways()
 	{
 		var vine = new Vine(new Aabb(40, 40, 80, 8), VineOrientation.Horizontal);

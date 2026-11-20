@@ -48,12 +48,12 @@ public class PlayerHealthTests
 		player.ApplyHit(AttackDefinitions.Chop, fromLeft: true);
 		Assert.Equal(2, player.BlowsRemaining);
 		Assert.False(player.IsDead);
-		Advance(player, input, Player.HitInvulnerabilityFrames + 2);
+		Advance(player, input, Player.HitstopFrames + Player.HitInvulnerabilityFrames + 2);
 
 		player.ApplyHit(AttackDefinitions.Chop, fromLeft: true);
 		Assert.Equal(1, player.BlowsRemaining);
 		Assert.False(player.IsDead);
-		Advance(player, input, Player.HitInvulnerabilityFrames + 2);
+		Advance(player, input, Player.HitstopFrames + Player.HitInvulnerabilityFrames + 2);
 
 		player.ApplyHit(AttackDefinitions.Chop, fromLeft: true);
 
@@ -69,7 +69,7 @@ public class PlayerHealthTests
 		var (player, input) = CreatePlayer();
 		player.Kill();
 
-		Advance(player, input, Player.DeathFrames);
+		Advance(player, input, Player.DeathFrames + Player.HitstopFrames);
 
 		Assert.True(player.ConsumeDeathFinished());
 		Assert.False(player.ConsumeDeathFinished());
@@ -80,7 +80,7 @@ public class PlayerHealthTests
 	{
 		var (player, input) = CreatePlayer();
 		player.Kill();
-		Advance(player, input, Player.DeathFrames);
+		Advance(player, input, Player.DeathFrames + Player.HitstopFrames);
 
 		player.Respawn(new Vector2(32, 138));
 
@@ -107,7 +107,7 @@ public class PlayerHealthTests
 
 		Assert.Equal(2, player.BlowsRemaining);
 
-		Advance(player, input, Player.HitInvulnerabilityFrames + 2);
+		Advance(player, input, Player.HitstopFrames + Player.HitInvulnerabilityFrames + 2);
 		player.ApplyHit(AttackDefinitions.Chop, fromLeft: true);
 
 		Assert.Equal(1, player.BlowsRemaining);
